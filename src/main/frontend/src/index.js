@@ -12,6 +12,8 @@ import Culture from './components/culture/Culture';
 import Root from './components/root/Root';
 import Race from './components/race/Race';
 import Subrace from './components/subrace/Subrace';
+import Continent from './components/continent/Continent';
+import Kingdom from './components/kingdom/Kingdom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,6 +25,8 @@ root.render(
           <Route path={"culture"} element={<Culture />} />
           <Route path={"race"} element={<Race />} />
           <Route path={"subrace"} element={<Subrace />} />
+          <Route path={"continent"} element={<Continent />} />
+          <Route path={"kingdom"} element={<Kingdom />} />
         </Route>
       </Routes>
     </Router>

@@ -25,7 +25,7 @@ public class Place {
     private String description;
     @ManyToOne
     private Region region;
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     private Collection<Image> images;
     @ManyToMany
     private Collection<Race> races;

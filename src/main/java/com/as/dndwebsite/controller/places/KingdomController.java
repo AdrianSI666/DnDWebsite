@@ -1,7 +1,10 @@
 package com.as.dndwebsite.controller.places;
 
 import com.as.dndwebsite.domain.places.Kingdom;
+import com.as.dndwebsite.domain.places.Region;
+import com.as.dndwebsite.dto.KingdomWithRegion;
 import com.as.dndwebsite.services.places.KingdomService;
+import com.as.dndwebsite.services.places.RegionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,48 +23,87 @@ import java.util.List;
 @CrossOrigin("http://localhost:8091/")
 public class KingdomController {
     private final KingdomService kingdomService;
-//    private final Base64.Decoder decoder = Base64.getDecoder();
+    private final RegionService regionService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Kingdom>> getKingdoms(){
-        List<Kingdom> dataToSend=kingdomService.getkingdoms();
-        /*dataToSend.forEach(kingdom ->
-                kingdom.getImages().forEach(image ->
-                        image.setImage(decoder.decode(image.getImage()))));*/
-        return ResponseEntity.ok().body(dataToSend);
+    public ResponseEntity<List<KingdomWithRegion>> getKingdoms() {
+        return ResponseEntity.ok().body(getKingdomWithRegion(kingdomService.getKingdoms()));
     }
 
     @GetMapping("/find/{name}")
-    public ResponseEntity<Kingdom> getUserByName(@PathVariable("name") String name) {
-        Kingdom dataToSend = kingdomService.getkingdom(name);
-        //dataToSend.getImages().forEach(image -> image.setImage(decoder.decode(image.getImage())));
+    public ResponseEntity<KingdomWithRegion> getKingdomByName(@PathVariable("name") String name) {
+        Kingdom kingdom = kingdomService.getKingdom(name);
+        KingdomWithRegion dataToSend = new KingdomWithRegion(kingdom,
+                regionService.getRegionsRelatedToKingdoms(kingdom.getId()));
         return ResponseEntity.ok().body(dataToSend);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<Kingdom> saveKingdom(@RequestBody Kingdom kingdom){
-        URI uri=URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(kingdomService.savekingdom(kingdom));
+    @GetMapping("/continent/{continentId}")
+    public ResponseEntity<List<KingdomWithRegion>> getKingdomsWithRelationToContinent(@PathVariable("continentId") Long id) {
+        return ResponseEntity.ok().body(getKingdomWithRegion(kingdomService.getKingdomsRelatedToContinent(id)));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Kingdom> updateKingdom(@RequestBody Kingdom kingdom){
-        kingdom.getImages().forEach(image -> {});
-        return ResponseEntity.ok().body(kingdomService.updatekingdom(kingdom));
+    @PostMapping("/save/{continentId}")
+    public ResponseEntity<KingdomWithRegion> saveKingdom(@RequestBody Kingdom kingdom,
+                                                         @PathVariable("continentId") Long continentId) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("api/role/save").toUriString());
+        Kingdom savedKingdom = kingdomService.saveKingdom(kingdom, continentId);
+        List<Region> emptyList = new ArrayList<>();
+        KingdomWithRegion dataToSend = new KingdomWithRegion(savedKingdom,
+                emptyList);
+        return ResponseEntity.created(uri).body(dataToSend);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateKingdom(@PathVariable("id") Long id,
+                                           @RequestBody Kingdom kingdom) {
+        kingdom.setId(id);
+        kingdomService.updateKingdom(kingdom);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteKingdom(@PathVariable("id") Long id){
-        kingdomService.deletekingdom(id);
+    public ResponseEntity<?> deleteKingdom(@PathVariable("id") Long id) {
+        kingdomService.deleteKingdom(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "{kingdomId}/image",
-    consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveImageToKingdom(@PathVariable("kingdomId") long kingdomId,
-                                                    @RequestParam("image") MultipartFile imageFile){
-        kingdomService.saveImageToKingdom(imageFile,kingdomId);
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<KingdomWithRegion>> saveImageToKingdom(@PathVariable("kingdomId") Long kingdomId,
+                                                                      @RequestParam("image") MultipartFile imageFile) {
+        kingdomService.saveImageToKingdom(imageFile, kingdomId);
+        return ResponseEntity.ok().body(getKingdomWithRegion(kingdomService.getKingdoms()));
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/delete/{kingdomId}/{imageId}")
+    public ResponseEntity<List<KingdomWithRegion>> deleteImageFromContinent(@PathVariable("kingdomId") Long kingdomId,
+                                                                            @PathVariable("imageId") Long imageId) {
+        kingdomService.deleteImageFromKingdom(kingdomId, imageId);
+        return ResponseEntity.ok().body(getKingdomWithRegion(kingdomService.getKingdoms()));
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/region/{kingdomId}")
+    public ResponseEntity<?> addRegion(@PathVariable("kingdomId") Long kingdomId,
+                                       @RequestBody Region region) {
+        regionService.addRegionToKingdom(kingdomId, region);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/region/{regionId}")
+    public ResponseEntity<List<KingdomWithRegion>> deleteRegion(@PathVariable("regionId") Long regionId) {
+        regionService.deleteRegion(regionId);
+        return ResponseEntity.ok().body(getKingdomWithRegion(kingdomService.getKingdoms()));
+    }
+
+    private List<KingdomWithRegion> getKingdomWithRegion(List<Kingdom> kingdoms) {
+        List<KingdomWithRegion> dataToSend = new ArrayList<>();
+        kingdoms.forEach(kingdom ->
+                dataToSend.add(
+                        new KingdomWithRegion(kingdom,
+                                regionService.getRegionsRelatedToKingdoms(kingdom.getId())
+                        )));
+        return dataToSend;
     }
 }

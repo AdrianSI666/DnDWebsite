@@ -21,6 +21,9 @@ function Header(){
                 <li className="nav-item">
                 <Link className="nav-link" to="/race">Race</Link>
                 </li>
+                <li className="nav-item">
+                <Link className="nav-link" to="/continent">Continent</Link>
+                </li>
             </ul>
             </div>
         </div>

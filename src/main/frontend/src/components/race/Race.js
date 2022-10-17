@@ -120,6 +120,10 @@ const RaceProfiles = () => {
   const renderRace = raceData.map((data) => {
     var race = data.race
     var subraces = data.subraceList
+    let props = {
+      raceId:race.id,
+      raceName:race.name
+      }
     return (
       <Accordion key={race.id} defaultActiveKey={['0']}>
         <Accordion.Item eventKey={race.id}>
@@ -138,7 +142,7 @@ const RaceProfiles = () => {
               Delete
             </Button>
             <Button variant='info'>
-              <Link className="nav-link" to="/subrace" state={race.id}>Check subclasses</Link>
+              <Link className="nav-link" to="/subrace" state={props}>Check subclasses</Link>
             </Button>
             <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, race.id)} />
             <Masonry

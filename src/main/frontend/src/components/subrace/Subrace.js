@@ -15,7 +15,8 @@ const SubraceProfiles = () => {
   const [subraceData, setSubraceData] = useState([]);
   const [saveModal, setSaveModal] = React.useState(false);
   const [updateModal, setUpdateModal] = React.useState(false);
-  const raceId = location.state;
+  const raceId = location.state.raceId;
+  const raceName = location.state.raceName;
   const [id, setId] = useState(0);
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -52,7 +53,6 @@ const SubraceProfiles = () => {
           "Content-Type": "multipart/form-data"
         }
       }).then((res) => {
-        console.log("file uploaded successfully")
         setSubraceData(res.data)
       }).catch(err => {
         console.log(err)
@@ -152,6 +152,7 @@ const SubraceProfiles = () => {
   return (
     <div>
       <div className="d-grid gap-2">
+        <h1>Subraces of race {raceName}</h1>
         <Button variant="success" onClick={() => {
           setSaveModal(true);
           setName("")
@@ -169,7 +170,7 @@ const SubraceProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Dodanie kultury
+            Adding subrace to {raceName}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

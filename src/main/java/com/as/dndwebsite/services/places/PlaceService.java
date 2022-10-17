@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,7 +21,7 @@ import java.util.List;
 @Transactional
 public class PlaceService {
     private final PlaceRepository placeRepository;
-    private final static String PLACE_NOT_FOUND_MSG =
+    protected final static String PLACE_NOT_FOUND_MSG =
             "Place with name %s not found";
 
     public List<Place> getPlaces() {
@@ -36,6 +37,7 @@ public class PlaceService {
 
     public Place savePlace(Place place) {
         log.info("Saving new Place {}", place.getName());
+        place.setImages(new ArrayList<>());
         return placeRepository.save(place);
     }
 

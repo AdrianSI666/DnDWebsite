@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Continent.css';
+import './Kingdom.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/masonary.css';
@@ -11,29 +12,32 @@ import Masonry from 'react-masonry-css';
 
 import Dropzone from '../Dropzone';
 
-const ContinentProfiles = () => {
-  const [continentData, setContinentData] = useState([]);
+const KingdomProfiles = () => {
+  let location = useLocation();
+  const [kingdomData, setKingdomData] = useState([]);
   const [modalAdd, setModalAdd] = React.useState(false);
   const [modalEdit, setModalEdit] = React.useState(false);
-  const [modalAddKingdom, setModalAddKingdom] = React.useState(false);
+  const [modalAddRegion, setModalAddRegion] = React.useState(false);
+  const continentId = location.state.continentId;
+  const continentName = location.state.continentName;
   const [id, setId] = useState(0);
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const fetchContinent = () => {
-    axios.get("http://localhost:8090/continent/all").then(res => {
-      setContinentData(res.data)
+  const fetchKingdom = () => {
+    axios.get(`http://localhost:8090/kingdom/continent/${continentId}`).then(res => {
+      setKingdomData(res.data)
     })
   }
 
-  const removeImage = (continentId, imageId) => {
-    axios.delete(`http://localhost:8090/continent/delete/${continentId}/${imageId}`).then(res => {
+  const removeImage = (kingdomId, imageId) => {
+    axios.delete(`http://localhost:8090/kingdom/delete/${kingdomId}/${imageId}`).then(res => {
       console.log(res.data)
-      setContinentData(res.data)
+      setKingdomData(res.data)
     })
   }
 
   useEffect(() => {
-    fetchContinent();
+    fetchKingdom();
   }, []);
 
   const onDrop = useCallback((acceptedFiles, id) => {
@@ -44,7 +48,7 @@ const ContinentProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://localhost:8090/continent/${id}/image`,
+      `http://localhost:8090/kingdom/${id}/image`,
       formData,
       {
         headers: {
@@ -52,64 +56,64 @@ const ContinentProfiles = () => {
         }
       }).then((res) => {
         console.log("file uploaded successfully")
-        setContinentData(res.data)
+        setKingdomData(res.data)
       }).catch(err => {
         console.log(err)
       })
   }, [])
 
-  function addContinent(e, name, description) {
+  function addKingdom(e, name, description) {
     e.preventDefault()
-    const newContinent = {
+    const newKingdom = {
       name,
       description
     }
-    axios.post('http://localhost:8090/continent/save', newContinent)
-      .then(response => setContinentData([...continentData, response.data]))
+    axios.post(`http://localhost:8090/kingdom/save/${continentId}`, newKingdom)
+      .then(response => setKingdomData([...kingdomData, response.data]))
       .catch(err => console.log(err))
   }
 
-  function deleteContinent(e, id) {
+  function deleteKingdom(e, id) {
     e.preventDefault()
-    axios.delete('http://localhost:8090/continent/delete/' + id)
-      .then(() => setContinentData(continentData.filter(item => item.continent.id !== id)))
+    axios.delete('http://localhost:8090/kingdom/delete/' + id)
+      .then(() => setKingdomData(kingdomData.filter(item => item.kingdom.id !== id)))
       .catch(err => console.log(err))
   }
 
-  function setContinent(e, id, name, description) {
+  function setKingdom(e, id, name, description) {
     e.preventDefault()
-    const newContinent = {
+    const newKingdom = {
       name,
       description
     }
-    axios.put('http://localhost:8090/continent/update/' + id, newContinent)
+    axios.put('http://localhost:8090/kingdom/update/' + id, newKingdom)
       .then(() => {
-        continentData.forEach(data => {
-          var continent = data.continent
-          if (continent.id === id) {
-            continent.name = name
-            continent.description = description
+        kingdomData.forEach(data => {
+          var kingdom = data.kingdom
+          if (kingdom.id === id) {
+            kingdom.name = name
+            kingdom.description = description
           }
         })
-        setContinentData([...continentData])
+        setKingdomData([...kingdomData])
       }
       )
       .catch(err => console.log(err))
   }
 
-  function addKingdom(e, name, id) {
+  function addRegion(e, name, id) {
     e.preventDefault()
-    const newKingdom = {
+    const newRegion = {
       name
     }
-    axios.put(`http://localhost:8090/continent/kingdom/${id}`, newKingdom)
-      .then(() => fetchContinent())
+    axios.put(`http://localhost:8090/kingdom/region/${id}`, newRegion)
+      .then(() => fetchKingdom())
       .catch(err => console.log(err))
   }
 
-  function deleteKingdom(kingdomId) {
-    axios.delete(`http://localhost:8090/continent/kingdom/${kingdomId}`)
-      .then(response => setContinentData(response.data))
+  function deleteRegion(regionId) {
+    axios.delete(`http://localhost:8090/kingdom/region/${regionId}`)
+      .then(response => setKingdomData(response.data))
       .catch(err => console.log(err))
   }
 
@@ -120,62 +124,63 @@ const ContinentProfiles = () => {
     500: 1
   };
 
-  const renderContinent = continentData.map((data) => {
-    var continent = data.continent
-    var kingdoms = data.kingdomList
+  const renderKingdom = kingdomData.map((data) => {
+    var kingdom = data.kingdom
+    var regions = data.regionList
     let props = {
-      continentId:continent.id,
-      continentName:continent.name
+      kingdomId:kingdom.id,
+      kingdomName:kingdom.name
       }
     return (
-      <Accordion key={continent.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={continent.id}>
-          <Accordion.Header>{continent.name}</Accordion.Header>
+      <Accordion key={kingdom.id} defaultActiveKey={['0']}>
+        <Accordion.Item eventKey={kingdom.id}>
+          <Accordion.Header>{kingdom.name}</Accordion.Header>
           <Accordion.Body>
-            <h5>{continent.description}</h5>
+          {`${kingdom.description ? "" : kingdom.description=""}`}
+            <h5>{kingdom.description}</h5>
             <Button variant='success' onClick={() => {
               setModalEdit(true)
-              setId(continent.id)
-              setName(continent.name)
-              setDescription(continent.description)
+              setId(kingdom.id)
+              setName(kingdom.name)
+              setDescription(kingdom.description)
             }}>
               Edit
             </Button>
-            <Button variant='danger' onClick={(e) => { deleteContinent(e, continent.id); }}>
+            <Button variant='danger' onClick={(e) => { deleteKingdom(e, kingdom.id); }}>
               Delete
             </Button>
             <Button variant='info'>
-              <Link className="nav-link" to="/kingdom" state={props}>Check kingdoms</Link>
+              <Link className="nav-link" to="/region" state={props}>Check regions</Link>
             </Button>
-            <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, continent.id)} />
+            <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, kingdom.id)} />
             <Masonry
               breakpointCols={breakpointColumnsObj}
               className="my-masonry-grid"
               columnClassName="my-masonry-grid_column">
-              {continent.images.map(oneimage => {
+              {kingdom.images.map(oneimage => {
                 const imageSrc = "data:image/jpg;base64," + oneimage.image
                 const imageName = oneimage.name
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
                     <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(continent.id, oneimage.id)}>Remove</button>
+                    <button onClick={() => removeImage(kingdom.id, oneimage.id)}>Remove</button>
                   </div>)
               })}
             </Masonry>
             <Button variant='success' onClick={() => {
-              setModalAddKingdom(true)
-              setId(continent.id)
+              setModalAddRegion(true)
+              setId(kingdom.id)
             }}>
-              Add kingdoms
+              Add regions
             </Button>
             <div>
-              {kingdoms.map(onekingdom => {
-                const kingdomName = onekingdom.name
+              {regions.map(oneregion => {
+                const regionName = oneregion.name
                 return (
-                  <div key={onekingdom.id}>
-                    <h3>{kingdomName}</h3>
-                    <button onClick={() => deleteKingdom(onekingdom.id)}>Remove</button>
+                  <div key={oneregion.id}>
+                    <h3>{regionName}</h3>
+                    <button onClick={() => deleteRegion(oneregion.id)}>Remove</button>
                   </div>)
               })}
             </div>
@@ -188,12 +193,13 @@ const ContinentProfiles = () => {
   return (
     <div>
       <div className="d-grid gap-2">
+        <h1>Kingdoms in {continentName}</h1>
         <Button variant="success" onClick={() => {
           setModalAdd(true);
           setName("")
           setDescription("")
         }}>
-          Add continent
+          Add kingdom
         </Button>
       </div>
       <Modal
@@ -205,12 +211,12 @@ const ContinentProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Dodanie kultury
+            Adding kingdom to {continentName}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            addContinent(e, name, description);
+            addKingdom(e, name, description);
             setModalAdd(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
@@ -240,12 +246,12 @@ const ContinentProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Edit continent
+            Edit kingdom
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            setContinent(e, id, name, description);
+            setKingdom(e, id, name, description);
             setModalEdit(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
@@ -268,21 +274,21 @@ const ContinentProfiles = () => {
       </Modal>
 
       <Modal
-        show={modalAddKingdom}
-        onHide={() => setModalAddKingdom(false)}
+        show={modalAddRegion}
+        onHide={() => setModalAddRegion(false)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Add kingdom
+            Add region
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            addKingdom(e, name, id);
-            setModalAddKingdom(false);
+            addRegion(e, name, id);
+            setModalAddRegion(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
               <Form.Label>Name</Form.Label>
@@ -294,22 +300,22 @@ const ContinentProfiles = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setModalAddKingdom(false)}>Exit</Button>
+          <Button onClick={() => setModalAddRegion(false)}>Exit</Button>
         </Modal.Footer>
       </Modal>
       <div className='lightbox'>
-        {renderContinent}
+        {renderKingdom}
       </div>
     </div>
   )
 }
 
-function Continent() {
+function Kingdom() {
   return (
-    <div className="Continent">
-      <ContinentProfiles />
+    <div className="Kingdom">
+      <KingdomProfiles />
     </div>
   );
 }
 
-export default Continent;
+export default Kingdom;

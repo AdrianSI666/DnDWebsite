@@ -21,7 +21,7 @@ public class Kingdom {
     private String name;
     @Column(columnDefinition="TEXT")
     private String description;
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     private Continent continent;
     @ManyToMany(cascade=CascadeType.ALL)
     private Collection<Image> images;

@@ -22,10 +22,10 @@ public class Region {
     private String name;
     @Column(columnDefinition="TEXT")
     private String description;
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     private Kingdom kingdom;
     @ManyToMany(cascade=CascadeType.ALL)
     private Collection<Image> images;
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany
     private Collection<Culture> cultures;
 }
