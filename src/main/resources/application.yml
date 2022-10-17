@@ -1,0 +1,28 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+  port: 8090
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dnd
+    username: postgres
+    password: projektanto
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+    ddl-auto: auto
+    generate-ddl: true
+    show-sql: true
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      format_sql: true
+  show-sql: true
+  database: postgresql
+  servlet:
+    multipart:
+      max-file-size: 128MB
+      max-request-size: 128MB
+      enabled: true

@@ -1,0 +1,315 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import './Continent.test';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../styles/masonary.css';
+import { Button, Modal, Form, Accordion } from 'react-bootstrap'
+import Masonry from 'react-masonry-css';
+
+
+import Dropzone from '../Dropzone';
+
+const ContinentProfiles = () => {
+  const [continentData, setContinentData] = useState([]);
+  const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow2, setModalShow2] = React.useState(false);
+  const [modalShow3, setModalShow3] = React.useState(false);
+  const [id, setId] = useState(0);
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const fetchContinent = () => {
+    axios.get("http://localhost:8090/continent/all").then(res => {
+      setContinentData(res.data)
+    })
+  }
+
+  const removeImage = (continentId, imageId) => {
+    axios.delete(`http://localhost:8090/continent/delete/${continentId}/${imageId}`).then(res => {
+      console.log(res.data)
+      setContinentData(res.data)
+    })
+  }
+
+  useEffect(() => {
+    fetchContinent();
+  }, []);
+
+  const onDrop = useCallback((acceptedFiles, id) => {
+    const file = acceptedFiles[0];
+    console.log(acceptedFiles);
+    console.log(id);
+    const formData = new FormData();
+    formData.append("image", file);
+
+    axios.post(
+      `http://localhost:8090/continent/${id}/image`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then((res) => {
+        console.log("file uploaded successfully")
+        setContinentData(res.data)
+      }).catch(err => {
+        console.log(err)
+      })
+  }, [])
+
+  function addContinent(e, name, description) {
+    e.preventDefault()
+    const newContinent = {
+      name,
+      description
+    }
+    axios.post('http://localhost:8090/continent/save', newContinent)
+      .then(response => setContinentData([...continentData, response.data]))
+      .catch(err => console.log(err))
+  }
+
+  function deleteContinent(e, id) {
+    e.preventDefault()
+    axios.delete('http://localhost:8090/continent/delete/' + id)
+      .then(() => setContinentData(continentData.filter(item => item.continent.id !== id)))
+      .catch(err => console.log(err))
+  }
+
+  function setContinent(e, id, name, description) {
+    e.preventDefault()
+    const newContinent = {
+      name,
+      description
+    }
+    axios.put('http://localhost:8090/continent/update/' + id, newContinent)
+      .then(() => {
+        continentData.forEach(data => {
+          var continent = data.continent
+          if (continent.id === id) {
+            continent.name = name
+            continent.description = description
+          }
+        })
+        setContinentData([...continentData])
+      }
+      )
+      .catch(err => console.log(err))
+  }
+
+  /*function addSubrace(e, name, id) {
+    e.preventDefault()
+    const newSubrace = {
+      name
+    }
+    axios.put(`http://localhost:8090/race/subrace/` + id, newSubrace)
+      .then(response => fetchRace())
+      .catch(err => console.log(err))
+  }
+
+  function deleteSubrace(raceId, subraceId) {
+    axios.delete(`http://localhost:8090/race/subrace/${raceId}/` + subraceId,)
+      .then(response => setRaceData(response.data))
+      .catch(err => console.log(err))
+  }
+
+  function goToSubrace(subraceName) {
+    
+  }*/
+
+  const breakpointColumnsObj = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1
+  };
+
+  const renderContinent = continentData.map((data) => {
+    var continent = data.continent
+    //var subraces = data.subraceList
+    return (
+      <Accordion key={continent.id} defaultActiveKey={['0']}>
+        <Accordion.Item eventKey={continent.id}>
+          <Accordion.Header>{continent.name}</Accordion.Header>
+          <Accordion.Body>
+            <h5>{continent.description}</h5>
+            <Button variant='success' onClick={() => {
+              setModalShow2(true)
+              setId(continent.id)
+              setName(continent.name)
+              setDescription(continent.description)
+            }}>
+              Edit
+            </Button>
+            <Button variant='danger' onClick={(e) => { deleteContinent(e, continent.id); }}>
+              Delete
+            </Button>
+            <Button variant='info'>
+              <Link className="nav-link" to="/kingdom" state={continent.id}>Check kingdoms</Link>
+            </Button>
+            <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, continent.id)} />
+            <Masonry
+              breakpointCols={breakpointColumnsObj}
+              className="my-masonry-grid"
+              columnClassName="my-masonry-grid_column">
+              {continent.images.map(oneimage => {
+                const imageSrc = "data:image/jpg;base64," + oneimage.image
+                const imageName = oneimage.name
+                return (
+                  <div key={oneimage.id}>
+                    <h3>{imageName}</h3>
+                    <img src={imageSrc} className="img-thumbnail" width="300px" />
+                    <button onClick={() => removeImage(continent.id, oneimage.id)}>Remove</button>
+                  </div>)
+              })}
+            </Masonry>
+            <Button variant='success' onClick={() => {
+              setModalShow3(true)
+              setId(continent.id)
+            }}>
+              Add kingdoms
+            </Button>
+            <div>
+              {kingdoms.map(onekingdom => {
+                const kingdomName = onekingdom.name
+                return (
+                  <div key={onekingdom.id}>
+                    <h3>{kingdomName}</h3>
+                    <button onClick={() => deleteKingdom(continent.id, onekingdom.id)}>Remove</button>
+                  </div>)
+              })}
+            </div>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+    )
+  })
+
+  return (
+    <div>
+      <div className="d-grid gap-2">
+        <Button variant="success" onClick={() => {
+          setModalShow(true);
+          setName("")
+          setDescription("")
+        }}>
+          Add continent
+        </Button>
+      </div>
+      <Modal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Dodanie kultury
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={(e) => {
+            addContinent(e, name, description);
+            setModalShow(false);
+          }}>
+            <Form.Group className="mb-3" controlId="formBasicText">
+              <Form.Label>Name</Form.Label>
+              <Form.Control value={name} type="text" placeholder="Give name" onChange={e => setName(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formBasicText">
+              <Form.Label>Description</Form.Label>
+              <Form.Control value={description} name="description" as="textarea" rows="3" placeholder="Give description" onChange={e => setDescription(e.target.value)} />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Add
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setModalShow(false)}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={modalShow2}
+        onHide={() => setModalShow2(false)}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Edit continent
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={(e) => {
+            setContinent(e, id, name, description);
+            setModalShow2(false);
+          }}>
+            <Form.Group className="mb-3" controlId="formBasicText">
+              <Form.Label>Name</Form.Label>
+              <Form.Control value={name} type="text" onChange={e => setName(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formBasicText">
+              <Form.Label>Description</Form.Label>
+              <Form.Control value={description} name="description" as="textarea" rows="3" onChange={e => setDescription(e.target.value)} />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Change
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setModalShow2(false)}>Exit</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={modalShow3}
+        onHide={() => setModalShow3(false)}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Add kingdom
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={(e) => {
+            addKingdom(e, name, id);
+            setModalShow3(false);
+          }}>
+            <Form.Group className="mb-3" controlId="formBasicText">
+              <Form.Label>Name</Form.Label>
+              <Form.Control value={name} type="text" onChange={e => setName(e.target.value)} />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Add
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setModalShow3(false)}>Exit</Button>
+        </Modal.Footer>
+      </Modal>
+      <div className='lightbox'>
+        {renderContinent}
+      </div>
+    </div>
+  )
+}
+
+function Continent() {
+  return (
+    <div className="Continent">
+      <ContinentProfiles />
+    </div>
+  );
+}
+
+export default Continent;
