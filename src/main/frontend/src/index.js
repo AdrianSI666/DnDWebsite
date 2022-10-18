@@ -14,6 +14,7 @@ import Race from './components/race/Race';
 import Subrace from './components/subrace/Subrace';
 import Continent from './components/continent/Continent';
 import Kingdom from './components/kingdom/Kingdom';
+import Region from './components/region/Region';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -27,6 +28,7 @@ root.render(
           <Route path={"subrace"} element={<Subrace />} />
           <Route path={"continent"} element={<Continent />} />
           <Route path={"kingdom"} element={<Kingdom />} />
+          <Route path={"region"} element={<Region />} />
         </Route>
       </Routes>
     </Router>

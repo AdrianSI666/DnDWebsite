@@ -2,11 +2,13 @@ package com.as.dndwebsite.services.places;
 
 import com.as.dndwebsite.domain.Image;
 import com.as.dndwebsite.domain.places.Kingdom;
+import com.as.dndwebsite.domain.places.Place;
 import com.as.dndwebsite.domain.places.Region;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.repository.places.KingdomRepository;
 import com.as.dndwebsite.repository.places.RegionRepository;
+import com.as.dndwebsite.services.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import static com.as.dndwebsite.services.places.KingdomService.KINGDOM_NOT_FOUND
 public class RegionService {
     private final RegionRepository regionRepository;
     private final KingdomRepository kingdomRepository;
+    private final PlaceService placeService;
+    private final ImageService imageService;
     protected final static String REGION_NOT_FOUND_MSG =
             "Region with name %s not found";
 
@@ -40,17 +44,30 @@ public class RegionService {
                 () -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, name)));
     }
 
-    public Region saveRegion(Region region) {
+    public Region saveRegion(Region region, Long kingdomId) {
         log.info("Saving new Region {}", region.getName());
+        Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KINGDOM_NOT_FOUND_MSG, kingdomId)));
         region.setImages(new ArrayList<>());
+        region.setKingdom(kingdom);
         return regionRepository.save(region);
     }
 
-    public Region updateRegion(Region region) {
-        return regionRepository.save(region);
+    public void updateRegion(Region region) {
+        Region oldRegion = regionRepository.findById(region.getId()).orElseThrow(
+                () -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, region.getId()))
+        );
+        log.info("Updating Region: " + oldRegion.getName());
+        oldRegion.setName(region.getName());
+        oldRegion.setDescription(region.getDescription());
     }
 
     public void deleteRegion(Long id) {
+        log.info("Deleting region with id: " + id);
+        Region region = regionRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, id))
+        );
+        List<Place> places = placeService.getPlacesRelatedToRegion(region);
+        places.forEach(place -> placeService.deletePlace(place.getId()));
         regionRepository.deleteById(id);
     }
 
@@ -67,6 +84,13 @@ public class RegionService {
         } catch (IOException e) {
             throw new BadRequestException("Couldn't read file." + e.getMessage());
         }
+    }
+
+    public void deleteImageFromRegion(Long regionId, Long imageId) {
+        Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
+        Image image = imageService.getImage(imageId);
+        region.getImages().remove(image);
+        imageService.deleteImage(imageId);
     }
 
     public List<Region> getRegionsRelatedToKingdoms(Long id) {

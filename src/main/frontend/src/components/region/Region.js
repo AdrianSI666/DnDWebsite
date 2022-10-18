@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Kingdom.css';
+import './Region.css';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom'
@@ -12,32 +12,32 @@ import Masonry from 'react-masonry-css';
 
 import Dropzone from '../Dropzone';
 
-const KingdomProfiles = () => {
+const RegionProfiles = () => {
   let location = useLocation();
-  const [kingdomData, setKingdomData] = useState([]);
+  const [regionData, setRegionData] = useState([]);
   const [modalAdd, setModalAdd] = React.useState(false);
   const [modalEdit, setModalEdit] = React.useState(false);
-  const [modalAddRegion, setModalAddRegion] = React.useState(false);
-  const continentId = location.state.continentId;
-  const continentName = location.state.continentName;
+  const [modalAddPlace, setModalAddPlace] = React.useState(false);
+  const kingdomId = location.state.kingdomId;
+  const kingdomName = location.state.kingdomName;
   const [id, setId] = useState(0);
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const fetchKingdom = () => {
-    axios.get(`http://localhost:8090/kingdom/continent/${continentId}`).then(res => {
-      setKingdomData(res.data)
+  const fetchRegion = () => {
+    axios.get(`http://localhost:8090/region/kingdom/${kingdomId}`).then(res => {
+      setRegionData(res.data)
     })
   }
 
-  const removeImage = (kingdomId, imageId) => {
-    axios.delete(`http://localhost:8090/kingdom/delete/${kingdomId}/${imageId}/${continentId}`).then(res => {
+  const removeImage = (regionId, imageId) => {
+    axios.delete(`http://localhost:8090/region/delete/${regionId}/${imageId}/${kingdomId}`).then(res => {
       console.log(res.data)
-      setKingdomData(res.data)
+      setRegionData(res.data)
     })
   }
 
   useEffect(() => {
-    fetchKingdom();
+    fetchRegion();
   }, []);
 
   const onDrop = useCallback((acceptedFiles, id) => {
@@ -48,7 +48,7 @@ const KingdomProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://localhost:8090/kingdom/${id}/image/${continentId}`,
+      `http://localhost:8090/region/${id}/image/${kingdomId}`,
       formData,
       {
         headers: {
@@ -56,64 +56,64 @@ const KingdomProfiles = () => {
         }
       }).then((res) => {
         console.log("file uploaded successfully")
-        setKingdomData(res.data)
+        setRegionData(res.data)
       }).catch(err => {
         console.log(err)
       })
   }, [])
 
-  function addKingdom(e, name, description) {
+  function addRegion(e, name, description) {
     e.preventDefault()
-    const newKingdom = {
+    const newRegion = {
       name,
       description
     }
-    axios.post(`http://localhost:8090/kingdom/save/${continentId}`, newKingdom)
-      .then(response => setKingdomData([...kingdomData, response.data]))
+    axios.post(`http://localhost:8090/region/save/${kingdomId}`, newRegion)
+      .then(response => setRegionData([...regionData, response.data]))
       .catch(err => console.log(err))
   }
 
-  function deleteKingdom(e, id) {
+  function deleteRegion(e, id) {
     e.preventDefault()
-    axios.delete('http://localhost:8090/kingdom/delete/' + id)
-      .then(() => setKingdomData(kingdomData.filter(item => item.kingdom.id !== id)))
+    axios.delete('http://localhost:8090/region/delete/' + id)
+      .then(() => setRegionData(regionData.filter(item => item.region.id !== id)))
       .catch(err => console.log(err))
   }
 
-  function setKingdom(e, id, name, description) {
+  function setRegion(e, id, name, description) {
     e.preventDefault()
-    const newKingdom = {
+    const newRegion = {
       name,
       description
     }
-    axios.put('http://localhost:8090/kingdom/update/' + id, newKingdom)
+    axios.put('http://localhost:8090/region/update/' + id, newRegion)
       .then(() => {
-        kingdomData.forEach(data => {
-          var kingdom = data.kingdom
-          if (kingdom.id === id) {
-            kingdom.name = name
-            kingdom.description = description
+        regionData.forEach(data => {
+          var region = data.region
+          if (region.id === id) {
+            region.name = name
+            region.description = description
           }
         })
-        setKingdomData([...kingdomData])
+        setRegionData([...regionData])
       }
       )
       .catch(err => console.log(err))
   }
 
-  function addRegion(e, name, id) {
+  function addPlace(e, name, id) {
     e.preventDefault()
-    const newRegion = {
+    const newPlace = {
       name
     }
-    axios.put(`http://localhost:8090/kingdom/region/${id}`, newRegion)
-      .then(() => fetchKingdom())
+    axios.put(`http://localhost:8090/region/place/${id}`, newPlace)
+      .then(() => fetchRegion())
       .catch(err => console.log(err))
   }
 
-  function deleteRegion(regionId) {
-    axios.delete(`http://localhost:8090/kingdom/region/${regionId}/${continentId}`)
-      .then(response => setKingdomData(response.data))
+  function deletePlace(placeId) {
+    axios.delete(`http://localhost:8090/region/place/${placeId}/${kingdomId}`)
+      .then(response => setRegionData(response.data))
       .catch(err => console.log(err))
   }
 
@@ -124,63 +124,63 @@ const KingdomProfiles = () => {
     500: 1
   };
 
-  const renderKingdom = kingdomData.map((data) => {
-    var kingdom = data.kingdom
-    var regions = data.regionList
+  const renderRegion = regionData.map((data) => {
+    var region = data.region
+    var places = data.placeList
     let props = {
-      kingdomId:kingdom.id,
-      kingdomName:kingdom.name
+      regionId:region.id,
+      regionName:region.name
       }
     return (
-      <Accordion key={kingdom.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={kingdom.id}>
-          <Accordion.Header>{kingdom.name}</Accordion.Header>
+      <Accordion key={region.id} defaultActiveKey={['0']}>
+        <Accordion.Item eventKey={region.id}>
+          <Accordion.Header>{region.name}</Accordion.Header>
           <Accordion.Body>
-          {`${kingdom.description ? "" : kingdom.description=""}`}
-            <h5>{kingdom.description}</h5>
+          {`${region.description ? "" : region.description=""}`}
+            <h5>{region.description}</h5>
             <Button variant='success' onClick={() => {
               setModalEdit(true)
-              setId(kingdom.id)
-              setName(kingdom.name)
-              setDescription(kingdom.description)
+              setId(region.id)
+              setName(region.name)
+              setDescription(region.description)
             }}>
               Edit
             </Button>
-            <Button variant='danger' onClick={(e) => { deleteKingdom(e, kingdom.id); }}>
+            <Button variant='danger' onClick={(e) => { deleteRegion(e, region.id); }}>
               Delete
             </Button>
             <Button variant='info'>
-              <Link className="nav-link" to="/region" state={props}>Check regions</Link>
+              <Link className="nav-link" to="/place" state={props}>Check places</Link>
             </Button>
-            <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, kingdom.id)} />
+            <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, region.id)} />
             <Masonry
               breakpointCols={breakpointColumnsObj}
               className="my-masonry-grid"
               columnClassName="my-masonry-grid_column">
-              {kingdom.images.map(oneimage => {
+              {region.images.map(oneimage => {
                 const imageSrc = "data:image/jpg;base64," + oneimage.image
                 const imageName = oneimage.name
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
                     <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(kingdom.id, oneimage.id)}>Remove</button>
+                    <button onClick={() => removeImage(region.id, oneimage.id)}>Remove</button>
                   </div>)
               })}
             </Masonry>
             <Button variant='success' onClick={() => {
-              setModalAddRegion(true)
-              setId(kingdom.id)
+              setModalAddPlace(true)
+              setId(region.id)
             }}>
-              Add regions
+              Add places
             </Button>
             <div>
-              {regions.map(oneregion => {
-                const regionName = oneregion.name
+              {places.map(oneplace => {
+                const placeName = oneplace.name
                 return (
-                  <div key={oneregion.id}>
-                    <h3>{regionName}</h3>
-                    <button onClick={() => deleteRegion(oneregion.id)}>Remove</button>
+                  <div key={oneplace.id}>
+                    <h3>{placeName}</h3>
+                    <button onClick={() => deletePlace(oneplace.id)}>Remove</button>
                   </div>)
               })}
             </div>
@@ -193,13 +193,13 @@ const KingdomProfiles = () => {
   return (
     <div>
       <div className="d-grid gap-2">
-        <h1>Kingdoms in {continentName}</h1>
+        <h1>Regions in {kingdomName}</h1>
         <Button variant="success" onClick={() => {
           setModalAdd(true);
           setName("")
           setDescription("")
         }}>
-          Add kingdom
+          Add region
         </Button>
       </div>
       <Modal
@@ -211,12 +211,12 @@ const KingdomProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Adding kingdom to {continentName}
+            Adding region to {kingdomName}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            addKingdom(e, name, description);
+            addRegion(e, name, description);
             setModalAdd(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
@@ -246,12 +246,12 @@ const KingdomProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Edit kingdom
+            Edit region
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            setKingdom(e, id, name, description);
+            setRegion(e, id, name, description);
             setModalEdit(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
@@ -274,21 +274,21 @@ const KingdomProfiles = () => {
       </Modal>
 
       <Modal
-        show={modalAddRegion}
-        onHide={() => setModalAddRegion(false)}
+        show={modalAddPlace}
+        onHide={() => setModalAddPlace(false)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Add region
+            Add place
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            addRegion(e, name, id);
-            setModalAddRegion(false);
+            addPlace(e, name, id);
+            setModalAddPlace(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
               <Form.Label>Name</Form.Label>
@@ -300,22 +300,22 @@ const KingdomProfiles = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setModalAddRegion(false)}>Exit</Button>
+          <Button onClick={() => setModalAddPlace(false)}>Exit</Button>
         </Modal.Footer>
       </Modal>
       <div className='lightbox'>
-        {renderKingdom}
+        {renderRegion}
       </div>
     </div>
   )
 }
 
-function Kingdom() {
+function Region() {
   return (
-    <div className="Kingdom">
-      <KingdomProfiles />
+    <div className="Region">
+      <RegionProfiles />
     </div>
   );
 }
 
-export default Kingdom;
+export default Region;
