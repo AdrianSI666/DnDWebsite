@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/race")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:8091/")
 public class RaceController {
     private final RaceService raceService;
     private final SubraceService subraceService;

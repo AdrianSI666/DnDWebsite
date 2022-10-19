@@ -13,6 +13,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const KingdomProfiles = () => {
+  const localhost = "192.168.0.139"
   let location = useLocation();
   const [kingdomData, setKingdomData] = useState([]);
   const [modalAdd, setModalAdd] = React.useState(false);
@@ -24,13 +25,13 @@ const KingdomProfiles = () => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const fetchKingdom = () => {
-    axios.get(`http://localhost:8090/kingdom/continent/${continentId}`).then(res => {
+    axios.get(`http://${localhost}:8090/kingdom/continent/${continentId}`).then(res => {
       setKingdomData(res.data)
     })
   }
 
   const removeImage = (kingdomId, imageId) => {
-    axios.delete(`http://localhost:8090/kingdom/delete/${kingdomId}/${imageId}/${continentId}`).then(res => {
+    axios.delete(`http://${localhost}:8090/kingdom/delete/${kingdomId}/${imageId}/${continentId}`).then(res => {
       console.log(res.data)
       setKingdomData(res.data)
     })
@@ -48,7 +49,7 @@ const KingdomProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://localhost:8090/kingdom/${id}/image/${continentId}`,
+      `http://${localhost}:8090/kingdom/${id}/image/${continentId}`,
       formData,
       {
         headers: {
@@ -68,14 +69,14 @@ const KingdomProfiles = () => {
       name,
       description
     }
-    axios.post(`http://localhost:8090/kingdom/save/${continentId}`, newKingdom)
+    axios.post(`http://${localhost}:8090/kingdom/save/${continentId}`, newKingdom)
       .then(response => setKingdomData([...kingdomData, response.data]))
       .catch(err => console.log(err))
   }
 
   function deleteKingdom(e, id) {
     e.preventDefault()
-    axios.delete('http://localhost:8090/kingdom/delete/' + id)
+    axios.delete(`http://${localhost}:8090/kingdom/delete/` + id)
       .then(() => setKingdomData(kingdomData.filter(item => item.kingdom.id !== id)))
       .catch(err => console.log(err))
   }
@@ -86,7 +87,7 @@ const KingdomProfiles = () => {
       name,
       description
     }
-    axios.put('http://localhost:8090/kingdom/update/' + id, newKingdom)
+    axios.put(`http://${localhost}:8090/kingdom/update/` + id, newKingdom)
       .then(() => {
         kingdomData.forEach(data => {
           var kingdom = data.kingdom
@@ -106,13 +107,13 @@ const KingdomProfiles = () => {
     const newRegion = {
       name
     }
-    axios.put(`http://localhost:8090/kingdom/region/${id}`, newRegion)
+    axios.put(`http://${localhost}:8090/kingdom/region/${id}`, newRegion)
       .then(() => fetchKingdom())
       .catch(err => console.log(err))
   }
 
   function deleteRegion(regionId) {
-    axios.delete(`http://localhost:8090/kingdom/region/${regionId}/${continentId}`)
+    axios.delete(`http://${localhost}:8090/kingdom/region/${regionId}/${continentId}`)
       .then(response => setKingdomData(response.data))
       .catch(err => console.log(err))
   }

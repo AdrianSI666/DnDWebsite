@@ -12,6 +12,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const ContinentProfiles = () => {
+  const localhost = "192.168.0.139"
   const [continentData, setContinentData] = useState([]);
   const [modalAdd, setModalAdd] = React.useState(false);
   const [modalEdit, setModalEdit] = React.useState(false);
@@ -20,13 +21,13 @@ const ContinentProfiles = () => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const fetchContinent = () => {
-    axios.get("http://localhost:8090/continent/all").then(res => {
+    axios.get(`http://${localhost}:8090/continent/all`).then(res => {
       setContinentData(res.data)
     })
   }
 
   const removeImage = (continentId, imageId) => {
-    axios.delete(`http://localhost:8090/continent/delete/${continentId}/${imageId}`).then(res => {
+    axios.delete(`http://${localhost}:8090/continent/delete/${continentId}/${imageId}`).then(res => {
       console.log(res.data)
       setContinentData(res.data)
     })
@@ -44,7 +45,7 @@ const ContinentProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://localhost:8090/continent/${id}/image`,
+      `http://${localhost}:8090/continent/${id}/image`,
       formData,
       {
         headers: {
@@ -64,14 +65,14 @@ const ContinentProfiles = () => {
       name,
       description
     }
-    axios.post('http://localhost:8090/continent/save', newContinent)
+    axios.post(`http://${localhost}:8090/continent/save`, newContinent)
       .then(response => setContinentData([...continentData, response.data]))
       .catch(err => console.log(err))
   }
 
   function deleteContinent(e, id) {
     e.preventDefault()
-    axios.delete('http://localhost:8090/continent/delete/' + id)
+    axios.delete(`http://${localhost}:8090/continent/delete/` + id)
       .then(() => setContinentData(continentData.filter(item => item.continent.id !== id)))
       .catch(err => console.log(err))
   }
@@ -82,7 +83,7 @@ const ContinentProfiles = () => {
       name,
       description
     }
-    axios.put('http://localhost:8090/continent/update/' + id, newContinent)
+    axios.put('http://${localhost}:8090/continent/update/' + id, newContinent)
       .then(() => {
         continentData.forEach(data => {
           var continent = data.continent
@@ -102,13 +103,13 @@ const ContinentProfiles = () => {
     const newKingdom = {
       name
     }
-    axios.put(`http://localhost:8090/continent/kingdom/${id}`, newKingdom)
+    axios.put(`http://${localhost}:8090/continent/kingdom/${id}`, newKingdom)
       .then(() => fetchContinent())
       .catch(err => console.log(err))
   }
 
   function deleteKingdom(kingdomId) {
-    axios.delete(`http://localhost:8090/continent/kingdom/${kingdomId}`)
+    axios.delete(`http://${localhost}:8090/continent/kingdom/${kingdomId}`)
       .then(response => setContinentData(response.data))
       .catch(err => console.log(err))
   }
@@ -188,6 +189,7 @@ const ContinentProfiles = () => {
   return (
     <div>
       <div className="d-grid gap-2">
+      <h1>Continents</h1>
         <Button variant="success" onClick={() => {
           setModalAdd(true);
           setName("")

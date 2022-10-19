@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/culture")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:8091/")
 public class CultureController {
     private final CultureService cultureService;
 

@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/continent")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:8091/")
 public class ContinentController {
     private final ContinentService continentService;
     private final KingdomService kingdomService;

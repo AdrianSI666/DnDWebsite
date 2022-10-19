@@ -11,6 +11,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const SubraceProfiles = () => {
+  const localhost = "192.168.0.139"
   let location = useLocation();
   const [subraceData, setSubraceData] = useState([]);
   const [saveModal, setSaveModal] = React.useState(false);
@@ -22,13 +23,13 @@ const SubraceProfiles = () => {
   const [description, setDescription] = useState("")
   const fetchSubrace = () => {
     console.log(raceId)
-    axios.get(`http://localhost:8090/subrace/race/${raceId}`).then(res => {
+    axios.get(`http://${localhost}:8090/subrace/race/${raceId}`).then(res => {
       setSubraceData(res.data)
     })
   }
 
   const removeImage = (subraceId, imageId) => {
-    axios.delete(`http://localhost:8090/subrace/delete/${subraceId}/${imageId}/${raceId}`).then(res => {
+    axios.delete(`http://${localhost}:8090/subrace/delete/${subraceId}/${imageId}/${raceId}`).then(res => {
       console.log(res.data)
       setSubraceData(res.data)
     })
@@ -46,7 +47,7 @@ const SubraceProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://localhost:8090/subrace/${id}/image/${raceId}`,
+      `http://${localhost}:8090/subrace/${id}/image/${raceId}`,
       formData,
       {
         headers: {
@@ -65,14 +66,14 @@ const SubraceProfiles = () => {
       name,
       description
     }
-    axios.post(`http://localhost:8090/subrace/save/race/${raceId}`, newSubrace)
+    axios.post(`http://${localhost}:8090/subrace/save/race/${raceId}`, newSubrace)
       .then(response => setSubraceData([...subraceData, response.data]))
       .catch(err => console.log(err))
   }
 
   function deleteSubrace(e, id) {
     e.preventDefault()
-    axios.delete('http://localhost:8090/subrace/delete/' + id)
+    axios.delete(`http://${localhost}:8090/subrace/delete/` + id)
       .then(() => setSubraceData(subraceData.filter(item => item.id !== id)))
       .catch(err => console.log(err))
   }
@@ -83,7 +84,7 @@ const SubraceProfiles = () => {
       name,
       description
     }
-    axios.put('http://localhost:8090/subrace/update/' + id, newSubrace)
+    axios.put('http://${localhost}:8090/subrace/update/' + id, newSubrace)
       .then(() => {
         subraceData.forEach(data => {
           var subrace = data

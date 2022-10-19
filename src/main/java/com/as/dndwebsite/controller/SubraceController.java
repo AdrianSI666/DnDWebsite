@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/subrace")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:8091/")
 public class SubraceController {
     private final SubraceService subraceService;
 

@@ -12,6 +12,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const RaceProfiles = () => {
+  const localhost = "192.168.0.139"
   const [raceData, setRaceData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [modalShow2, setModalShow2] = React.useState(false);
@@ -20,13 +21,13 @@ const RaceProfiles = () => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const fetchRace = () => {
-    axios.get("http://localhost:8090/race/all").then(res => {
+    axios.get(`http://${localhost}:8090/race/all`).then(res => {
       setRaceData(res.data)
     })
   }
 
   const removeImage = (raceId, imageId) => {
-    axios.delete(`http://localhost:8090/race/delete/${raceId}/${imageId}`).then(res => {
+    axios.delete(`http://${localhost}:8090/race/delete/${raceId}/${imageId}`).then(res => {
       setRaceData(res.data)
     })
   }
@@ -41,7 +42,7 @@ const RaceProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://localhost:8090/race/${id}/image`,
+      `http://${localhost}:8090/race/${id}/image`,
       formData,
       {
         headers: {
@@ -61,14 +62,14 @@ const RaceProfiles = () => {
       name,
       description
     }
-    axios.post('http://localhost:8090/race/save', newRace)
+    axios.post(`http://${localhost}:8090/race/save`, newRace)
       .then(response => setRaceData([...raceData, response.data]))
       .catch(err => console.log(err))
   }
 
   function deleteRace(e, id) {
     e.preventDefault()
-    axios.delete('http://localhost:8090/race/delete/' + id)
+    axios.delete('http://${localhost}:8090/race/delete/' + id)
       .then(() => setRaceData(raceData.filter(item => item.race.id !== id)))
       .catch(err => console.log(err))
   }
@@ -79,7 +80,7 @@ const RaceProfiles = () => {
       name,
       description
     }
-    axios.put('http://localhost:8090/race/update/' + id, newRace)
+    axios.put(`http://${localhost}:8090/race/update/` + id, newRace)
       .then(() => {
         raceData.forEach(data => {
           var race = data.race
@@ -99,13 +100,13 @@ const RaceProfiles = () => {
     const newSubrace = {
       name
     }
-    axios.put(`http://localhost:8090/race/subrace/` + id, newSubrace)
+    axios.put(`http://${localhost}:8090/race/subrace/` + id, newSubrace)
       .then(() => fetchRace())
       .catch(err => console.log(err))
   }
 
   function deleteSubrace(subraceId) {
-    axios.delete(`http://localhost:8090/race/subrace/` + subraceId,)
+    axios.delete(`http://${localhost}:8090/race/subrace/` + subraceId,)
       .then(response => setRaceData(response.data))
       .catch(err => console.log(err))
   }
@@ -185,6 +186,7 @@ const RaceProfiles = () => {
   return (
     <div>
       <div className="d-grid gap-2">
+      <h1>Races</h1>
         <Button variant="success" onClick={() => {
           setModalShow(true);
           setName("")

@@ -24,7 +24,7 @@ import java.util.List;
 public class CultureService {
     private final CultureRepository cultureRepository;
     private final ImageService imageService;
-    private final static String CULTURE_NOT_FOUND_MSG =
+    public final static String CULTURE_NOT_FOUND_MSG =
             "culture with name %s not found";
     private final Converter converter;
 
@@ -34,9 +34,8 @@ public class CultureService {
     }
 
     public Culture getCulture(String name) {
-        log.info("Getting Culture");
-        return cultureRepository.findByName(name).orElseThrow(
-                () -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, name)));
+        log.info("Getting Culture with name: " + name);
+        return cultureRepository.findByName(name).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, name)));
     }
 
     public Culture saveCulture(Culture culture) {

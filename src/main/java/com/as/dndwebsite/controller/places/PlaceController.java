@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/place")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:8091/")
 public class PlaceController {
     private final PlaceService placeService;
 //    private final Base64.Decoder decoder = Base64.getDecoder();

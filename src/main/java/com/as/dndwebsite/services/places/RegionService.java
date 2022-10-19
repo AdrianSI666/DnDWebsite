@@ -1,5 +1,6 @@
 package com.as.dndwebsite.services.places;
 
+import com.as.dndwebsite.domain.Culture;
 import com.as.dndwebsite.domain.Image;
 import com.as.dndwebsite.domain.places.Kingdom;
 import com.as.dndwebsite.domain.places.Place;
@@ -8,6 +9,7 @@ import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.repository.places.KingdomRepository;
 import com.as.dndwebsite.repository.places.RegionRepository;
+import com.as.dndwebsite.services.CultureService;
 import com.as.dndwebsite.services.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ import static com.as.dndwebsite.services.places.KingdomService.KINGDOM_NOT_FOUND
 public class RegionService {
     private final RegionRepository regionRepository;
     private final KingdomRepository kingdomRepository;
+    private final CultureService cultureService;
     private final PlaceService placeService;
     private final ImageService imageService;
     protected final static String REGION_NOT_FOUND_MSG =
@@ -49,6 +52,7 @@ public class RegionService {
         Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KINGDOM_NOT_FOUND_MSG, kingdomId)));
         region.setImages(new ArrayList<>());
         region.setKingdom(kingdom);
+        region.setCultures(new ArrayList<>());
         return regionRepository.save(region);
     }
 
@@ -103,5 +107,17 @@ public class RegionService {
         Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KINGDOM_NOT_FOUND_MSG, kingdomId)));
         region.setKingdom(kingdom);
         regionRepository.save(region);
+    }
+
+    public void setCultureToRegion(String cultureName, Long regionId) {
+        Culture culture = cultureService.getCulture(cultureName);
+        Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
+        region.getCultures().add(culture);
+    }
+
+    public void removeCultureFromRegion(String cultureName, Long regionId) {
+        Culture culture = cultureService.getCulture(cultureName);
+        Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
+        region.getCultures().remove(culture);
     }
 }

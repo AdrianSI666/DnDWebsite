@@ -10,6 +10,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const CultureProfiles = () => {
+  const localhost = "192.168.0.139"
   const [cultureData, setcultureData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [modalShow2, setModalShow2] = React.useState(false);
@@ -17,13 +18,13 @@ const CultureProfiles = () => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const fetchCulture = () => {
-    axios.get("http://localhost:8090/culture/all").then(res => {
+    axios.get(`http://${localhost}:8090/culture/all`).then(res => {
       setcultureData(res.data)
     })
   }
 
   const removeImage = (cultureId, imageId) => {
-    axios.delete(`http://localhost:8090/culture/delete/${cultureId}/${imageId}`).then(res => {
+    axios.delete(`http://${localhost}:8090/culture/delete/${cultureId}/${imageId}`).then(res => {
       setcultureData(res.data)
     })
   }
@@ -40,7 +41,7 @@ const CultureProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://localhost:8090/culture/${id}/image`,
+      `http://${localhost}:8090/culture/${id}/image`,
       formData,
       {
         headers: {
@@ -60,14 +61,14 @@ const CultureProfiles = () => {
       name,
       description
     }
-    axios.post('http://localhost:8090/culture/save', newCulture)
+    axios.post(`http://${localhost}:8090/culture/save`, newCulture)
       .then(response => setcultureData([...cultureData, response.data]))
       .catch(err => console.log(err))
   }
 
   function deleteCulture(e, id) {
     e.preventDefault()
-    axios.delete('http://localhost:8090/culture/delete/' + id)
+    axios.delete('http://${localhost}:8090/culture/delete/' + id)
       .then(() => setcultureData(cultureData.filter(item => item.id !== id)))
       .catch(err => console.log(err))
   }
@@ -78,7 +79,7 @@ const CultureProfiles = () => {
       name,
       description
     }
-    axios.put('http://localhost:8090/culture/update/' + id, newCulture)
+    axios.put(`http://${localhost}:8090/culture/update/` + id, newCulture)
       .then(() => {
         cultureData.forEach(culture => {
           if (culture.id === id) {
@@ -143,6 +144,7 @@ const CultureProfiles = () => {
   return (
     <div>
       <div className="d-grid gap-2">
+      <h1>Cultures</h1>
         <Button variant="success" onClick={() => {
           setModalShow(true);
           setName("")

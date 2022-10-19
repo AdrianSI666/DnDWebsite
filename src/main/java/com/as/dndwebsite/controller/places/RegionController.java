@@ -3,6 +3,7 @@ package com.as.dndwebsite.controller.places;
 import com.as.dndwebsite.domain.places.Place;
 import com.as.dndwebsite.domain.places.Region;
 import com.as.dndwebsite.dto.RegionWithPlace;
+import com.as.dndwebsite.dto.SettingCulture;
 import com.as.dndwebsite.services.places.PlaceService;
 import com.as.dndwebsite.services.places.RegionService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/region")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:8091/")
 public class RegionController {
     private final RegionService regionService;
     private final PlaceService placeService;
@@ -31,7 +31,7 @@ public class RegionController {
     }
 
     @GetMapping("/find/{name}")
-    public ResponseEntity<RegionWithPlace> getUserByName(@PathVariable("name") String name) {
+    public ResponseEntity<RegionWithPlace> getRegionByName(@PathVariable("name") String name) {
         Region region = regionService.getRegion(name);
         RegionWithPlace dataToSend = new RegionWithPlace(region,
                 placeService.getPlacesRelatedToRegion(region));
@@ -97,6 +97,22 @@ public class RegionController {
     public ResponseEntity<List<RegionWithPlace>> deletePlace(@PathVariable("placeId") Long placeId,
                                                              @PathVariable("kingdomId") Long kingdomId) {
         placeService.deletePlace(placeId);
+        return ResponseEntity.ok().body(getRegionWithPlace(regionService.getRegionsRelatedToKingdoms(kingdomId)));
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/culture/add/{regionId}")
+    public ResponseEntity<?> addCulture(@PathVariable("regionId") Long regionId,
+                                        @RequestBody SettingCulture cultureName) {
+        System.out.println(cultureName.cultureName());
+        regionService.setCultureToRegion(cultureName.cultureName(), regionId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/culture/remove/{regionId}/{cultureName}/{kingdomId}")
+    public ResponseEntity<List<RegionWithPlace>> deleteCulture(@PathVariable("regionId") Long regionId,
+                                                               @PathVariable("cultureName") String cultureName,
+                                                               @PathVariable("kingdomId") Long kingdomId) {
+        regionService.removeCultureFromRegion(cultureName, regionId);
         return ResponseEntity.ok().body(getRegionWithPlace(regionService.getRegionsRelatedToKingdoms(kingdomId)));
     }
 
