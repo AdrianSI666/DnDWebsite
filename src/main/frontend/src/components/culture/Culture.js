@@ -105,7 +105,10 @@ const CultureProfiles = () => {
         <Accordion.Item eventKey={culture.id}>
           <Accordion.Header>{culture.name}</Accordion.Header>
           <Accordion.Body>
-            <h5>{culture.description}</h5>
+            <Button variant='danger' onClick={(e) => { deleteCulture(e, culture.id); }}>
+              Delete
+            </Button>
+            <Form.Control as="textarea" rows={12} readOnly value={culture.description} />
             <Button variant='success' onClick={() => {
               setModalShow2(true)
               setId(culture.id)
@@ -113,9 +116,6 @@ const CultureProfiles = () => {
               setDescription(culture.description)
             }}>
               Edit
-            </Button>
-            <Button variant='danger' onClick={(e) => { deleteCulture(e, culture.id); }}>
-              Delete
             </Button>
 
             <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, culture.id)} />
@@ -129,8 +129,8 @@ const CultureProfiles = () => {
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
-                    <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(culture.id, oneimage.id)}>Remove</button>
+                    <img src={imageSrc} className="img-fluid" width="300px" />
+                    <Button variant='danger' onClick={() => removeImage(culture.id, oneimage.id)}>Remove</Button>
                   </div>)
               })}
             </Masonry>

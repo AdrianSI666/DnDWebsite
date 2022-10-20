@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.as.dndwebsite.services.RaceService.RACE_NOT_FOUND_MSG;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -27,9 +29,7 @@ public class SubraceService {
     private final SubraceRepository subraceRepository;
     private final RaceRepository raceRepository;
     private final ImageService imageService;
-    private final static String SUBRACE_NOT_FOUND_MSG =
-            "Subrace with name %s not found";
-    private final static String RACE_NOT_FOUND_MSG =
+    public final static String SUBRACE_NOT_FOUND_MSG =
             "Subrace with name %s not found";
     private final Converter converter;
 

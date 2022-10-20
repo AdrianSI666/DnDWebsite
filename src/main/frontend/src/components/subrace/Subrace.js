@@ -115,7 +115,10 @@ const SubraceProfiles = () => {
           <Accordion.Header>{subrace.name}</Accordion.Header>
           <Accordion.Body>
             {`${subrace.description ? "" : subrace.description=""}`}
-            <h5>{subrace.description}</h5>
+            <Button variant='danger' onClick={(e) => { deleteSubrace(e, subrace.id); }}>
+              Delete
+            </Button>
+            <Form.Control as="textarea" rows={12} readOnly value={subrace.description} />
             <Button variant='success' onClick={() => {
               setUpdateModal(true)
               setId(subrace.id)
@@ -123,9 +126,6 @@ const SubraceProfiles = () => {
               setDescription(subrace.description)
             }}>
               Edit
-            </Button>
-            <Button variant='danger' onClick={(e) => { deleteSubrace(e, subrace.id); }}>
-              Delete
             </Button>
 
             <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, subrace.id)} />
@@ -139,8 +139,8 @@ const SubraceProfiles = () => {
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
-                    <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(subrace.id, oneimage.id)}>Remove</button>
+                    <img src={imageSrc} className="img-fluid" width="300px" />
+                    <Button variant='danger' onClick={() => removeImage(subrace.id, oneimage.id)}>Remove</Button>
                   </div>)
               })}
             </Masonry>

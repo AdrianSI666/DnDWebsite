@@ -11,6 +11,7 @@ import com.as.dndwebsite.repository.places.KingdomRepository;
 import com.as.dndwebsite.repository.places.RegionRepository;
 import com.as.dndwebsite.services.CultureService;
 import com.as.dndwebsite.services.ImageService;
+import com.as.dndwebsite.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class RegionService {
     private final CultureService cultureService;
     private final PlaceService placeService;
     private final ImageService imageService;
+    private final Converter converter;
     protected final static String REGION_NOT_FOUND_MSG =
             "Region with name %s not found";
 
@@ -70,7 +72,7 @@ public class RegionService {
         Region region = regionRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, id))
         );
-        List<Place> places = placeService.getPlacesRelatedToRegion(region);
+        List<Place> places = placeService.getPlacesRelatedToRegion(region.getId());
         places.forEach(place -> placeService.deletePlace(place.getId()));
         regionRepository.deleteById(id);
     }
@@ -81,9 +83,7 @@ public class RegionService {
             log.info("Saving file to region {}", id);
             if (image.length > 0) {
                 Region region = regionRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, id)));
-                log.info("File original name: " + file.getOriginalFilename());
-                log.info("File name: " + file.getOriginalFilename());
-                region.getImages().add(new Image(image, file.getOriginalFilename()));
+                region.getImages().add(converter.convert(file, image));
             }
         } catch (IOException e) {
             throw new BadRequestException("Couldn't read file." + e.getMessage());

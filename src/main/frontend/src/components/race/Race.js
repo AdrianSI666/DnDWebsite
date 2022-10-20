@@ -130,7 +130,10 @@ const RaceProfiles = () => {
         <Accordion.Item eventKey={race.id}>
           <Accordion.Header>{race.name}</Accordion.Header>
           <Accordion.Body>
-            <h5>{race.description}</h5>
+            <Button variant='danger' onClick={(e) => { deleteRace(e, race.id); }}>
+              Delete
+            </Button>
+            <Form.Control as="textarea" rows={12} readOnly value={race.description} />
             <Button variant='success' onClick={() => {
               setModalShow2(true)
               setId(race.id)
@@ -138,9 +141,6 @@ const RaceProfiles = () => {
               setDescription(race.description)
             }}>
               Edit
-            </Button>
-            <Button variant='danger' onClick={(e) => { deleteRace(e, race.id); }}>
-              Delete
             </Button>
             <Button variant='info'>
               <Link className="nav-link" to="/subrace" state={props}>Check subclasses</Link>
@@ -156,8 +156,8 @@ const RaceProfiles = () => {
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
-                    <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(race.id, oneimage.id)}>Remove</button>
+                    <img src={imageSrc} className="img-fluid" width="300px" />
+                    <Button variant='danger' onClick={() => removeImage(race.id, oneimage.id)}>Remove</Button>
                   </div>)
               })}
             </Masonry>
@@ -167,13 +167,13 @@ const RaceProfiles = () => {
             }}>
               Add subrace
             </Button>
-            <div>
+            <div className="subObject">
               {subraces.map(onesubrace => {
                 const subraceName = onesubrace.name
                 return (
                   <div key={onesubrace.id}>
                     <h3>{subraceName}</h3>
-                    <button onClick={() => deleteSubrace(onesubrace.id)}>Remove</button>
+                    <Button variant='danger' onClick={() => deleteSubrace(onesubrace.id)}>Remove</Button>
                   </div>)
               })}
             </div>

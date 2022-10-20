@@ -7,6 +7,7 @@ import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.repository.places.ContinentRepository;
 import com.as.dndwebsite.services.ImageService;
+import com.as.dndwebsite.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class ContinentService {
     private final ContinentRepository continentRepository;
     private final KingdomService kingdomService;
     private final ImageService imageService;
+    private final Converter converter;
     protected final static String CONTINENT_NOT_FOUND_MSG =
             "Continent with name %s not found";
 
@@ -66,7 +68,7 @@ public class ContinentService {
             log.info("Saving file to continent {}", id);
             if (image.length > 0) {
                 Continent continent = continentRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, id)));
-                continent.getImages().add(new Image(image, file.getOriginalFilename()));
+                continent.getImages().add(converter.convert(file, image));
             }
         } catch (IOException e) {
             throw new BadRequestException("Couldn't read file." + e.getMessage());

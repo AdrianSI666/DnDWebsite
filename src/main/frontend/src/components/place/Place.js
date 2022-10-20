@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import './Region.css';
+import './Place.css';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -15,45 +14,51 @@ import Col from 'react-bootstrap/Col';
 
 import Dropzone from '../Dropzone';
 
-const RegionProfiles = () => {
+const PlaceProfiles = () => {
   const localhost = "192.168.0.139"
   let location = useLocation();
-  const [regionData, setRegionData] = useState([]);
-  const [cultureData, setCultureData] = useState([]);
+  const [placeData, setPlaceData] = useState([]);
+  const [raceData, setRaceData] = useState([]);
+  const [subraceData, setSubraceData] = useState([]);
   const [modalAdd, setModalAdd] = React.useState(false);
   const [modalEdit, setModalEdit] = React.useState(false);
-  const [modalAddPlace, setModalAddPlace] = React.useState(false);
-  const [modalAddCulture, setModalAddCulture] = React.useState(false);
-  const kingdomId = location.state.kingdomId;
-  const kingdomName = location.state.kingdomName;
+  const [modalAddRace, setModalAddRace] = React.useState(false);
+  const [modalAddSubrace, setModalAddSubrace] = React.useState(false);
+  const regionId = location.state.regionId;
+  const regionName = location.state.regionName;
   const [id, setId] = useState(0);
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const fetchRegion = () => {
-    axios.get(`http://${localhost}:8090/region/kingdom/${kingdomId}`).then(res => {
-      console.log(res)
-      setRegionData(res.data)
+  const fetchPlace = () => {
+    axios.get(`http://${localhost}:8090/place/region/${regionId}`).then(res => {
+      setPlaceData(res.data)
     })
   }
 
-  const fetchCulture = () => {
-    axios.get(`http://${localhost}:8090/culture/all`)
+  const fetchRace = () => {
+    axios.get(`http://${localhost}:8090/race/all`)
     .then(response => {
-      console.log(response)
-      setCultureData(response.data)
+      setRaceData(response.data)
     })
   }
 
-  const removeImage = (regionId, imageId) => {
-    axios.delete(`http://${localhost}:8090/region/delete/${regionId}/${imageId}/${kingdomId}`).then(res => {
-      console.log(res.data)
-      setRegionData(res.data)
+  const fetchSubrace = () => {
+    axios.get(`http://${localhost}:8090/subrace/all`)
+    .then(response => {
+      setSubraceData(response.data)
+    })
+  }
+
+  const removeImage = (placeId, imageId) => {
+    axios.delete(`http://${localhost}:8090/place/delete/${placeId}/${imageId}/${regionId}`).then(res => {
+      setPlaceData(res.data)
     })
   }
 
   useEffect(() => {
-    fetchRegion();
-    fetchCulture();
+    fetchPlace();
+    fetchRace();
+    fetchSubrace();
   }, []);
 
   const onDrop = useCallback((acceptedFiles, id) => {
@@ -62,95 +67,96 @@ const RegionProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://${localhost}:8090/region/${id}/image/${kingdomId}`,
+      `http://${localhost}:8090/place/${id}/image/${regionId}`,
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data"
         }
       }).then((res) => {
-        console.log("file uploaded successfully")
-        setRegionData(res.data)
+        setPlaceData(res.data)
       }).catch(err => {
         console.log(err)
       })
   }, [])
 
-  function addRegion(e, name, description) {
+  function addPlace(e, name, description) {
     e.preventDefault()
-    const newRegion = {
+    const newPlace = {
       name,
       description
     }
-    axios.post(`http://${localhost}:8090/region/save/${kingdomId}`, newRegion)
-      .then(response => setRegionData([...regionData, response.data]))
+    axios.post(`http://${localhost}:8090/place/save/${regionId}`, newPlace)
+      .then(response => setPlaceData([...placeData, response.data]))
       .catch(err => console.log(err))
   }
 
-  function deleteRegion(e, id) {
+  function deletePlace(e, id) {
     e.preventDefault()
-    axios.delete(`http://${localhost}:8090/region/delete/` + id)
-      .then(() => setRegionData(regionData.filter(item => item.region.id !== id)))
+    axios.delete(`http://${localhost}:8090/place/delete/` + id)
+      .then(() => setPlaceData(placeData.filter(place => place.id !== id)))
       .catch(err => console.log(err))
   }
 
-  function setRegion(e, id, name, description) {
+  function setPlace(e, id, name, description) {
     e.preventDefault()
-    const newRegion = {
+    const newPlace = {
       name,
       description
     }
-    axios.put(`http://${localhost}:8090/region/update/` + id, newRegion)
+    axios.put(`http://${localhost}:8090/place/update/` + id, newPlace)
       .then(() => {
-        regionData.forEach(data => {
-          var region = data.region
-          if (region.id === id) {
-            region.name = name
-            region.description = description
+        placeData.forEach(place => {
+          if (place.id === id) {
+            place.name = name
+            place.description = description
           }
         })
-        setRegionData([...regionData])
+        setPlaceData([...placeData])
       }
       )
       .catch(err => console.log(err))
   }
 
-  function addPlace(e, name, id) {
+  function addRace(e, raceId, id) {
     e.preventDefault()
-    const newPlace = {
-      name
-    }
-    axios.put(`http://${localhost}:8090/region/place/${id}`, newPlace)
-      .then(() => fetchRegion())
+    axios.put(`http://${localhost}:8090/place/race/add/${id}/${raceId}`)
+      .then(() => fetchPlace())
       .catch(err => console.log(err))
   }
 
-  function deletePlace(placeId) {
-    axios.delete(`http://${localhost}:8090/region/place/${placeId}/${kingdomId}`)
-      .then(response => setRegionData(response.data))
+  function deleteRace(placeId, raceId) {
+    axios.delete(`http://${localhost}:8090/place/race/remove/${placeId}/${raceId}/${regionId}`)
+      .then(response => setPlaceData(response.data))
       .catch(err => console.log(err))
   }
 
-  function addCulture(e, cultureName, id) {
+  function addSubrace(e, subraceId, id) {
     e.preventDefault()
-    const newCulture = {
-      cultureName
-    }
-    axios.put(`http://${localhost}:8090/region/culture/add/${id}`, newCulture)
-      .then(() => fetchRegion())
+    axios.put(`http://${localhost}:8090/place/subrace/add/${id}/${subraceId}`)
+      .then(() => fetchPlace())
       .catch(err => console.log(err))
   }
 
-  function deleteCulture(regionId, cultureName) {
-    axios.delete(`http://${localhost}:8090/region/culture/remove/${regionId}/${cultureName}/${kingdomId}`)
-      .then(response => setRegionData(response.data))
+  function deleteSubrace(placeId, subraceName) {
+    axios.delete(`http://${localhost}:8090/place/subrace/remove/${placeId}/${subraceName}/${regionId}`)
+      .then(response => setPlaceData(response.data))
       .catch(err => console.log(err))
   }
 
-  const renderCulture = cultureData.map((culture) => {
+  const renderRace = raceData.map((data) => {
+    const race = data.race
     return (
-      <option key={culture.id} value={culture.name}>
-        {culture.name}
+      <option key={race.id} value={race.id}>
+        {race.name}
+      </option>
+    )
+  })
+
+  const renderSubrace = subraceData.map((subrace) => {
+    return (
+      <option key={subrace.id} value={subrace.id}>
+        {subrace.name}
       </option>
     )
   })
@@ -162,82 +168,75 @@ const RegionProfiles = () => {
     500: 1
   };
 
-  const renderRegion = regionData.map((data) => {
-    var region = data.region
-    var places = data.placeList
-    var cultures = data.region.cultures
-    let props = {
-      regionId:region.id,
-      regionName:region.name
-      }
+  const renderPlace = placeData.map((data) => {
+    var place = data
+    var races = data.races
+    var subraces = data.subRaces
     return (
-      <Accordion key={region.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={region.id}>
-          <Accordion.Header>{region.name}</Accordion.Header>
+      <Accordion key={place.id} defaultActiveKey={['0']}>
+        <Accordion.Item eventKey={place.id}>
+          <Accordion.Header>{place.name}</Accordion.Header>
           <Accordion.Body>
-          {`${region.description ? "" : region.description=""}`}
-            <h5>{region.description}</h5>
+          {`${place.description ? "" : place.description=""}`}
+          <Button variant='danger' onClick={(e) => { deletePlace(e, place.id); }}>
+              Delete
+            </Button>
+            <Form.Control as="textarea" rows={12} readOnly value={place.description} />
             <Button variant='success' onClick={() => {
               setModalEdit(true)
-              setId(region.id)
-              setName(region.name)
-              setDescription(region.description)
+              setId(place.id)
+              setName(place.name)
+              setDescription(place.description)
             }}>
               Edit
             </Button>
-            <Button variant='danger' onClick={(e) => { deleteRegion(e, region.id); }}>
-              Delete
-            </Button>
-            <Button variant='info'>
-              <Link className="nav-link" to="/place" state={props}>Check places</Link>
-            </Button>
-            <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, region.id)} />
+            <Dropzone onDrop={(acceptedFiles) => onDrop(acceptedFiles, place.id)} />
             <Masonry
               breakpointCols={breakpointColumnsObj}
               className="my-masonry-grid"
               columnClassName="my-masonry-grid_column">
-              {region.images.map(oneimage => {
+              {place.images.map(oneimage => {
                 const imageSrc = "data:image/jpg;base64," + oneimage.image
                 const imageName = oneimage.name
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
-                    <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(region.id, oneimage.id)}>Remove</button>
+                    <img src={imageSrc} className="img-fluid" width="300px" />
+                    <Button variant='danger' onClick={() => removeImage(place.id, oneimage.id)}>Remove</Button>
                   </div>)
               })}
             </Masonry>
             <Container>
               <Row>
-                <Col>
+                <Col className="subObject">
                   <Button variant='success' onClick={() => {
-                    setModalAddPlace(true)
-                    setId(region.id)
+                    setModalAddRace(true)
+                    setId(place.id)
                   }}>
-                    Add place
+                    Add race
                   </Button>
-                  {places.map(oneplace => {
-                  const placeName = oneplace.name
+                  {races.map(onerace => {
+                  const raceName = onerace.name
                   return (
-                    <div key={oneplace.id}>
-                      <h3>{placeName}</h3>
-                      <button onClick={() => deletePlace(oneplace.id)}>Remove</button>
+                    <div key={onerace.id}>
+                      <h3>{raceName}</h3>
+                      <Button variant='danger' onClick={() => deleteRace(place.id, onerace.id)}>Remove</Button>
                     </div>)
                   })}
                 </Col>
-                <Col>
+                <Col className="subObject">
                   <Button variant='success' onClick={() => {
-                    setModalAddCulture(true)
-                    setId(region.id)
+                    setModalAddSubrace(true)
+                    setId(place.id)
                   }}>
-                    Add culture
+                    Add subrace
                   </Button>
-                  {cultures.map(oneculture => {
-                  const cultureName = oneculture.name
+                  {subraces.map(onesubrace => {
+                  const subraceName = onesubrace.name
                   return (
-                    <div key={oneculture.id}>
-                      <h3>{cultureName}</h3>
-                      <button onClick={() => {deleteCulture(region.id, oneculture.name)}}>Remove</button>
+                    <div key={onesubrace.id}>
+                      <h3>{subraceName}</h3>
+                      <Button variant='danger' onClick={() => {deleteSubrace(place.id, onesubrace.id)}}>Remove</Button>
                     </div>)
                   })}
                 </Col>
@@ -248,17 +247,18 @@ const RegionProfiles = () => {
       </Accordion>
     )
   })
-
+  var raceId;
+  var subraceId;
   return (
     <div>
       <div className="d-grid gap-2">
-        <h1>Regions in {kingdomName}</h1>
+        <h1>Places in {regionName}</h1>
         <Button variant="success" onClick={() => {
           setModalAdd(true);
           setName("")
           setDescription("")
         }}>
-          Add region
+          Add place
         </Button>
       </div>
       <Modal
@@ -270,22 +270,22 @@ const RegionProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Adding region to {kingdomName}
+            Adding place to {regionName}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            addRegion(e, name, description);
+            addPlace(e, name, description);
             setModalAdd(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
               <Form.Label>Name</Form.Label>
-              <Form.Control value={name} type="text" placeholder="Give name" onChange={e => setName(e.target.value)} />
+              <Form.Control value={name} type="text" raceholder="Give name" onChange={e => setName(e.target.value)} />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicText">
               <Form.Label>Description</Form.Label>
-              <Form.Control value={description} name="description" as="textarea" rows="3" placeholder="Give description" onChange={e => setDescription(e.target.value)} />
+              <Form.Control value={description} name="description" as="textarea" rows="3" raceholder="Give description" onChange={e => setDescription(e.target.value)} />
             </Form.Group>
             <Button variant="primary" type="submit">
               Add
@@ -305,12 +305,12 @@ const RegionProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Edit region
+            Edit place
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            setRegion(e, id, name, description);
+            setPlace(e, id, name, description);
             setModalEdit(false);
           }}>
             <Form.Group className="mb-3" controlId="formBasicText">
@@ -333,58 +333,27 @@ const RegionProfiles = () => {
       </Modal>
 
       <Modal
-        show={modalAddPlace}
-        onHide={() => setModalAddPlace(false)}
+        show={modalAddRace}
+        onHide={() => setModalAddRace(false)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Add place
+            Add race from list
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={(e) => {
-            addPlace(e, name, id);
-            setModalAddPlace(false);
+            addRace(e, raceId, id);
+            setModalAddRace(false);
           }}>
-            <Form.Group className="mb-3" controlId="formBasicText">
-              <Form.Label>Name</Form.Label>
-              <Form.Control value={name} type="text" onChange={e => setName(e.target.value)} />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Add
-            </Button>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setModalAddPlace(false)}>Exit</Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        show={modalAddCulture}
-        onHide={() => setModalAddCulture(false)}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Add culture from list
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={(e) => {
-            addCulture(e, name, id);
-            setModalAddCulture(false);
-          }}>
-            <Form.Group className="mb-3" controlId="formBasicText">
-              <Form.Label>Culture</Form.Label>
-              <Form.Select value={name} onChange={e => setName(e.target.value)} >
-                <option value="" label="Please select which one you want to add" disabled="disabled"/>
-                {renderCulture}
+            <Form.Group controlId="formBasicText">
+              <Form.Label>Race</Form.Label>
+              <Form.Select value={raceId} onChange={e => {raceId = e.target.value} }>
+                <option value="" label="Please select which one you want to add" disabled="disabled" selected/>
+                {renderRace}
               </Form.Select>
             </Form.Group>
             <Button variant="primary" type="submit">
@@ -393,22 +362,56 @@ const RegionProfiles = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setModalAddCulture(false)}>Exit</Button>
+          <Button onClick={() => setModalAddRace(false)}>Exit</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={modalAddSubrace}
+        onHide={() => setModalAddSubrace(false)}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Add subrace from list
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={(e) => {
+            addSubrace(e, subraceId, id);
+            setModalAddSubrace(false);
+          }}>
+            <Form.Group className="mb-3" controlId="formBasicText">
+              <Form.Label>Subrace</Form.Label>
+              <Form.Select value={subraceId} onChange={e => {subraceId = e.target.value} } >
+                <option value="" label="Please select which one you want to add" disabled="disabled" selected/>
+                {renderSubrace}
+              </Form.Select>
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Add
+            </Button>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setModalAddSubrace(false)}>Exit</Button>
         </Modal.Footer>
       </Modal>
       <div className='lightbox'>
-        {renderRegion}
+        {renderPlace}
       </div>
     </div>
   )
 }
 
-function Region() {
+function Place() {
   return (
-    <div className="Region">
-      <RegionProfiles />
+    <div className="Place">
+      <PlaceProfiles />
     </div>
   );
 }
 
-export default Region;
+export default Place;

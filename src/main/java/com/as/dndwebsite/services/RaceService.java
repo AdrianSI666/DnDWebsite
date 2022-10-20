@@ -26,7 +26,7 @@ public class RaceService {
     private final RaceRepository raceRepository;
     private final SubraceRepository subraceRepository;
     private final ImageService imageService;
-    private final static String RACE_NOT_FOUND_MSG =
+    public final static String RACE_NOT_FOUND_MSG =
             "race with name %s not found";
     private final Converter converter;
 

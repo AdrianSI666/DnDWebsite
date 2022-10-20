@@ -39,14 +39,12 @@ const RegionProfiles = () => {
   const fetchCulture = () => {
     axios.get(`http://${localhost}:8090/culture/all`)
     .then(response => {
-      console.log(response)
       setCultureData(response.data)
     })
   }
 
   const removeImage = (regionId, imageId) => {
     axios.delete(`http://${localhost}:8090/region/delete/${regionId}/${imageId}/${kingdomId}`).then(res => {
-      console.log(res.data)
       setRegionData(res.data)
     })
   }
@@ -174,9 +172,12 @@ const RegionProfiles = () => {
       <Accordion key={region.id} defaultActiveKey={['0']}>
         <Accordion.Item eventKey={region.id}>
           <Accordion.Header>{region.name}</Accordion.Header>
-          <Accordion.Body>
+          <Accordion.Body className="p-3">
           {`${region.description ? "" : region.description=""}`}
-            <h5>{region.description}</h5>
+            <Button variant='danger' onClick={(e) => { deleteRegion(e, region.id); }}>
+              Delete
+            </Button>
+            <Form.Control as="textarea" rows={12} readOnly value={region.description} />
             <Button variant='success' onClick={() => {
               setModalEdit(true)
               setId(region.id)
@@ -184,9 +185,6 @@ const RegionProfiles = () => {
               setDescription(region.description)
             }}>
               Edit
-            </Button>
-            <Button variant='danger' onClick={(e) => { deleteRegion(e, region.id); }}>
-              Delete
             </Button>
             <Button variant='info'>
               <Link className="nav-link" to="/place" state={props}>Check places</Link>
@@ -202,14 +200,14 @@ const RegionProfiles = () => {
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
-                    <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(region.id, oneimage.id)}>Remove</button>
+                    <img src={imageSrc} className="img-fluid" width="300px" />
+                    <Button variant='danger' onClick={() => removeImage(region.id, oneimage.id)}>Remove</Button>
                   </div>)
               })}
             </Masonry>
             <Container>
               <Row>
-                <Col>
+                <Col className="subObject">
                   <Button variant='success' onClick={() => {
                     setModalAddPlace(true)
                     setId(region.id)
@@ -221,11 +219,11 @@ const RegionProfiles = () => {
                   return (
                     <div key={oneplace.id}>
                       <h3>{placeName}</h3>
-                      <button onClick={() => deletePlace(oneplace.id)}>Remove</button>
+                      <Button variant='danger' onClick={() => deletePlace(oneplace.id)}>Remove</Button>
                     </div>)
                   })}
                 </Col>
-                <Col>
+                <Col className="subObject">
                   <Button variant='success' onClick={() => {
                     setModalAddCulture(true)
                     setId(region.id)
@@ -237,7 +235,7 @@ const RegionProfiles = () => {
                   return (
                     <div key={oneculture.id}>
                       <h3>{cultureName}</h3>
-                      <button onClick={() => {deleteCulture(region.id, oneculture.name)}}>Remove</button>
+                      <Button variant='danger' onClick={() => {deleteCulture(region.id, oneculture.name)}}>Remove</Button>
                     </div>)
                   })}
                 </Col>
@@ -383,7 +381,7 @@ const RegionProfiles = () => {
             <Form.Group className="mb-3" controlId="formBasicText">
               <Form.Label>Culture</Form.Label>
               <Form.Select value={name} onChange={e => setName(e.target.value)} >
-                <option value="" label="Please select which one you want to add" disabled="disabled"/>
+                <option value="" label="Please select which one you want to add" disabled="disabled" selected/>
                 {renderCulture}
               </Form.Select>
             </Form.Group>

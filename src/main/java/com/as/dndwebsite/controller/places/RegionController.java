@@ -34,7 +34,7 @@ public class RegionController {
     public ResponseEntity<RegionWithPlace> getRegionByName(@PathVariable("name") String name) {
         Region region = regionService.getRegion(name);
         RegionWithPlace dataToSend = new RegionWithPlace(region,
-                placeService.getPlacesRelatedToRegion(region));
+                placeService.getPlacesRelatedToRegion(region.getId()));
         return ResponseEntity.ok().body(dataToSend);
     }
 
@@ -103,7 +103,6 @@ public class RegionController {
     @RequestMapping(method = RequestMethod.PUT, path = "/culture/add/{regionId}")
     public ResponseEntity<?> addCulture(@PathVariable("regionId") Long regionId,
                                         @RequestBody SettingCulture cultureName) {
-        System.out.println(cultureName.cultureName());
         regionService.setCultureToRegion(cultureName.cultureName(), regionId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -120,7 +119,7 @@ public class RegionController {
         List<RegionWithPlace> dataToSend = new ArrayList<>();
         regions.forEach(region -> dataToSend.add(
                 new RegionWithPlace(region,
-                        placeService.getPlacesRelatedToRegion(region))
+                        placeService.getPlacesRelatedToRegion(region.getId()))
         ));
         return dataToSend;
     }

@@ -31,7 +31,8 @@ public class ConvertToJpg implements Converter {
         ImageIO.write(newBufferedImage, "jpg", baos);
         String fileName = file.getOriginalFilename();
         if (fileName != null) {
-            fileName = fileName.split("\\.")[0];
+            int pos = fileName.lastIndexOf(".");
+            if (pos != -1) fileName = fileName.substring(0, pos);
         } else {
             fileName = "No name";
         }

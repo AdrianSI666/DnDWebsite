@@ -12,6 +12,6 @@
   
   /* Style your items */
   .my-masonry-grid_column > div { /* change div to reference your elements you put in <Masonry> */
-    background: grey;
+    background: rgba(121, 116, 108, 0.918);
     margin-bottom: 30px;
   }

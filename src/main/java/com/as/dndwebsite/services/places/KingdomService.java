@@ -9,6 +9,7 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.repository.places.ContinentRepository;
 import com.as.dndwebsite.repository.places.KingdomRepository;
 import com.as.dndwebsite.services.ImageService;
+import com.as.dndwebsite.util.Converter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class KingdomService {
     private final ContinentRepository continentRepository;
     private final RegionService regionService;
     private final ImageService imageService;
+    private final Converter converter;
     protected final static String KINGDOM_NOT_FOUND_MSG =
             "kingdom with name %s not found";
 
@@ -74,9 +76,7 @@ public class KingdomService {
             log.info("Saving file to kingdom {}", id);
             if (image.length > 0) {
                 Kingdom kingdom = kingdomRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(KINGDOM_NOT_FOUND_MSG, id)));
-                log.info("File original name: " + file.getOriginalFilename());
-                log.info("File name: " + file.getOriginalFilename());
-                kingdom.getImages().add(new Image(image, file.getOriginalFilename()));
+                kingdom.getImages().add(converter.convert(file, image));
             }
         } catch (IOException e) {
             throw new BadRequestException("Couldn't read file." + e.getMessage());

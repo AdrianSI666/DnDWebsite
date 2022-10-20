@@ -133,7 +133,10 @@ const ContinentProfiles = () => {
         <Accordion.Item eventKey={continent.id}>
           <Accordion.Header>{continent.name}</Accordion.Header>
           <Accordion.Body>
-            <h5>{continent.description}</h5>
+          <Button variant='danger' onClick={(e) => { deleteContinent(e, continent.id); }}>
+              Delete
+            </Button>
+            <Form.Control as="textarea" rows={12} readOnly value={continent.description} />
             <Button variant='success' onClick={() => {
               setModalEdit(true)
               setId(continent.id)
@@ -141,9 +144,6 @@ const ContinentProfiles = () => {
               setDescription(continent.description)
             }}>
               Edit
-            </Button>
-            <Button variant='danger' onClick={(e) => { deleteContinent(e, continent.id); }}>
-              Delete
             </Button>
             <Button variant='info'>
               <Link className="nav-link" to="/kingdom" state={props}>Check kingdoms</Link>
@@ -159,8 +159,8 @@ const ContinentProfiles = () => {
                 return (
                   <div key={oneimage.id}>
                     <h3>{imageName}</h3>
-                    <img src={imageSrc} className="img-thumbnail" width="300px" />
-                    <button onClick={() => removeImage(continent.id, oneimage.id)}>Remove</button>
+                    <img src={imageSrc} className="img-fluid" width="300px" />
+                    <Button variant='danger' onClick={() => removeImage(continent.id, oneimage.id)}>Remove</Button>
                   </div>)
               })}
             </Masonry>
@@ -170,13 +170,13 @@ const ContinentProfiles = () => {
             }}>
               Add kingdoms
             </Button>
-            <div>
+            <div className="subObject">
               {kingdoms.map(onekingdom => {
                 const kingdomName = onekingdom.name
                 return (
                   <div key={onekingdom.id}>
                     <h3>{kingdomName}</h3>
-                    <button onClick={() => deleteKingdom(onekingdom.id)}>Remove</button>
+                    <Button variant='danger' onClick={() => deleteKingdom(onekingdom.id)}>Remove</Button>
                   </div>)
               })}
             </div>
