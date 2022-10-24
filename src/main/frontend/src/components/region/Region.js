@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Region.css';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/masonary.css';
