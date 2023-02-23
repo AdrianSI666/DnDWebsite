@@ -10,7 +10,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const CultureProfiles = () => {
-  const localhost = "192.168.0.139"
+  const localhost = "localhost"
   const [cultureData, setcultureData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [modalShow2, setModalShow2] = React.useState(false);
@@ -68,7 +68,7 @@ const CultureProfiles = () => {
 
   function deleteCulture(e, id) {
     e.preventDefault()
-    axios.delete('http://${localhost}:8090/culture/delete/' + id)
+    axios.delete(`http://${localhost}:8090/culture/delete/` + id)
       .then(() => setcultureData(cultureData.filter(item => item.id !== id)))
       .catch(err => console.log(err))
   }

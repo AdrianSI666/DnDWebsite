@@ -12,7 +12,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const RaceProfiles = () => {
-  const localhost = "192.168.0.139"
+  const localhost = "localhost"
   const [raceData, setRaceData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [modalShow2, setModalShow2] = React.useState(false);
@@ -69,7 +69,7 @@ const RaceProfiles = () => {
 
   function deleteRace(e, id) {
     e.preventDefault()
-    axios.delete('http://${localhost}:8090/race/delete/' + id)
+    axios.delete(`http://${localhost}:8090/race/delete/` + id)
       .then(() => setRaceData(raceData.filter(item => item.race.id !== id)))
       .catch(err => console.log(err))
   }
@@ -83,7 +83,7 @@ const RaceProfiles = () => {
     axios.put(`http://${localhost}:8090/race/update/` + id, newRace)
       .then(() => {
         raceData.forEach(data => {
-          var race = data.race
+          let race = data.race
           if (race.id === id) {
             race.name = name
             race.description = description
@@ -119,8 +119,8 @@ const RaceProfiles = () => {
   };
 
   const renderRace = raceData.map((data) => {
-    var race = data.race
-    var subraces = data.subraceList
+    let race = data.race
+    let subraces = data.subraceList
     let props = {
       raceId:race.id,
       raceName:race.name

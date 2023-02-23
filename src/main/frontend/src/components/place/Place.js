@@ -15,7 +15,7 @@ import Col from 'react-bootstrap/Col';
 import Dropzone from '../Dropzone';
 
 const PlaceProfiles = () => {
-  const localhost = "192.168.0.139"
+  const localhost = "localhost"
   let location = useLocation();
   const [placeData, setPlaceData] = useState([]);
   const [raceData, setRaceData] = useState([]);
@@ -169,9 +169,9 @@ const PlaceProfiles = () => {
   };
 
   const renderPlace = placeData.map((data) => {
-    var place = data
-    var races = data.races
-    var subraces = data.subRaces
+    let place = data
+    let races = data.races
+    let subraces = data.subRaces
     return (
       <Accordion key={place.id} defaultActiveKey={['0']}>
         <Accordion.Item eventKey={place.id}>
@@ -247,8 +247,8 @@ const PlaceProfiles = () => {
       </Accordion>
     )
   })
-  var raceId;
-  var subraceId;
+  let raceId;
+  let subraceId;
   return (
     <div>
       <div className="d-grid gap-2">

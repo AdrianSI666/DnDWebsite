@@ -15,7 +15,7 @@ import Col from 'react-bootstrap/Col';
 import Dropzone from '../Dropzone';
 
 const RegionProfiles = () => {
-  const localhost = "192.168.0.139"
+  const localhost = "localhost"
   let location = useLocation();
   const [regionData, setRegionData] = useState([]);
   const [cultureData, setCultureData] = useState([]);
@@ -100,7 +100,7 @@ const RegionProfiles = () => {
     axios.put(`http://${localhost}:8090/region/update/` + id, newRegion)
       .then(() => {
         regionData.forEach(data => {
-          var region = data.region
+          let region = data.region
           if (region.id === id) {
             region.name = name
             region.description = description
@@ -160,9 +160,9 @@ const RegionProfiles = () => {
   };
 
   const renderRegion = regionData.map((data) => {
-    var region = data.region
-    var places = data.placeList
-    var cultures = data.region.cultures
+    let region = data.region
+    let places = data.placeList
+    let cultures = data.region.cultures
     let props = {
       regionId:region.id,
       regionName:region.name

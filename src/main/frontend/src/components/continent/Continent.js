@@ -12,7 +12,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const ContinentProfiles = () => {
-  const localhost = "192.168.0.139"
+  const localhost = "localhost"
   const [continentData, setContinentData] = useState([]);
   const [modalAdd, setModalAdd] = React.useState(false);
   const [modalEdit, setModalEdit] = React.useState(false);
@@ -83,10 +83,10 @@ const ContinentProfiles = () => {
       name,
       description
     }
-    axios.put('http://${localhost}:8090/continent/update/' + id, newContinent)
+    axios.put(`http://${localhost}:8090/continent/update/` + id, newContinent)
       .then(() => {
         continentData.forEach(data => {
-          var continent = data.continent
+          let continent = data.continent
           if (continent.id === id) {
             continent.name = name
             continent.description = description
@@ -122,8 +122,8 @@ const ContinentProfiles = () => {
   };
 
   const renderContinent = continentData.map((data) => {
-    var continent = data.continent
-    var kingdoms = data.kingdomList
+    let continent = data.continent
+    let kingdoms = data.kingdomList
     let props = {
       continentId:continent.id,
       continentName:continent.name

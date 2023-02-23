@@ -11,7 +11,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const SubraceProfiles = () => {
-  const localhost = "192.168.0.139"
+  const localhost = "localhost"
   let location = useLocation();
   const [subraceData, setSubraceData] = useState([]);
   const [saveModal, setSaveModal] = React.useState(false);
@@ -84,10 +84,10 @@ const SubraceProfiles = () => {
       name,
       description
     }
-    axios.put('http://${localhost}:8090/subrace/update/' + id, newSubrace)
+    axios.put(`http://${localhost}:8090/subrace/update/` + id, newSubrace)
       .then(() => {
         subraceData.forEach(data => {
-          var subrace = data
+          let subrace = data
           if (subrace.id === id) {
             subrace.name = name
             subrace.description = description
@@ -107,7 +107,7 @@ const SubraceProfiles = () => {
   };
 
   const renderSubrace = subraceData.map((data) => {
-    var subrace = data
+    let subrace = data
     
     return (
       <Accordion key={subrace.id} defaultActiveKey={['0']}>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Kingdom.css';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/masonary.css';
@@ -13,7 +12,7 @@ import Masonry from 'react-masonry-css';
 import Dropzone from '../Dropzone';
 
 const KingdomProfiles = () => {
-  const localhost = "192.168.0.139"
+  const localhost = "localhost"
   let location = useLocation();
   const [kingdomData, setKingdomData] = useState([]);
   const [modalAdd, setModalAdd] = React.useState(false);
@@ -90,7 +89,7 @@ const KingdomProfiles = () => {
     axios.put(`http://${localhost}:8090/kingdom/update/` + id, newKingdom)
       .then(() => {
         kingdomData.forEach(data => {
-          var kingdom = data.kingdom
+          let kingdom = data.kingdom
           if (kingdom.id === id) {
             kingdom.name = name
             kingdom.description = description
@@ -126,8 +125,8 @@ const KingdomProfiles = () => {
   };
 
   const renderKingdom = kingdomData.map((data) => {
-    var kingdom = data.kingdom
-    var regions = data.regionList
+    let kingdom = data.kingdom
+    let regions = data.regionList
     let props = {
       kingdomId:kingdom.id,
       kingdomName:kingdom.name
