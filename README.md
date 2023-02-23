@@ -8,7 +8,7 @@ Website to write and store data of races, cultures and places.
   -node
   -postgreSQL
 
-2. Open DnDWebsite\src\main\resources\application.yml
+2. Open DnDWebsite\src\main\resources\application.yml.
   At line 10 and 11 you need to enter your user and password to postgreSQL
   
 3. Run DnDWebsite-{VERSION_NUMBER}.jar file. (not original)
