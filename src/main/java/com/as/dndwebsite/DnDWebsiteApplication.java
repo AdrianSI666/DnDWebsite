@@ -27,7 +27,6 @@ public class DnDWebsiteApplication {
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:8091/");
-        config.addAllowedOrigin("http://192.168.0.139:8091/");
         config.addAllowedHeader("*"); // this allows all headers
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("HEAD");
