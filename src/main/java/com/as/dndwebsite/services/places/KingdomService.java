@@ -1,6 +1,6 @@
 package com.as.dndwebsite.services.places;
 
-import com.as.dndwebsite.domain.Image;
+import com.as.dndwebsite.image.Image;
 import com.as.dndwebsite.domain.places.Continent;
 import com.as.dndwebsite.domain.places.Kingdom;
 import com.as.dndwebsite.domain.places.Region;
@@ -8,8 +8,8 @@ import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.repository.places.ContinentRepository;
 import com.as.dndwebsite.repository.places.KingdomRepository;
-import com.as.dndwebsite.services.ImageService;
-import com.as.dndwebsite.util.Converter;
+import com.as.dndwebsite.image.ImageService;
+import com.as.dndwebsite.util.ImageConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,8 +31,8 @@ public class KingdomService {
     private final ContinentRepository continentRepository;
     private final RegionService regionService;
     private final ImageService imageService;
-    private final Converter converter;
-    protected final static String KINGDOM_NOT_FOUND_MSG =
+    private final ImageConverter converter;
+    protected static final String KINGDOM_NOT_FOUND_MSG =
             "kingdom with name %s not found";
 
     public List<Kingdom> getKingdoms() {

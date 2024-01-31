@@ -1,13 +1,13 @@
 package com.as.dndwebsite.services.places;
 
-import com.as.dndwebsite.domain.Image;
+import com.as.dndwebsite.image.Image;
 import com.as.dndwebsite.domain.places.Continent;
 import com.as.dndwebsite.domain.places.Kingdom;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.repository.places.ContinentRepository;
-import com.as.dndwebsite.services.ImageService;
-import com.as.dndwebsite.util.Converter;
+import com.as.dndwebsite.image.ImageService;
+import com.as.dndwebsite.util.ImageConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,8 @@ public class ContinentService {
     private final ContinentRepository continentRepository;
     private final KingdomService kingdomService;
     private final ImageService imageService;
-    private final Converter converter;
-    protected final static String CONTINENT_NOT_FOUND_MSG =
+    private final ImageConverter converter;
+    protected static final String CONTINENT_NOT_FOUND_MSG =
             "Continent with name %s not found";
 
     public List<Continent> getContinents() {

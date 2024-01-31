@@ -1,18 +1,18 @@
 package com.as.dndwebsite.services.places;
 
-import com.as.dndwebsite.domain.Image;
-import com.as.dndwebsite.domain.Race;
-import com.as.dndwebsite.domain.Subrace;
+import com.as.dndwebsite.image.Image;
+import com.as.dndwebsite.race.Race;
+import com.as.dndwebsite.race.subrace.SubRace;
 import com.as.dndwebsite.domain.places.Place;
 import com.as.dndwebsite.domain.places.Region;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.repository.RaceRepository;
-import com.as.dndwebsite.repository.SubraceRepository;
+import com.as.dndwebsite.race.RaceRepository;
+import com.as.dndwebsite.race.subrace.SubRaceRepository;
 import com.as.dndwebsite.repository.places.PlaceRepository;
 import com.as.dndwebsite.repository.places.RegionRepository;
-import com.as.dndwebsite.services.ImageService;
-import com.as.dndwebsite.util.Converter;
+import com.as.dndwebsite.image.ImageService;
+import com.as.dndwebsite.util.ImageConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.as.dndwebsite.services.RaceService.RACE_NOT_FOUND_MSG;
-import static com.as.dndwebsite.services.SubraceService.SUBRACE_NOT_FOUND_MSG;
+import static com.as.dndwebsite.race.RaceService.RACE_NOT_FOUND_MSG;
+import static com.as.dndwebsite.race.subrace.SubRaceService.SUB_RACE_NOT_FOUND_MSG;
 import static com.as.dndwebsite.services.places.RegionService.REGION_NOT_FOUND_MSG;
 
 @Service
@@ -35,10 +35,10 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
     private final RegionRepository regionRepository;
     private final RaceRepository raceRepository;
-    private final SubraceRepository subraceRepository;
+    private final SubRaceRepository subraceRepository;
     private final ImageService imageService;
-    private final Converter converter;
-    protected final static String PLACE_NOT_FOUND_MSG =
+    private final ImageConverter converter;
+    protected static final String PLACE_NOT_FOUND_MSG =
             "Place with name %s not found";
 
     public List<Place> getPlaces() {
@@ -125,15 +125,15 @@ public class PlaceService {
     }
 
     public void setSubraceToPlace(Long subraceId, Long placeId) {
-        Subrace subrace = subraceRepository.findById(subraceId)
-                .orElseThrow(() -> new NotFoundException(String.format(SUBRACE_NOT_FOUND_MSG, subraceId)));
+        SubRace subrace = subraceRepository.findById(subraceId)
+                .orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subraceId)));
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new NotFoundException(String.format(PLACE_NOT_FOUND_MSG, placeId)));
         place.getSubRaces().add(subrace);
     }
 
     public void removeSubraceFromPlace(Long subraceId, Long placeId) {
-        Subrace subrace = subraceRepository.findById(subraceId)
-                .orElseThrow(() -> new NotFoundException(String.format(SUBRACE_NOT_FOUND_MSG, subraceId)));
+        SubRace subrace = subraceRepository.findById(subraceId)
+                .orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subraceId)));
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new NotFoundException(String.format(PLACE_NOT_FOUND_MSG, placeId)));
         place.getSubRaces().remove(subrace);
     }

@@ -1,8 +1,6 @@
-package com.as.dndwebsite.services;
+package com.as.dndwebsite.image;
 
-import com.as.dndwebsite.domain.Image;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ import java.util.List;
 @Transactional
 public class ImageService {
     private final ImageRepository imageRepository;
-    private final static String IMAGE_NOT_FOUND_MSG =
+    public static final String IMAGE_NOT_FOUND_MSG =
             "Image with id %s not found";
 
     public List<Image> getImages() {

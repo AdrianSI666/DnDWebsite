@@ -1,17 +1,17 @@
 package com.as.dndwebsite.services.places;
 
-import com.as.dndwebsite.domain.Culture;
-import com.as.dndwebsite.domain.Image;
+import com.as.dndwebsite.culture.Culture;
+import com.as.dndwebsite.culture.CultureRepository;
 import com.as.dndwebsite.domain.places.Kingdom;
 import com.as.dndwebsite.domain.places.Place;
 import com.as.dndwebsite.domain.places.Region;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
+import com.as.dndwebsite.image.Image;
+import com.as.dndwebsite.image.ImageService;
 import com.as.dndwebsite.repository.places.KingdomRepository;
 import com.as.dndwebsite.repository.places.RegionRepository;
-import com.as.dndwebsite.services.CultureService;
-import com.as.dndwebsite.services.ImageService;
-import com.as.dndwebsite.util.Converter;
+import com.as.dndwebsite.util.ImageConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.as.dndwebsite.culture.CultureService.CULTURE_NOT_FOUND_MSG;
 import static com.as.dndwebsite.services.places.KingdomService.KINGDOM_NOT_FOUND_MSG;
 
 @Service
@@ -31,11 +32,11 @@ import static com.as.dndwebsite.services.places.KingdomService.KINGDOM_NOT_FOUND
 public class RegionService {
     private final RegionRepository regionRepository;
     private final KingdomRepository kingdomRepository;
-    private final CultureService cultureService;
+    private final CultureRepository cultureRepository;
     private final PlaceService placeService;
     private final ImageService imageService;
-    private final Converter converter;
-    protected final static String REGION_NOT_FOUND_MSG =
+    private final ImageConverter converter;
+    protected static final String REGION_NOT_FOUND_MSG =
             "Region with name %s not found";
 
     public List<Region> getRegions() {
@@ -110,13 +111,13 @@ public class RegionService {
     }
 
     public void setCultureToRegion(String cultureName, Long regionId) {
-        Culture culture = cultureService.getCulture(cultureName);
+        Culture culture = cultureRepository.findByName(cultureName).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, regionId)));
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
         region.getCultures().add(culture);
     }
 
     public void removeCultureFromRegion(String cultureName, Long regionId) {
-        Culture culture = cultureService.getCulture(cultureName);
+        Culture culture = cultureRepository.findByName(cultureName).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, regionId)));
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
         region.getCultures().remove(culture);
     }

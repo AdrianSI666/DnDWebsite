@@ -7,8 +7,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/dnd
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+    username: postgres
+    password: projektanto
     driverClassName: org.postgresql.Driver
   jpa:
     hibernate:

@@ -1,10 +1,10 @@
-package com.as.dndwebsite.repository;
+package com.as.dndwebsite.race;
 
-import com.as.dndwebsite.domain.Race;
+import com.as.dndwebsite.dto.EntryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface RaceRepository extends JpaRepository<Race, Long> {
-    Optional<Race> findByName(String name);
+    Optional<EntryDTO> findByName(String name);
 }

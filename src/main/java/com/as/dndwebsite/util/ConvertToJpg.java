@@ -1,6 +1,9 @@
 package com.as.dndwebsite.util;
 
-import com.as.dndwebsite.domain.Image;
+import com.as.dndwebsite.image.Image;
+import com.as.dndwebsite.image.ImageRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -10,9 +13,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class ConvertToJpg implements Converter {
-    public ConvertToJpg() {
-    }
+@Component
+@RequiredArgsConstructor
+public class ConvertToJpg implements ImageConverter {
+    private final ImageRepository imageRepository;
 
     public Image convert(MultipartFile file, byte[] image) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(image);
@@ -36,6 +40,6 @@ public class ConvertToJpg implements Converter {
         } else {
             fileName = "No name";
         }
-        return new Image(baos.toByteArray(), fileName);
+        return imageRepository.save(new Image(baos.toByteArray(), fileName));
     }
 }

@@ -1,6 +1,5 @@
-package com.as.dndwebsite.repository;
+package com.as.dndwebsite.culture;
 
-import com.as.dndwebsite.domain.Culture;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

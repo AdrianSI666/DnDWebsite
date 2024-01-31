@@ -21,13 +21,13 @@ const RaceProfiles = () => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const fetchRace = () => {
-    axios.get(`http://${localhost}:8090/race/all`).then(res => {
+    axios.get(`http://${localhost}:8090/races`).then(res => {
       setRaceData(res.data)
     })
   }
 
   const removeImage = (raceId, imageId) => {
-    axios.delete(`http://${localhost}:8090/race/delete/${raceId}/${imageId}`).then(res => {
+    axios.delete(`http://${localhost}:8090/races/delete/${raceId}/${imageId}`).then(res => {
       setRaceData(res.data)
     })
   }
@@ -42,7 +42,7 @@ const RaceProfiles = () => {
     formData.append("image", file);
 
     axios.post(
-      `http://${localhost}:8090/race/${id}/image`,
+      `http://${localhost}:8090/races/${id}/image`,
       formData,
       {
         headers: {
@@ -62,14 +62,14 @@ const RaceProfiles = () => {
       name,
       description
     }
-    axios.post(`http://${localhost}:8090/race/save`, newRace)
+    axios.post(`http://${localhost}:8090/races/save`, newRace)
       .then(response => setRaceData([...raceData, response.data]))
       .catch(err => console.log(err))
   }
 
   function deleteRace(e, id) {
     e.preventDefault()
-    axios.delete(`http://${localhost}:8090/race/delete/` + id)
+    axios.delete(`http://${localhost}:8090/races/delete/` + id)
       .then(() => setRaceData(raceData.filter(item => item.race.id !== id)))
       .catch(err => console.log(err))
   }
@@ -80,7 +80,7 @@ const RaceProfiles = () => {
       name,
       description
     }
-    axios.put(`http://${localhost}:8090/race/update/` + id, newRace)
+    axios.put(`http://${localhost}:8090/races/update/` + id, newRace)
       .then(() => {
         raceData.forEach(data => {
           let race = data.race
@@ -100,13 +100,13 @@ const RaceProfiles = () => {
     const newSubrace = {
       name
     }
-    axios.put(`http://${localhost}:8090/race/subrace/` + id, newSubrace)
+    axios.put(`http://${localhost}:8090/races/subrace/` + id, newSubrace)
       .then(() => fetchRace())
       .catch(err => console.log(err))
   }
 
   function deleteSubrace(subraceId) {
-    axios.delete(`http://${localhost}:8090/race/subrace/` + subraceId,)
+    axios.delete(`http://${localhost}:8090/races/subrace/` + subraceId,)
       .then(response => setRaceData(response.data))
       .catch(err => console.log(err))
   }
@@ -118,15 +118,31 @@ const RaceProfiles = () => {
     500: 1
   };
 
-  const renderRace = raceData.map((data) => {
-    let race = data.race
-    let subraces = data.subraceList
+  const renderRace = raceData.map((race) => {
     let props = {
       raceId:race.id,
       raceName:race.name
       }
     return (
-      <Accordion key={race.id} defaultActiveKey={['0']}>
+      <Accordion key={race.id} defaultActiveKey={['0']} onSelect={(e) => {
+        if (e !== null){ // if e === null, that means that an accordion item was collapsed rather than expanded. e will be non-null when an item is expanded
+          axios.get(`http://${localhost}:8090/races/${race.id}/images`).then(res => {
+            raceData.forEach(rD => {
+              if(rD.id == race.id){
+                rD.images = res.data
+              }
+            })
+            axios.get(`http://${localhost}:8090/races/${race.id}/subraces`).then(res2 => {
+              raceData.forEach(rD => {
+                if(rD.id == race.id){
+                  rD.subraces = res2.data
+                }
+              })
+              setRaceData(raceData)
+            })
+          })
+        }
+      }}>
         <Accordion.Item eventKey={race.id}>
           <Accordion.Header>{race.name}</Accordion.Header>
           <Accordion.Body>
@@ -168,7 +184,7 @@ const RaceProfiles = () => {
               Add subrace
             </Button>
             <div className="subObject">
-              {subraces.map(onesubrace => {
+              {race.subraces.map(onesubrace => {
                 const subraceName = onesubrace.name
                 return (
                   <div key={onesubrace.id}>
@@ -204,7 +220,7 @@ const RaceProfiles = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Dodanie kultury
+            Adding race
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

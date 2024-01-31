@@ -1,6 +1,6 @@
 package com.as.dndwebsite.domain.places;
 
-import com.as.dndwebsite.domain.Image;
+import com.as.dndwebsite.domain.Entry;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,14 +13,12 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name="continent", schema = "public")
-public class Continent {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique=true)
-    private String name;
-    @Column(columnDefinition="TEXT")
-    private String description;
-    @ManyToMany(cascade=CascadeType.ALL)
-    private Collection<Image> images;
+public class Continent extends Entry {
+    @OneToMany(mappedBy = "continent")
+    private Collection<Kingdom> kingdoms;
+
+
+    public Continent(String name, String description) {
+        super(name, description);
+    }
 }

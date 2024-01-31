@@ -1,8 +1,8 @@
 package com.as.dndwebsite.domain.places;
 
-import com.as.dndwebsite.domain.Image;
-import com.as.dndwebsite.domain.Race;
-import com.as.dndwebsite.domain.Subrace;
+import com.as.dndwebsite.domain.Entry;
+import com.as.dndwebsite.race.Race;
+import com.as.dndwebsite.race.subrace.SubRace;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,20 +15,16 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name="place", schema = "public")
-public class Place {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique=true)
-    private String name;
-    @Column(columnDefinition="TEXT")
-    private String description;
+public class Place extends Entry {
     @ManyToOne
     private Region region;
-    @ManyToMany(cascade=CascadeType.ALL)
-    private Collection<Image> images;
     @ManyToMany
     private Collection<Race> races;
     @ManyToMany
-    private Collection<Subrace> subRaces;
+    private Collection<SubRace> subRaces;
+
+
+    public Place(String name, String description) {
+        super(name, description);
+    }
 }
