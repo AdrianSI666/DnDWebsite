@@ -27,8 +27,8 @@ public class CultureService {
     public Page<EntryDTO> getCultures(PageInfo page) {
         log.info("Getting Cultures");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
-        Page<Culture> documentPage = cultureRepository.findAll(paging);
-        return documentPage.map(mapper::map);
+        Page<Culture> culturePage = cultureRepository.findAll(paging);
+        return culturePage.map(mapper::map);
     }
 
     public EntryDTO getCulture(String name) {

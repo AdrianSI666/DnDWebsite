@@ -35,14 +35,14 @@ public class SubRaceService {
     public Page<EntryDTO> getSubRaces(PageInfo page) {
         log.info("Getting SubRaces");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
-        Page<SubRace> documentPage = subraceRepository.findAll(paging);
-        return documentPage.map(mapper::map);
+        Page<SubRace> subRacePage = subraceRepository.findAll(paging);
+        return subRacePage.map(mapper::map);
     }
 
     public EntryDTO getSubRaceByName(String name) {
         log.info("Getting SubRace with name: " + name);
-        return mapper.map(subraceRepository.findByName(name).orElseThrow(
-                () -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, name))));
+        return subraceRepository.findByName(name).orElseThrow(
+                () -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, name)));
     }
 
     public EntryDTO saveSubRace(EntryDTO entryDTO) {
@@ -65,8 +65,8 @@ public class SubRaceService {
         subraceRepository.deleteById(id);
     }
 
-    public List<EntryDTO> getSubRacesInRelationToRace(Long raceId) {
-        return subraceRepository.findAllByRaceId(raceId);
+    public List<EntryDTO> getSubRacesInRelationToRace(String name) {
+        return subraceRepository.findAllByRaceName(name);
     }
 
     public void setRaceToSubRace(Long subRaceId, Long raceId) {

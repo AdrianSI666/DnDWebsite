@@ -51,7 +51,7 @@ public class RaceController {
         EntryDTO race = raceService.getRace(name);
         List<EntryDTO> subRaces = raceService.getSubRacesOfRace(race.id());
         List<ImageDTO> imageDTOS = raceImagesService.getImagesOfRace(race.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(race, subRaces, imageDTOS));
+        return ResponseEntity.ok().body(new EntryFullDTO(race, null, subRaces, imageDTOS));
     }
 
     @PostMapping
@@ -61,7 +61,7 @@ public class RaceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateRace(@PathVariable("id") Long id,
-                                        @RequestBody EntryDTO race) {
+                                                 @RequestBody EntryDTO race) {
         raceService.updateRace(race, id);
         return ResponseEntity.ok().build();
     }
@@ -82,22 +82,22 @@ public class RaceController {
 
     @DeleteMapping("/{raceId}/image/{imageId}")
     public ResponseEntity<HttpStatus> deleteImageFromRace(@PathVariable("raceId") Long raceId,
-                                                 @PathVariable("imageId") Long imageId) {
+                                                          @PathVariable("imageId") Long imageId) {
         raceImagesService.deleteImageFromRace(raceId, imageId);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{raceId}/subrace")
+    @PostMapping("/{raceId}/subrace")
     public ResponseEntity<HttpStatus> addSubRace(@PathVariable("raceId") Long raceId,
-                                        @RequestBody EntryDTO subRace) {
+                                                 @RequestBody EntryDTO subRace) {
         raceService.addSubRace(raceId, subRace);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{raceId}/subRace/{subRaceId}")
-    public ResponseEntity<HttpStatus> deleteSubRace(@PathVariable("raceId") Long raceId,
-                                           @PathVariable("subRaceId") Long subRaceId) {
-        raceService.deleteSubRaceFromRace(raceId, subRaceId);
+    public ResponseEntity<HttpStatus> removeSubRace(@PathVariable("raceId") Long raceId,
+                                                    @PathVariable("subRaceId") Long subRaceId) {
+        raceService.removeSubRaceFromRace(raceId, subRaceId);
         return ResponseEntity.ok().build();
     }
 }

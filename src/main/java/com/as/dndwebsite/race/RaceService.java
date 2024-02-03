@@ -33,8 +33,8 @@ public class RaceService {
     public Page<EntryDTO> getRaces(PageInfo page) {
         log.info("Getting races");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
-        Page<Race> documentPage = raceRepository.findAll(paging);
-        return documentPage.map(mapper::map);
+        Page<Race> racePage = raceRepository.findAll(paging);
+        return racePage.map(mapper::map);
     }
 
     public EntryDTO getRace(String name) {
@@ -61,7 +61,6 @@ public class RaceService {
         Race race = raceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, id)));
         log.info("Deleting Race with id {}", id);
-        subraceRepository.deleteAllByRaceId(id);
         raceRepository.delete(race);
     }
 
@@ -78,11 +77,15 @@ public class RaceService {
         race.getSubRaces().add(subrace);
     }
 
-    public void deleteSubRaceFromRace(Long raceId, Long subRaceId) {
+    public void removeSubRaceFromRace(Long raceId, Long subRaceId) {
         log.info("Deleting subRace {} from race {}", subRaceId, raceId);
         Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
         SubRace subrace = subraceRepository.findById(subRaceId).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subRaceId)));
         race.getSubRaces().remove(subrace);
         subrace.setRace(null);
+    }
+
+    public EntryDTO getRaceOfSubRace(long id) {
+        return raceRepository.findBySubRaces_Id(id).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, id)));
     }
 }

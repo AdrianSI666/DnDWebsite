@@ -4,6 +4,7 @@ import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.race.RaceService;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import java.util.Map;
 @RequestMapping("/subraces")
 @RequiredArgsConstructor
 public class SubRaceController {
+    private final RaceService raceService;
     private final SubRaceService subRaceService;
     private final SubRaceImagesService subRaceImagesService;
     private final IPageMapper pageMapper;
@@ -45,13 +47,14 @@ public class SubRaceController {
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getSubRaceByName(@PathVariable("name") String name) {
         EntryDTO subRace = subRaceService.getSubRaceByName(name);
+        EntryDTO race = raceService.getRaceOfSubRace(subRace.id());
         List<ImageDTO> images = subRaceImagesService.getImagesOfSubRace(subRace.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(subRace, new ArrayList<>(), images));
+        return ResponseEntity.ok().body(new EntryFullDTO(subRace, race, new ArrayList<>(), images));
     }
 
-    @GetMapping("/race/{id}")
-    public ResponseEntity<List<EntryDTO>> getSubRacesWithRelationToRace(@PathVariable("id") Long id) {
-        return ResponseEntity.ok().body(subRaceService.getSubRacesInRelationToRace(id));
+    @GetMapping("/race/{name}")
+    public ResponseEntity<List<EntryDTO>> getSubRacesWithRelationToRace(@PathVariable("name") String name) {
+        return ResponseEntity.ok().body(subRaceService.getSubRacesInRelationToRace(name));
     }
 
 

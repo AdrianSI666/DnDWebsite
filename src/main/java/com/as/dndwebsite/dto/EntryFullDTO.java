@@ -3,8 +3,9 @@ package com.as.dndwebsite.dto;
 import java.util.List;
 
 public record EntryFullDTO(
-        EntryDTO race,
-        List<EntryDTO> subRaces,
+        EntryDTO object,
+        EntryDTO domObjects,
+        List<EntryDTO> subObjects,
         List<ImageDTO> images
 ) {
 

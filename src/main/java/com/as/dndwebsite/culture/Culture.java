@@ -1,7 +1,7 @@
 package com.as.dndwebsite.culture;
 
 import com.as.dndwebsite.domain.Entry;
-import com.as.dndwebsite.domain.places.Region;
+import com.as.dndwebsite.places.kingdom.region.Region;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +26,10 @@ public class Culture extends Entry {
 
     public Culture(String name, String description) {
         super(name, description);
+    }
+
+    public Culture(String name, String description, Region region) {
+        super(name, description);
+        regions.add(region);
     }
 }

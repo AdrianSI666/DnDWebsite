@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
@@ -31,7 +32,7 @@ public abstract class Entry {
     @Column(columnDefinition = "TEXT")
     private String description;
     @ManyToMany(cascade = CascadeType.ALL)
-    private Collection<Image> images;
+    private Collection<Image> images = new ArrayList<>();
     protected Entry(String name, String description) {
         this.name = name;
         this.description = description;
