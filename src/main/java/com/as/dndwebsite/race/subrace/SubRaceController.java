@@ -1,10 +1,10 @@
 package com.as.dndwebsite.race.subrace;
 
 import com.as.dndwebsite.dto.EntryDTO;
-import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageInfo;
-import com.as.dndwebsite.race.RaceService;
+import com.as.dndwebsite.maps.kingdom.region.regionsubrace.IRegionSubRaceService;
+import com.as.dndwebsite.race.racesubrace.IRaceSubRaceService;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,9 +28,10 @@ import java.util.Map;
 @RequestMapping("/subraces")
 @RequiredArgsConstructor
 public class SubRaceController {
-    private final RaceService raceService;
-    private final SubRaceService subRaceService;
-    private final SubRaceImagesService subRaceImagesService;
+    private final IRaceSubRaceService raceSubRaceService;
+    private final ISubRaceService subRaceService;
+    private final ISubRaceImagesService subRaceImagesService;
+    private final IRegionSubRaceService regionSubRaceService;
     private final IPageMapper pageMapper;
 
     @GetMapping
@@ -39,24 +39,19 @@ public class SubRaceController {
         return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(subRaceService.getSubRaces(pageInfo)));
     }
 
-    @GetMapping("/{id}/images")
-    public ResponseEntity<List<ImageDTO>> getImagesOfSubRace(@PathVariable("id") long id) {
-        return ResponseEntity.ok().body(subRaceImagesService.getImagesOfSubRace(id));
+    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
+    public ResponseEntity<List<EntryDTO>> getAllSubRaces() {
+        return ResponseEntity.ok().body(subRaceService.getAllSubRaces());
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<EntryFullDTO> getSubRaceByName(@PathVariable("name") String name) {
+    public ResponseEntity<SubRaceDTO> getSubRaceByName(@PathVariable("name") String name) {
         EntryDTO subRace = subRaceService.getSubRaceByName(name);
-        EntryDTO race = raceService.getRaceOfSubRace(subRace.id());
+        EntryDTO race = raceSubRaceService.getRaceOfSubRace(subRace.id());
         List<ImageDTO> images = subRaceImagesService.getImagesOfSubRace(subRace.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(subRace, race, new ArrayList<>(), images));
+        List<EntryDTO> regions = regionSubRaceService.getRegionsRelatedToSubRace(subRace.id());
+        return ResponseEntity.ok().body(new SubRaceDTO(subRace, race, images, regions));
     }
-
-    @GetMapping("/race/{name}")
-    public ResponseEntity<List<EntryDTO>> getSubRacesWithRelationToRace(@PathVariable("name") String name) {
-        return ResponseEntity.ok().body(subRaceService.getSubRacesInRelationToRace(name));
-    }
-
 
     @PostMapping
     public ResponseEntity<EntryDTO> saveSubRace(@RequestBody EntryDTO subRace) {
@@ -65,7 +60,7 @@ public class SubRaceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> updateSubRace(@PathVariable("id") Long id,
-                                           @RequestBody EntryDTO entryDTO) {
+                                                    @RequestBody EntryDTO entryDTO) {
         subRaceService.updateSubRace(entryDTO, id);
         return ResponseEntity.ok().build();
     }
@@ -74,6 +69,11 @@ public class SubRaceController {
     public ResponseEntity<HttpStatus> deleteSubRace(@PathVariable("id") Long id) {
         subRaceService.deleteSubRace(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/images")
+    public ResponseEntity<List<ImageDTO>> getImagesOfSubRace(@PathVariable("id") long id) {
+        return ResponseEntity.ok().body(subRaceImagesService.getImagesOfSubRace(id));
     }
 
     @PostMapping(path = "{id}/image",
@@ -86,15 +86,8 @@ public class SubRaceController {
 
     @DeleteMapping(path = "/{id}/image/{imageId}")
     public ResponseEntity<HttpStatus> deleteImageFromSubRace(@PathVariable("id") Long id,
-                                                    @PathVariable("imageId") Long imageId) {
+                                                             @PathVariable("imageId") Long imageId) {
         subRaceImagesService.deleteImageFromSubRace(id, imageId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{subRaceId}/race/{raceId}")
-    public ResponseEntity<HttpStatus> setRaceToSubRace(@PathVariable("subRaceId") Long subRaceId,
-                                              @PathVariable("raceId") Long raceId) {
-        subRaceService.setRaceToSubRace(subRaceId, raceId);
         return ResponseEntity.ok().build();
     }
 }

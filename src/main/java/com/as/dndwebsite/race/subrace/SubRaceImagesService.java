@@ -18,20 +18,23 @@ import static com.as.dndwebsite.race.subrace.SubRaceService.SUB_RACE_NOT_FOUND_M
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
-public class SubRaceImagesService {
+public class SubRaceImagesService implements ISubRaceImagesService {
     private final SubRaceRepository subRaceRepository;
     private final ImageRepository imageRepository;
     private final IImageService imageService;
 
+    @Override
     public List<ImageDTO> getImagesOfSubRace(long id) {
         return imageRepository.findAllBySubRaces_Id(id);
     }
 
+    @Override
     public ImageDTO saveImageToSubRace(MultipartFile file, Long id) {
         SubRace subRace = subRaceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, id)));
         return imageService.saveImageToEntry(file, subRace);
     }
 
+    @Override
     public void deleteImageFromSubRace(Long raceId, Long imageId) {
         SubRace subRace = subRaceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, raceId)));
         imageService.deleteImageFromEntry(subRace, imageId);

@@ -1,7 +1,7 @@
 package com.as.dndwebsite.culture;
 
 import com.as.dndwebsite.domain.Entry;
-import com.as.dndwebsite.places.kingdom.region.Region;
+import com.as.dndwebsite.maps.kingdom.region.Region;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

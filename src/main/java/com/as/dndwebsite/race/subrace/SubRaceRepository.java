@@ -11,10 +11,11 @@ import java.util.Optional;
 public interface SubRaceRepository extends JpaRepository<SubRace, Long> {
     Optional<EntryDTO> findByName(String name);
 
-    List<EntryDTO> findAllByRaceId(Long raceId);
-    List<EntryDTO> findAllByRaceName(String name);
+    Page<EntryDTO> findAllByRaceName(String name, Pageable pageable);
 
-    List<EntryDTO> findAllByPlaces_Id(Long id);
+    List<EntryDTO> findAllByRegions_Id(Long id);
 
-    Page<EntryDTO> findAllByPlaces_Name(String name, Pageable paging);
+    Page<EntryDTO> findAllByRegions_Name(String name, Pageable paging);
+
+    List<EntryDTO> findAllByRaceId(Long id);
 }

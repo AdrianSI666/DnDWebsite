@@ -11,7 +11,8 @@ import java.util.Optional;
 public interface RaceRepository extends JpaRepository<Race, Long> {
     Optional<EntryDTO> findByName(String name);
     Optional<EntryDTO> findBySubRaces_Id(long id);
-    List<EntryDTO> findAllByPlaces_Id(Long id);
-
-    Page<EntryDTO> findAllByPlaces_Name(String name, Pageable paging);
+    List<EntryDTO> findAllByRegions_Id(Long id);
+    Page<EntryDTO> findAllByRegions_Name(String name, Pageable paging);
+    Page<EntryDTO> findAllBySubRaces_Name(String name, Pageable paging);
+    Optional<EntryDTO> findBySubRaces_Name(String name);
 }

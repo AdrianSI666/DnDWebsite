@@ -4,8 +4,6 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.race.subrace.SubRace;
-import com.as.dndwebsite.race.subrace.SubRaceRepository;
 import com.as.dndwebsite.util.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.as.dndwebsite.race.subrace.SubRaceService.SUB_RACE_NOT_FOUND_MSG;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
-public class RaceService {
+public class RaceService implements IRaceService {
     private final RaceRepository raceRepository;
-    private final SubRaceRepository subraceRepository;
     public static final String RACE_NOT_FOUND_MSG = "race with name %s not found";
     private final DomainMapper<Entry, EntryDTO> mapper;
 
+    @Override
     public Page<EntryDTO> getRaces(PageInfo page) {
         log.info("Getting races");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
@@ -37,18 +33,21 @@ public class RaceService {
         return racePage.map(mapper::map);
     }
 
+    @Override
     public EntryDTO getRace(String name) {
         log.info("Getting race");
         return raceRepository.findByName(name).orElseThrow(
                 () -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, name)));
     }
 
+    @Override
     public EntryDTO saveRace(EntryDTO race) {
         log.info("Saving new race {}", race.name());
         Race savedRace = raceRepository.save(new Race(race.name(), race.description()));
         return mapper.map(savedRace);
     }
 
+    @Override
     public void updateRace(EntryDTO race, Long id) {
         log.info("Updating Race {} with id {}", race.name(), id);
         Race oldRace = raceRepository.findById(id).orElseThrow(
@@ -57,6 +56,7 @@ public class RaceService {
         oldRace.setDescription(race.description());
     }
 
+    @Override
     public void deleteRace(long id) {
         Race race = raceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, id)));
@@ -64,28 +64,9 @@ public class RaceService {
         raceRepository.delete(race);
     }
 
-    public List<EntryDTO> getSubRacesOfRace(long id) {
-        return subraceRepository.findAllByRaceId(id);
-    }
 
-    public void addSubRace(Long raceId, EntryDTO subRace) {
-        log.info("Adding subRace {} to race {}", subRace.name(), raceId);
-        Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
-        SubRace subrace = new SubRace(subRace.name(), subRace.description());
-        subraceRepository.save(subrace);
-        subrace.setRace(race);
-        race.getSubRaces().add(subrace);
-    }
-
-    public void removeSubRaceFromRace(Long raceId, Long subRaceId) {
-        log.info("Deleting subRace {} from race {}", subRaceId, raceId);
-        Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
-        SubRace subrace = subraceRepository.findById(subRaceId).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subRaceId)));
-        race.getSubRaces().remove(subrace);
-        subrace.setRace(null);
-    }
-
-    public EntryDTO getRaceOfSubRace(long id) {
-        return raceRepository.findBySubRaces_Id(id).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, id)));
+    @Override
+    public List<EntryDTO> getAllRaces() {
+        return raceRepository.findAll().stream().map(mapper::map).toList();
     }
 }

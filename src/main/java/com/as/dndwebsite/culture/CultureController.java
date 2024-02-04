@@ -4,6 +4,7 @@ import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.maps.kingdom.region.regionculture.IRegionCultureService;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,14 +29,20 @@ import java.util.Map;
 @RequestMapping("/cultures")
 @RequiredArgsConstructor
 public class CultureController {
-    private final CultureService cultureService;
-    private final CultureImagesService cultureImagesService;
+    private final ICultureService cultureService;
+    private final ICultureImagesService cultureImagesService;
+    private final IRegionCultureService regionCultureService;
     private final IPageMapper pageMapper;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getCultures(@RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
         Page<EntryDTO> dataToSend = cultureService.getCultures(pageInfo);
         return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(dataToSend));
+    }
+
+    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
+    public ResponseEntity<List<EntryDTO>> getAllCultures() {
+        return ResponseEntity.ok().body(cultureService.getAllCultures());
     }
 
     @GetMapping("/{id}/images")
@@ -48,7 +54,8 @@ public class CultureController {
     public ResponseEntity<EntryFullDTO> getCultureByName(@PathVariable("name") String name) {
         EntryDTO culture = cultureService.getCulture(name);
         List<ImageDTO> imageDTOS = cultureImagesService.getImagesOfCulture(culture.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(culture, new ArrayList<>(), imageDTOS));
+        List<EntryDTO> regions = regionCultureService.getRegionsRelatedToCulture(culture.id());
+        return ResponseEntity.ok().body(new EntryFullDTO(culture, null, regions, imageDTOS));
     }
 
     @PostMapping

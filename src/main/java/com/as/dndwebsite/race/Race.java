@@ -1,7 +1,7 @@
 package com.as.dndwebsite.race;
 
 import com.as.dndwebsite.domain.Entry;
-import com.as.dndwebsite.places.kingdom.region.place.Place;
+import com.as.dndwebsite.maps.kingdom.region.Region;
 import com.as.dndwebsite.race.subrace.SubRace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,13 +29,18 @@ public class Race extends Entry {
     @OneToMany(mappedBy = "race", fetch = FetchType.LAZY)
     private Collection<SubRace> subRaces = new ArrayList<>();
     @ManyToMany(mappedBy = "races")
-    private Collection<Place> places = new ArrayList<>();
+    private Collection<Region> regions = new ArrayList<>();
 
     public Race(String name, String description) {
         super(name, description);
     }
-    public Race(String name, String description, Place place) {
+    public Race(String name, String description, Region region) {
         super(name, description);
-        this.places.add(place);
+        this.regions.add(region);
+    }
+
+    public Race(String name, String description, SubRace subRace) {
+        super(name, description);
+        this.subRaces.add(subRace);
     }
 }

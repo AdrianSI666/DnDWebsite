@@ -1,9 +1,10 @@
 package com.as.dndwebsite.race;
 
 import com.as.dndwebsite.dto.EntryDTO;
-import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.maps.kingdom.region.regionrace.IRegionRaceService;
+import com.as.dndwebsite.race.racesubrace.IRaceSubRaceService;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,10 @@ import java.util.Map;
 @RequestMapping("/races")
 @RequiredArgsConstructor
 public class RaceController {
-    private final RaceService raceService;
-    private final RaceImagesService raceImagesService;
+    private final IRaceService raceService;
+    private final IRaceImagesService raceImagesService;
+    private final IRaceSubRaceService raceSubRaceService;
+    private final IRegionRaceService regionRaceService;
     private final IPageMapper pageMapper;
 
     @GetMapping
@@ -36,22 +39,18 @@ public class RaceController {
         return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(raceService.getRaces(pageInfo)));
     }
 
-    @GetMapping("/{id}/images")
-    public ResponseEntity<List<ImageDTO>> getImagesOfRace(@PathVariable("id") long id) {
-        return ResponseEntity.ok().body(raceImagesService.getImagesOfRace(id));
-    }
-
-    @GetMapping("/{id}/subRace")
-    public ResponseEntity<List<EntryDTO>> getSubRacesOfRace(@PathVariable("id") long id) {
-        return ResponseEntity.ok().body(raceService.getSubRacesOfRace(id));
+    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
+    public ResponseEntity<List<EntryDTO>> getAllRaces() {
+        return ResponseEntity.ok().body(raceService.getAllRaces());
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<EntryFullDTO> getRaceByName(@PathVariable("name") String name) {
+    public ResponseEntity<RaceDTO> getRaceByName(@PathVariable("name") String name) {
         EntryDTO race = raceService.getRace(name);
-        List<EntryDTO> subRaces = raceService.getSubRacesOfRace(race.id());
+        List<EntryDTO> subRaces = raceSubRaceService.getSubRacesOfRace(race.id());
         List<ImageDTO> imageDTOS = raceImagesService.getImagesOfRace(race.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(race, null, subRaces, imageDTOS));
+        List<EntryDTO> regions = regionRaceService.getRegionsRelatedToRace(race.id());
+        return ResponseEntity.ok().body(new RaceDTO(race, subRaces, imageDTOS, regions));
     }
 
     @PostMapping
@@ -72,6 +71,11 @@ public class RaceController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}/images")
+    public ResponseEntity<List<ImageDTO>> getImagesOfRace(@PathVariable("id") long id) {
+        return ResponseEntity.ok().body(raceImagesService.getImagesOfRace(id));
+    }
+
     @PostMapping(path = "{raceId}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,17 +91,4 @@ public class RaceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{raceId}/subrace")
-    public ResponseEntity<HttpStatus> addSubRace(@PathVariable("raceId") Long raceId,
-                                                 @RequestBody EntryDTO subRace) {
-        raceService.addSubRace(raceId, subRace);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{raceId}/subRace/{subRaceId}")
-    public ResponseEntity<HttpStatus> removeSubRace(@PathVariable("raceId") Long raceId,
-                                                    @PathVariable("subRaceId") Long subRaceId) {
-        raceService.removeSubRaceFromRace(raceId, subRaceId);
-        return ResponseEntity.ok().build();
-    }
 }
