@@ -8,7 +8,7 @@ import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.subrace.SubRace;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 

@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.maps.kingdom.Kingdom;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 

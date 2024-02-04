@@ -3,15 +3,26 @@ package com.as.dndwebsite.image;
 import com.as.dndwebsite.culture.Culture;
 import com.as.dndwebsite.maps.Continent;
 import com.as.dndwebsite.maps.kingdom.Kingdom;
-import com.as.dndwebsite.maps.kingdom.region.place.Place;
 import com.as.dndwebsite.maps.kingdom.region.Region;
+import com.as.dndwebsite.maps.kingdom.region.place.Place;
 import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.subrace.SubRace;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
-import org.hibernate.annotations.Type;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.JdbcTypeCode;
 
-import javax.persistence.*;
+import java.sql.Types;
 import java.util.Collection;
 
 @Entity
@@ -26,7 +37,7 @@ public class Image {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private long id;
         @Lob
-        @Type(type = "org.hibernate.type.ImageType")
+        @JdbcTypeCode(Types.LONGVARBINARY)
         private byte[] content;
         private String name;
         @ManyToMany(mappedBy = "images")
