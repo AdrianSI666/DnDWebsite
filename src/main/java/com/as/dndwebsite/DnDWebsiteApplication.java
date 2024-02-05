@@ -11,7 +11,7 @@ import org.springframework.web.filter.CorsFilter;
 public class DnDWebsiteApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DnDWebsiteApplication.class, args);
+        SpringApplication.run(DnDWebsiteApplication.class, args); //commit test if it will show that i committed this
     }
 
     @Bean
