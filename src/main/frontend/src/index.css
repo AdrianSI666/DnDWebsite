@@ -1,0 +1,34 @@
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.MuiPagination-root {
+  button {
+    color: #8a9dfc;
+    border-color: #8a9dfc;
+    background-color: rgba(25, 118, 210, 0.12);
+  }
+
+  button.Mui-selected {
+    color: #0011ff;
+    border-color: rgba(29, 70, 255, 0.295);
+    background-color: rgba(51, 70, 255, 0.12);
+  }
+}
