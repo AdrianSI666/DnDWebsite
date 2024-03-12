@@ -2,15 +2,25 @@ package com.as.dndwebsite.maps.kingdom.region;
 
 import com.as.dndwebsite.culture.Culture;
 import com.as.dndwebsite.domain.Entry;
-import com.as.dndwebsite.maps.kingdom.region.place.Place;
 import com.as.dndwebsite.maps.kingdom.Kingdom;
+import com.as.dndwebsite.maps.kingdom.region.place.Place;
 import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.subrace.SubRace;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,13 +33,13 @@ public class Region extends Entry {
     @ManyToOne
     private Kingdom kingdom;
     @OneToMany(mappedBy = "region")
-    private Collection<Place> places = new ArrayList<>();
+    private Set<Place> places = new LinkedHashSet<>();
     @ManyToMany
-    private Collection<Culture> cultures = new ArrayList<>();
+    private Set<Culture> cultures = new HashSet<>();
     @ManyToMany
-    private Collection<Race> races = new ArrayList<>();
+    private Set<Race> races = new HashSet<>();
     @ManyToMany
-    private Collection<SubRace> subRaces = new ArrayList<>();
+    private Set<SubRace> subRaces = new HashSet<>();
 
     public Region(String name, String description) {
         super(name, description);
@@ -57,5 +67,15 @@ public class Region extends Entry {
     public Region(String name, String description, SubRace subRace) {
         super(name, description);
         this.subRaces.add(subRace);
+    }
+
+    @PreRemove
+    private void removeMembers() {
+        this.cultures.forEach(culture -> culture.getRegions().removeIf(region -> region == this));
+        this.cultures.clear();
+        this.races.forEach(race -> race.getRegions().removeIf(region -> region == this));
+        this.races.clear();
+        this.subRaces.forEach(subRace -> subRace.getRegions().removeIf(region -> region == this));
+        this.subRaces.clear();
     }
 }

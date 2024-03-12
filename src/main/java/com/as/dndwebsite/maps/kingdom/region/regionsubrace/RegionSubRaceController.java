@@ -1,6 +1,7 @@
 package com.as.dndwebsite.maps.kingdom.region.regionsubrace;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/regions")
@@ -26,15 +24,15 @@ public class RegionSubRaceController {
     private final IPageMapper pageMapper;
 
     @GetMapping("/{name}/subrace")
-    public ResponseEntity<Map<String, Object>> getSubRacesRelatedToRegion(@PathVariable("name") String name,
-                                                                          @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(regionSubRaceService.getSubRacesRelatedToRegion(name, pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getSubRacesRelatedToRegion(@PathVariable("name") String name,
+                                                                        PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionSubRaceService.getSubRacesRelatedToRegion(name, pageInfo)));
     }
 
     @GetMapping("/subrace/{name}")
-    public ResponseEntity<Map<String, Object>> getRegionsRelatedToSubRace(@PathVariable("name") String name,
-                                                                          @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(regionSubRaceService.getRegionsRelatedToSubRace(name, pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getRegionsRelatedToSubRace(@PathVariable("name") String name,
+                                                                          PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionSubRaceService.getRegionsRelatedToSubRace(name, pageInfo)));
     }
 
     @PostMapping("/{regionId}/subrace")

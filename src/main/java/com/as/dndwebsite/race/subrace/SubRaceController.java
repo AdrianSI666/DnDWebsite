@@ -2,6 +2,7 @@ package com.as.dndwebsite.race.subrace;
 
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.ImageDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.kingdom.region.regionsubrace.IRegionSubRaceService;
 import com.as.dndwebsite.race.racesubrace.IRaceSubRaceService;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/subraces")
@@ -35,8 +35,8 @@ public class SubRaceController {
     private final IPageMapper pageMapper;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getSubRaces(@RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(subRaceService.getSubRaces(pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getSubRaces(PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(subRaceService.getSubRaces(pageInfo)));
     }
 
     @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to

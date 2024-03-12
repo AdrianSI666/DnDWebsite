@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.continentkingdom.IContinentKingdomService;
 import com.as.dndwebsite.util.IPageMapper;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/continents")
@@ -34,8 +34,8 @@ public class ContinentController {
     private final IPageMapper pageMapper;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getContinents(@RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(continentService.getContinents(pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getContinents(PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(continentService.getContinents(pageInfo)));
     }
 
     @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to

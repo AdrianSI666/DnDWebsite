@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps.kingdom.region.place;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.kingdom.region.regionplace.IRegionPlaceService;
 import com.as.dndwebsite.util.IPageMapper;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/places")
@@ -34,8 +34,8 @@ public class PlaceController {
     private final IPageMapper pageMapper;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getPlaces(@RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(placeService.getPlaces(pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getPlaces(PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(placeService.getPlaces(pageInfo)));
     }
 
     @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to

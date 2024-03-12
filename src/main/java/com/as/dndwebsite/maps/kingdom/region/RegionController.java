@@ -2,6 +2,7 @@ package com.as.dndwebsite.maps.kingdom.region;
 
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.ImageDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.kingdom.kingdomregion.IKingdomRegionService;
 import com.as.dndwebsite.maps.kingdom.region.regionculture.IRegionCultureService;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/regions")
@@ -41,8 +41,8 @@ public class RegionController {
     private final IPageMapper pageMapper;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getRegions(@RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(regionService.getRegions(pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getRegions(PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionService.getRegions(pageInfo)));
     }
 
     @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to

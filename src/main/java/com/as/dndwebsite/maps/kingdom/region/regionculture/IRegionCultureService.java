@@ -13,7 +13,7 @@ public interface IRegionCultureService {
 
     void addCultureRegionRelation(Long cultureId, Long regionId);
 
-    void addNewCultureToRegionRelation(EntryDTO culture, Long regionId);
+    EntryDTO addNewCultureToRegionRelation(EntryDTO culture, Long regionId);
 
     void removeCultureRegionRelation(Long cultureId, Long regionId);
 
@@ -21,5 +21,5 @@ public interface IRegionCultureService {
 
     Page<EntryDTO> getRegionsRelatedToCulture(String name, PageInfo pageInfo);
 
-    void addNewRegionToCultureRelation(EntryDTO region, Long cultureId);
+    EntryDTO addNewRegionToCultureRelation(EntryDTO region, Long cultureId);
 }

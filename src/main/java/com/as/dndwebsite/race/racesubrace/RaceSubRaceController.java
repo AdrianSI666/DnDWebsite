@@ -1,6 +1,7 @@
 package com.as.dndwebsite.race.racesubrace;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/races")
@@ -26,9 +24,9 @@ public class RaceSubRaceController {
     private final IPageMapper pageMapper;
 
     @GetMapping("/{name}/subRace")
-    public ResponseEntity<Map<String, Object>> getSubRacesOfRace(@PathVariable("name") String name,
-                                                                 @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(raceSubRaceService.getSubRacesOfRace(name, pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getSubRacesOfRace(@PathVariable("name") String name,
+                                                               PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(raceSubRaceService.getSubRacesOfRace(name, pageInfo)));
     }
 
     @GetMapping("/subRace/{name}")

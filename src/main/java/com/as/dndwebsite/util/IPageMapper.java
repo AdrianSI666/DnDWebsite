@@ -1,9 +1,8 @@
 package com.as.dndwebsite.util;
 
+import com.as.dndwebsite.dto.PageDTO;
 import org.springframework.data.domain.Page;
 
-import java.util.Map;
-
 public interface IPageMapper {
-    <T> Map<String, Object> convertDataFromPageToMap(Page<T> dataDTOPage);
+    <T> PageDTO<T> mapPageDataToPageDTO(Page<T> dataDTOPage);
 }

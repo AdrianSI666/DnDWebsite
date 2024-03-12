@@ -1,6 +1,7 @@
 package com.as.dndwebsite.maps.kingdom.kingdomregion;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +14,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/kingdoms")
 @RequiredArgsConstructor
 public class KingdomRegionController {
-    private final KingdomRegionService kingdomRegionService;
+    private final IKingdomRegionService kingdomRegionService;
     private final IPageMapper pageMapper;
 
     @GetMapping("/{name}/region")
-    public ResponseEntity<Map<String, Object>> getRegionsWithRelationToKingdom(@PathVariable("name") String name,
-                                                                               @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(kingdomRegionService.getRegionsRelatedToKingdom(name, pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getRegionsWithRelationToKingdom(@PathVariable("name") String name,
+                                                                             PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(kingdomRegionService.getRegionsRelatedToKingdom(name, pageInfo)));
     }
 
     @GetMapping("/region/{name}")

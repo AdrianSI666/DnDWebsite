@@ -1,6 +1,7 @@
 package com.as.dndwebsite.maps.kingdom.region.regionrace;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/regions")
@@ -26,17 +24,17 @@ public class RegionRaceController {
     private final IPageMapper pageMapper;
 
     @GetMapping("/{name}/race")
-    public ResponseEntity<Map<String, Object>> getRacesRelatedToRegion(@PathVariable("name") String name,
-                                                                       @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<EntryDTO>> getRacesRelatedToRegion(@PathVariable("name") String name,
+                                                                     PageInfo pageInfo) {
 
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(regionRaceService.getRacesRelatedToRegion(name, pageInfo)));
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionRaceService.getRacesRelatedToRegion(name, pageInfo)));
     }
 
     @GetMapping("/race/{name}")
-    public ResponseEntity<Map<String, Object>> getRegionsRelatedToRace(@PathVariable("name") String name,
-                                                                       @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<EntryDTO>> getRegionsRelatedToRace(@PathVariable("name") String name,
+                                                                       PageInfo pageInfo) {
 
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(regionRaceService.getRegionsRelatedToRace(name, pageInfo)));
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionRaceService.getRegionsRelatedToRace(name, pageInfo)));
     }
 
     @PostMapping("/{regionId}/race")

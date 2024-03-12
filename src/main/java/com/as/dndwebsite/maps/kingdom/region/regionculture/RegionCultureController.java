@@ -1,6 +1,7 @@
 package com.as.dndwebsite.maps.kingdom.region.regionculture;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/regions")
@@ -26,42 +24,41 @@ public class RegionCultureController {
     private final IPageMapper pageMapper;
 
     @GetMapping("/{name}/culture")
-    public ResponseEntity<Map<String, Object>> getCulturesRelatedToRegion(@PathVariable("name") String name,
-                                                                          @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(regionCultureService.getCulturesRelatedToRegion(name, pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getCulturesRelatedToRegion(@PathVariable("name") String name,
+                                                                        PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionCultureService.getCulturesRelatedToRegion(name, pageInfo)));
     }
 
     @GetMapping("/culture/{name}")
-    public ResponseEntity<Map<String, Object>> getRegionsRelatedToCulture(@PathVariable("name") String name,
-                                                                          @RequestParam(defaultValue = ("number:1; size:30")) PageInfo pageInfo) {
-        return ResponseEntity.ok().body(pageMapper.convertDataFromPageToMap(regionCultureService.getRegionsRelatedToCulture(name, pageInfo)));
+    public ResponseEntity<PageDTO<EntryDTO>> getRegionsRelatedToCulture(@PathVariable("name") String name,
+                                                                        PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionCultureService.getRegionsRelatedToCulture(name, pageInfo)));
     }
 
     @PostMapping(path = "/{regionId}/culture")
-    public ResponseEntity<HttpStatus> addNewCultureRegionRelation(@PathVariable("regionId") Long regionId,
-                                                                  @RequestBody EntryDTO culture) {
-        regionCultureService.addNewCultureToRegionRelation(culture, regionId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<EntryDTO> addNewCultureRegionRelation(@PathVariable("regionId") Long regionId,
+                                                                @RequestBody EntryDTO culture) {
+        return ResponseEntity.ok().body(regionCultureService.addNewCultureToRegionRelation(culture, regionId));
     }
 
     @PostMapping(path = "/culture/{cultureId}")
-    public ResponseEntity<HttpStatus> addNewRegionCultureRegion(@PathVariable("cultureId") Long cultureId,
-                                                   @RequestBody EntryDTO region) {
-        regionCultureService.addNewRegionToCultureRelation(region, cultureId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<EntryDTO> addNewRegionCultureRegion(@PathVariable("cultureId") Long cultureId,
+                                                              @RequestBody EntryDTO region) {
+        EntryDTO newRegion = regionCultureService.addNewRegionToCultureRelation(region, cultureId);
+        return ResponseEntity.ok().body(newRegion);
     }
 
     @PutMapping(path = "/{regionId}/culture/{cultureId}")
-    public ResponseEntity<HttpStatus> addCulture(@PathVariable("regionId") Long regionId,
-                                                 @PathVariable("cultureId") Long culture) {
+    public ResponseEntity<HttpStatus> addCultureRegionRelation(@PathVariable("regionId") Long regionId,
+                                                               @PathVariable("cultureId") Long culture) {
         regionCultureService.addCultureRegionRelation(culture, regionId);
         return ResponseEntity.ok().build();
     }
 
 
     @DeleteMapping("/{regionId}/culture/{cultureId}")
-    public ResponseEntity<HttpStatus> deleteCulture(@PathVariable("regionId") Long regionId,
-                                                    @PathVariable("cultureId") Long cultureId) {
+    public ResponseEntity<HttpStatus> deleteCultureRegionRelation(@PathVariable("regionId") Long regionId,
+                                                                  @PathVariable("cultureId") Long cultureId) {
         regionCultureService.removeCultureRegionRelation(cultureId, regionId);
         return ResponseEntity.ok().build();
     }

@@ -11,7 +11,7 @@ import org.springframework.web.filter.CorsFilter;
 public class DnDWebsiteApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DnDWebsiteApplication.class, args); //commit test if it will show that i committed this
+        SpringApplication.run(DnDWebsiteApplication.class, args);
     }
 
     @Bean
@@ -20,6 +20,7 @@ public class DnDWebsiteApplication {
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:8091/");
+        config.addAllowedOrigin("http://localhost:3000/");
         config.addAllowedHeader("*"); // this allows all headers
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("HEAD");

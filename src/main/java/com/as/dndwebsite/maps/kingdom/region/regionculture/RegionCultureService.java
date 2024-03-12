@@ -2,11 +2,14 @@ package com.as.dndwebsite.maps.kingdom.region.regionculture;
 
 import com.as.dndwebsite.culture.Culture;
 import com.as.dndwebsite.culture.CultureRepository;
+import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.kingdom.region.Region;
 import com.as.dndwebsite.maps.kingdom.region.RegionRepository;
+import com.as.dndwebsite.util.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,7 @@ import static com.as.dndwebsite.maps.kingdom.region.RegionService.REGION_NOT_FOU
 public class RegionCultureService implements IRegionCultureService {
     private final RegionRepository regionRepository;
     private final CultureRepository cultureRepository;
-
+    private final DomainMapper<Entry, EntryDTO> mapper;
     @Override
     public List<EntryDTO> getCulturesRelatedToRegion(Long regionId){
         return cultureRepository.findAllByRegions_Id(regionId);
@@ -51,24 +54,26 @@ public class RegionCultureService implements IRegionCultureService {
     }
 
     @Override
-    public void addNewRegionToCultureRelation(EntryDTO region, Long cultureId) {
+    public EntryDTO addNewRegionToCultureRelation(EntryDTO region, Long cultureId) {
         Culture culture = cultureRepository.findById(cultureId).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, cultureId)));
         Region newRegion = regionRepository.save(new Region(region.name(), region.description(), culture));
         culture.getRegions().add(newRegion);
+        return mapper.map(newRegion);
     }
 
     @Override
-    public void addNewCultureToRegionRelation(EntryDTO culture, Long regionId) {
+    public EntryDTO addNewCultureToRegionRelation(EntryDTO culture, Long regionId) {
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
         Culture newCulture = cultureRepository.save(new Culture(culture.name(), culture.description(), region));
         region.getCultures().add(newCulture);
+        return mapper.map(newCulture);
     }
 
     @Override
     public void addCultureRegionRelation(Long cultureId, Long regionId) {
         Culture culture = cultureRepository.findById(cultureId).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, cultureId)));
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
-        region.getCultures().add(culture);
+        if(!region.getCultures().add(culture)) throw new BadRequestException("Region %s and Culture %s are already linked".formatted(region.getName(), culture.getName()));
         culture.getRegions().add(region);
     }
 

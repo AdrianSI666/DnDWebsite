@@ -3,6 +3,7 @@ package com.as.dndwebsite.race.subrace;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.maps.kingdom.region.Region;
 import com.as.dndwebsite.race.Race;
+import jakarta.persistence.PreRemove;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,10 @@ import java.util.Collection;
 @Table(name = "sub_race", schema = "public")
 public class SubRace extends Entry {
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Race race;
     @ManyToMany(mappedBy = "subRaces")
+    @ToString.Exclude
     private Collection<Region> regions = new ArrayList<>();
 
     public SubRace(String name, String description) {
@@ -43,5 +46,11 @@ public class SubRace extends Entry {
     public SubRace(String name, String description, Race race) {
         super(name, description);
         this.race = race;
+    }
+
+    @PreRemove
+    private void removeMembers() {
+        this.regions.forEach(region -> region.getSubRaces().removeIf(subRace -> subRace == this));
+        this.regions.clear();
     }
 }
