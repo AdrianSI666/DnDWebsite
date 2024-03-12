@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 interface IAddFromListModal {
     addExistingObjectToRelation: (coreObjectId: number, objectToAddId: number, objectName: string, objectDescription: string) => Promise<void>;
-    fillTheListWithObjects: () => Promise<void | EntryDTO[]>
+    fillTheListWithSubObjects: () => Promise<void | EntryDTO[]>
     categoryName: string;
     id?: number;
 }
@@ -17,7 +17,7 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
     return (
         <div className="d-grid gap-2 p-1">
             <Button variant="success" onClick={() => {
-                if (objectsList.length === 0) props.fillTheListWithObjects()
+                if (objectsList.length === 0) props.fillTheListWithSubObjects()
                     .then(result => setObjectsList(result!))
                 setModalShow(true);
             }}>
@@ -43,8 +43,8 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
                         props.addExistingObjectToRelation(props.id!, idOfLinkedObject, name!, objectsList.find(object => object.id === idOfLinkedObject)?.description!).then(() => {
                             setModalShow(false);
                           }).catch((err: ApiError) => {
-                            let errorMessage = "Unexpected error, try again.";
-                            if(err.status === 409) errorMessage = `Selected ${props.categoryName} is already on this list.`
+                            let errorMessage = err.body.message;
+                            //if(err.status === 409) errorMessage = `Selected ${props.categoryName} is already on this list.`
                             throw(errorMessage)
                           }), {
                             loading: 'Saving...',

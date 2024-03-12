@@ -18,24 +18,24 @@ export function Header() {
                             <HeaderLink name="home" />
                         </li>
                         <li className="nav-item">
-                            <HeaderLink name="culture" />
+                            <HeaderLink name="cultures" />
                         </li>
                         <li className="nav-item">
                             <NavDropdown title="Races" id="basic-nav-dropdown">
-                                <HeaderLink name="race" />
+                                <HeaderLink name="races" />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="subrace" />
+                                <HeaderLink name="subraces" />
                             </NavDropdown>
                         </li>
                         <li className="nav-item">
                             <NavDropdown title="Places" id="basic-nav-dropdown">
-                                <HeaderLink name="continent" />
+                                <HeaderLink name="continents" />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="kingdom" />
+                                <HeaderLink name="kingdoms" />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="region" />
+                                <HeaderLink name="regions" />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="place" />
+                                <HeaderLink name="places" />
                             </NavDropdown>
                         </li>
                     </ul>

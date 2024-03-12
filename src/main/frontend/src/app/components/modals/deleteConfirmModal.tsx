@@ -4,8 +4,8 @@ import { ApiError } from "../../../services/openapi";
 import toast from "react-hot-toast";
 
 interface ICultureModals {
-  deleteFunction?: (id: number) => Promise<void>;
-  deleteFunctionInRelation?: (id: number, secondId: number) => Promise<void>;
+  deleteObject?: (id: number) => Promise<void>;
+  deleteObjectsInRelation?: (id: number, secondId: number) => Promise<void>;
   categoryName: string,
   title: string,
   id: number,
@@ -36,12 +36,12 @@ export function DeleteConfirmationModal(props: ICultureModals) {
         <Modal.Body>
           <Form onSubmit={(e) => {
             e.preventDefault()
-            if (props.deleteFunction)  {
-              toast.promise(props.deleteFunction(props.id).then(() => {
+            if (props.deleteObject)  {
+              toast.promise(props.deleteObject(props.id).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
                 let errorMessage = "Unexpected error, try again.";
-                if (err.status !== 500) errorMessage = err.message
+                if (err.status !== 500) errorMessage = err.body.message;
                 throw (errorMessage)
               }), {
                 loading: 'Saving...',
@@ -50,12 +50,12 @@ export function DeleteConfirmationModal(props: ICultureModals) {
               }
               );
             }
-            else if (props.deleteFunctionInRelation) {
-              toast.promise(props.deleteFunctionInRelation(props.id, props.secondId!).then(() => {
+            else if (props.deleteObjectsInRelation) {
+              toast.promise(props.deleteObjectsInRelation(props.id, props.secondId!).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
                 let errorMessage = "Unexpected error, try again.";
-                if (err.status !== 500) errorMessage = err.message
+                if (err.status !== 500) errorMessage = err.body.message;
                 throw (errorMessage)
               }), {
                 loading: 'Saving...',

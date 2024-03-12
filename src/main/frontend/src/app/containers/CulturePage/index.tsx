@@ -82,7 +82,7 @@ export function CulturePage(props: ICulturePageProps) {
     return <div>
         <div className="d-grid gap-2">
             <h1>Cultures</h1>
-            <AddNewEntryModal addFunction={saveCulture} categoryName="Culture" />
+            <AddNewEntryModal addNewEntry={saveCulture} categoryName="Culture" />
             <CultureAccordion />
             <CulturePagination pageSize={pageSize} />
         </div>

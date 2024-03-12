@@ -25,9 +25,9 @@ root.render(
           <Route path={"/"} element={<Root />}>
             <Route index element={<Home />} />
             <Route path={"home"} element={<Home />} />
-            <Route path={"culture"} element={<CulturePage />} />
-            <Route path={"culture/:name/:subname"} element={<CulturePage />} />
-            <Route path={"region/:name"} element={<RegionPage />} />
+            <Route path={"cultures"} element={<CulturePage />} />
+            <Route path={"cultures/:name/:subname"} element={<CulturePage />} />
+            <Route path={"regions/:name"} element={<RegionPage />} />
           </Route>
         </Routes>
       </Router>

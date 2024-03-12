@@ -2,11 +2,10 @@ import { createSelector } from "reselect";
 import { makeSelectCulturePage } from "./store/selector";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { Accordion } from "react-bootstrap";
-import { CultureControllerService } from "../../../services/openapi";
-import { EntryFullDTO } from "../../../services/openapi";
+import { CultureControllerService, EntryFullDTO } from "../../../services/openapi";
 import { fillCultureData } from "./store/culturePageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
-import { CultureAccordionBody } from "./cultureAccodrionBody";
+import { CultureAccordionBody } from "./cultureAccordionBody";
 
 const stateSelect = createSelector(makeSelectCulturePage, (page) => ({
   page

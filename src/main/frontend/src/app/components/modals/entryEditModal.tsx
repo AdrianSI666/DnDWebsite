@@ -3,14 +3,15 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { ApiError } from "../../../services/openapi";
 import toast from "react-hot-toast";
 
-interface ICultureModals {
+interface IEntryModals {
   updateFunction: (id: number, name: string, description: string) => Promise<void>,
   id: number,
   name: string,
   description: string,
+  categoryName: string,
 }
 
-export function CultureEditModal(props: ICultureModals) {
+export function EntryEditModal(props: IEntryModals) {
   const [modalShow, setModalShow] = useState(false);
   const [name, setName] = useState(props.name)
   const [description, setDescription] = useState(props.description)
@@ -19,7 +20,7 @@ export function CultureEditModal(props: ICultureModals) {
       <Button variant="success" onClick={() => {
         setModalShow(true);
       }}>
-        Edit culture
+        Edit {props.categoryName}
       </Button>
       <Modal
         show={modalShow}
@@ -30,7 +31,7 @@ export function CultureEditModal(props: ICultureModals) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Editing Culture
+            Editing {props.categoryName}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -40,7 +41,7 @@ export function CultureEditModal(props: ICultureModals) {
               props.updateFunction(props.id!, name!, description!).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
-                let errorMessage = "Unexpected error, try again.";
+                let errorMessage = err.body.message;
                 if (err.status === 409) errorMessage = `Name that you want to change to is already taken.`
                 throw (errorMessage)
               }), {

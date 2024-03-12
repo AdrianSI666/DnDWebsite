@@ -4,8 +4,8 @@ import toast from 'react-hot-toast';
 import { ApiError } from "../../../services/openapi";
 
 interface IAddNewEntryModal {
-  addFunction?: (name: string, description: string) => Promise<void>;
-  addFunctionToRelation?: (id: number, name: string, description: string) => Promise<void>;
+  addNewEntry?: (name: string, description: string) => Promise<void>;
+  addNewSubEntryToRelation?: (id: number, name: string, description: string) => Promise<void>;
   categoryName: string;
   id?: number;
 }
@@ -38,11 +38,11 @@ export function AddNewEntryModal(props: Readonly<IAddNewEntryModal>) {
         <Modal.Body>
           <Form onSubmit={(e) => {
             e.preventDefault();
-            if (props.addFunction) {
-              toast.promise(props.addFunction(name, description).then(() => {
+            if (props.addNewEntry) {
+              toast.promise(props.addNewEntry(name, description).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
-                let errorMessage = "Unexpected error, try again.";
+                let errorMessage = err.body.message;
                 if (err.status === 409) errorMessage = "Your given name is taken, provide other. It must be unique."
                 throw (errorMessage)
               }), {
@@ -52,11 +52,11 @@ export function AddNewEntryModal(props: Readonly<IAddNewEntryModal>) {
               }
               );
             }
-            else if (props.addFunctionToRelation) {
-              toast.promise(props.addFunctionToRelation(props.id!, name, description).then(() => {
+            else if (props.addNewSubEntryToRelation) {
+              toast.promise(props.addNewSubEntryToRelation(props.id!, name, description).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
-                let errorMessage = "Unexpected error, try again.";
+                let errorMessage = err.body.message;
                 if (err.status === 409) errorMessage = "Your given name is taken, provide other. It must be unique."
                 throw (errorMessage)
               }), {
