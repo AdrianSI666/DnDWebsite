@@ -21,14 +21,14 @@ code {
 
 .MuiPagination-root {
   button {
-    color: #8a9dfc;
-    border-color: #8a9dfc;
-    background-color: rgba(25, 118, 210, 0.12);
+    color: #00fff2;
+    border-color: #00fff2;
+    background-color: rgba(25, 189, 210, 0.12);
   }
 
   button.Mui-selected {
-    color: #0011ff;
+    color: #000000;
     border-color: rgba(29, 70, 255, 0.295);
-    background-color: rgba(51, 70, 255, 0.12);
+    background-color: rgba(51, 255, 255, 0.12);
   }
 }
