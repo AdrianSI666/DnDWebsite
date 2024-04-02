@@ -5,8 +5,7 @@ import { Col, Container, Form, Row } from "react-bootstrap";
 
 interface IPaginationData {
     pageSize: number,
-    changePage: (event: React.ChangeEvent<unknown>, value: number) => Promise<void>,
-    changePageSize: (number: number, size: number) => Promise<void>,
+    changePage: (event?: React.ChangeEvent<unknown>, value?: number, size?: number) => Promise<void>,
     page: Page<EntryFullDTO>
 }
 
@@ -19,7 +18,7 @@ export function CustomPagination(props: IPaginationData) {
             <Col md="auto">
             <Form.Select id="pageSizeSelect" defaultValue={10} onChange={e => {
                 let newPage = Math.ceil((props.page.currentPage! * props.pageSize - props.pageSize + 1) / Number(e.target.value))
-                props.changePageSize(newPage, Number(e.target.value))
+                props.changePage(e, newPage, Number(e.target.value))
             }}>
                 <option value="5" key={5}>5</option>
                 <option value="10" key={10}>10</option>

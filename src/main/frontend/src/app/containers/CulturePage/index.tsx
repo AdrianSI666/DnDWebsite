@@ -46,26 +46,12 @@ const stateSelect = createSelector(makeSelectCulturePage, (page) => ({
 }))
 
 export function CulturePage(props: ICulturePageProps) {
-    let { name, subname } = useParams();
-    console.log(name);
-    console.log(subname);
-    const [pageSize, setPageSize] = useState(10);
+    //let { name, subname } = useParams();
+    //console.log(name);
+    //console.log(subname);
+    const [pageSize, setPageSize] = useState(0);
     const { page } = useAppSelector(stateSelect);
     const { setCulturePage, addCulture } = actionDispatch(useAppDispatch());
-    const fetchCulturePage = async () => {
-        const pageInfo: PageInfo = {
-            number: 1,
-            size: pageSize
-        };
-
-        CultureControllerService.getCultures(pageInfo)
-            .then((response) => {
-                setCulturePage(response);
-            })
-            .catch((err) => {
-                console.log("My Error: ", err);
-            });
-    }
 
     const saveCulture = async (name: string, description: string): Promise<void> => {
         return CultureControllerService.saveCulture({
@@ -81,30 +67,17 @@ export function CulturePage(props: ICulturePageProps) {
             });
     }
 
-    const changeCulturePage = async (event: React.ChangeEvent<unknown>, value: number) => {
-        if (value !== page.currentPage) {
-            const pageInfo: PageInfo = {
-                number: value,
-                size: pageSize
-            };
-
-            CultureControllerService.getCultures(pageInfo)
-                .then((response) => {
-                    setCulturePage(response);
-                })
-                .catch((err) => {
-                    console.log("My Error: ", err);
-                });
-        }
-    }
-
-    const changeCulturePageSize = async (number: number, size: number) => {
-        if (size !== pageSize) {
-            const pageInfo: PageInfo = {
-                number: number,
-                size: size
-            };
+    const changeCulturePage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
+        let sendSize = pageSize
+        if(size && size !== pageSize){
+            sendSize = size
             setPageSize(size);
+        }
+        const pageInfo: PageInfo = {
+            number: value,
+            size: sendSize
+        };
+        if (value !== page.currentPage || sendSize !== pageSize) {
             CultureControllerService.getCultures(pageInfo)
                 .then((response) => {
                     setCulturePage(response);
@@ -116,14 +89,14 @@ export function CulturePage(props: ICulturePageProps) {
     }
 
     useEffect(() => {
-        fetchCulturePage();
+        changeCulturePage(undefined, 1, 10);
     }, [])
 
     return <div>
         <div className="d-grid gap-2">
             <h1>Cultures</h1>
             <AddNewEntryModal addNewEntry={saveCulture} categoryName="Culture" />
-            <CustomPagination pageSize={pageSize} changePage={changeCulturePage} page={page} changePageSize={changeCulturePageSize}/>
+            <CustomPagination pageSize={pageSize} changePage={changeCulturePage} page={page}/>
             <CultureAccordion />
         </div>
     </div>
