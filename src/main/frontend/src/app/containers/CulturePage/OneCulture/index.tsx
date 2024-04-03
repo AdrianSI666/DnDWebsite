@@ -1,5 +1,5 @@
 import { Dispatch, createSelector } from "@reduxjs/toolkit";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Accordion } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { ApiError, CultureControllerService, EntryDTO, EntryFullDTO, ImageDTO, RegionControllerService, RegionCultureControllerService } from "../../../../services/openapi";
@@ -38,7 +38,7 @@ const oneCultureSelect = createSelector(makeSelectOneCulture, (culture) => ({
 
 export function OneCulture(props: IOneCultureProps) {
     let { name } = useParams();
-    console.log(name);
+    const [ exist, setExist ] = useState(false);
     const { culture } = useAppSelector(oneCultureSelect);
     const { setCulture, addImageToCulture, removeImageFromCulture, updateCulture, addNewRegionToCulture, removeRegionFromCulture } = actionDispatch(useAppDispatch());
     const navigate = useNavigate();
@@ -46,9 +46,10 @@ export function OneCulture(props: IOneCultureProps) {
         CultureControllerService.getCultureByName(name)
             .then((response) => {
                 setCulture(response);
+                setExist(true)
             })
             .catch((err) => {
-                console.log("My Error: ", err);
+                setExist(false)
             });
     }
 
@@ -59,6 +60,7 @@ export function OneCulture(props: IOneCultureProps) {
             })
             .catch((err) => {
                 console.log("My Error: ", err);
+                throw err
             });
     }
 
@@ -74,6 +76,7 @@ export function OneCulture(props: IOneCultureProps) {
             })
             .catch((err) => {
                 console.log("My Error: ", err);
+                throw err
             });
     }
 
@@ -147,6 +150,10 @@ export function OneCulture(props: IOneCultureProps) {
     useEffect(() => {
         fetchCulture(name!);
     })
+
+    if (!exist) return <div>
+        <h1>Culture named {name} doesn't exist.</h1>
+        </div>;
 
     return <div>
         <div className="d-grid gap-2">
