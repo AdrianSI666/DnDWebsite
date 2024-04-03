@@ -1,13 +1,12 @@
+import { Dispatch, createSelector } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { ApiError, CultureControllerService, EntryDTO, EntryFullDTO, PageInfo } from "../../../services/openapi";
-import { Dispatch, createSelector } from "@reduxjs/toolkit";
-import { addCulture, setCulturePage } from "./store/culturePageSlice";
-import { useAppDispatch, useAppSelector } from "../../hooks";
 import { Page } from "../../../services/openapi/models/Page";
-import { CultureAccordion } from "./cultureAccordion";
-import { useParams } from "react-router-dom";
-import { CustomPagination } from "../../components/pagination/pagination";
 import { AddNewEntryModal } from "../../components/modals/addNewEntryModal";
+import { CustomPagination } from "../../components/pagination/pagination";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { CultureAccordion } from "./cultureAccordion";
+import { addCulture, setCulturePage } from "./store/culturePageSlice";
 import { makeSelectCulturePage } from "./store/selector";
 
 interface ICulturePageProps {
@@ -46,9 +45,6 @@ const stateSelect = createSelector(makeSelectCulturePage, (page) => ({
 }))
 
 export function CulturePage(props: ICulturePageProps) {
-    //let { name, subname } = useParams();
-    //console.log(name);
-    //console.log(subname);
     const [pageSize, setPageSize] = useState(0);
     const { page } = useAppSelector(stateSelect);
     const { setCulturePage, addCulture } = actionDispatch(useAppDispatch());
@@ -69,7 +65,7 @@ export function CulturePage(props: ICulturePageProps) {
 
     const changeCulturePage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
         let sendSize = pageSize
-        if(size && size !== pageSize){
+        if (size && size !== pageSize) {
             sendSize = size
             setPageSize(size);
         }
@@ -90,13 +86,13 @@ export function CulturePage(props: ICulturePageProps) {
 
     useEffect(() => {
         changeCulturePage(undefined, 1, 10);
-    }, [])
+    })
 
     return <div>
         <div className="d-grid gap-2">
             <h1>Cultures</h1>
             <AddNewEntryModal addNewEntry={saveCulture} categoryName="Culture" />
-            <CustomPagination pageSize={pageSize} changePage={changeCulturePage} page={page}/>
+            <CustomPagination pageSize={pageSize} changePage={changeCulturePage} page={page} />
             <CultureAccordion />
         </div>
     </div>

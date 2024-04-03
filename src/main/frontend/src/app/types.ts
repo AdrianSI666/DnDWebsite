@@ -1,5 +1,6 @@
-import { ICulturePageState } from "./containers/CulturePage/types";
+import { ICulturePageState, IOneCultureState } from "./containers/CulturePage/types";
 
 export interface IRootState {
-    culturePage: ICulturePageState
+    culturePage: ICulturePageState,
+    oneCulture: IOneCultureState,
 }

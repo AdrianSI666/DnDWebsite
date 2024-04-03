@@ -45,7 +45,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
 })
 
 
-export function CultureAccordionBody(props: ICultureAccordionBody) {
+export function CultureAccordionBody(props: Readonly<ICultureAccordionBody>) {
 
   const { removeCulture, addImageToCulture, removeImageFromCulture, updateCulture, addNewRegionToCulture, removeRegionFromCulture } = actionDispatch(useAppDispatch());
 
@@ -74,7 +74,7 @@ export function CultureAccordionBody(props: ICultureAccordionBody) {
       });
   }
 
-  function saveImageToCulture(acceptedFiles: Blob) {
+  async function saveImageToCulture(acceptedFiles: Blob) {
     return CultureControllerService.saveImageToCulture(props.culture.object?.id!, { image: acceptedFiles })
       .then((res) => addImageToCulture(res, props.culture.object?.id!))
       .catch((err: ApiError) => {
@@ -148,7 +148,7 @@ export function CultureAccordionBody(props: ICultureAccordionBody) {
     updateEntry={editCulture} 
     saveImageToEntry={saveImageToCulture}
     deleteImageFromEntry={deleteImageFromCulture}
-    subCategoryName={"region"} subCategoryLink={"regions"} 
+    subCategoryName={"Regions"} subCategoryLink={"regions"} 
     fillTheListWithAllSubObjects={getAllRegions}
     addExistingObjectToRelation={saveExistingRegionToCulture}
     deleteSubObject={removeRegionFromCultureFunction}

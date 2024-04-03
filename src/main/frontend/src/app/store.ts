@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import culturePageReducer from './containers/CulturePage/store/culturePageSlice';
 import logger from 'redux-logger'
+import oneCultureSlice from './containers/CulturePage/OneCulture/store/oneCultureSlice';
 
 export const store = configureStore({
   reducer: {
-    culturePage: culturePageReducer
+    culturePage: culturePageReducer,
+    oneCulture: oneCultureSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
