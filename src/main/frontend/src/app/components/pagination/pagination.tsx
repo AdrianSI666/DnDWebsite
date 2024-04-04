@@ -1,15 +1,14 @@
 import { Pagination } from "@mui/material";
-import { EntryFullDTO } from "../../../services/openapi";
-import { Page } from "../../../services/openapi/models/Page";
 import { Col, Container, Form, Row } from "react-bootstrap";
+import { Page } from "../../../services/openapi/models/Page";
 
 interface IPaginationData {
     pageSize: number,
     changePage: (event?: React.ChangeEvent<unknown>, value?: number, size?: number) => Promise<void>,
-    page: Page<EntryFullDTO>
+    page: Page<any>
 }
 
-export function CustomPagination(props: IPaginationData) {
+export function CustomPagination(props: Readonly<IPaginationData>) {
     return <Container>
         <Row className="justify-content-center">
             <Form.Label htmlFor="pageSizeSelect" column sm={2}>

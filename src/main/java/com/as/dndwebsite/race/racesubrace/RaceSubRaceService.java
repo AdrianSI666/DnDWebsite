@@ -1,5 +1,6 @@
 package com.as.dndwebsite.race.racesubrace;
 
+import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
@@ -7,6 +8,7 @@ import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.RaceRepository;
 import com.as.dndwebsite.race.subrace.SubRace;
 import com.as.dndwebsite.race.subrace.SubRaceRepository;
+import com.as.dndwebsite.util.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import static com.as.dndwebsite.race.subrace.SubRaceService.SUB_RACE_NOT_FOUND_M
 public class RaceSubRaceService implements IRaceSubRaceService {
     private final RaceRepository raceRepository;
     private final SubRaceRepository subraceRepository;
+    private final DomainMapper<Entry, EntryDTO> mapper;
     @Override
     public Page<EntryDTO> getSubRacesOfRace(String name, PageInfo page) {
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
@@ -37,6 +40,11 @@ public class RaceSubRaceService implements IRaceSubRaceService {
     @Override
     public List<EntryDTO> getSubRacesOfRace(Long id) {
         return subraceRepository.findAllByRaceId(id);
+    }
+
+    @Override
+    public List<EntryDTO> getAllSubRacesWithoutRace() {
+        return subraceRepository.findAllByRaceIdIsNull();
     }
 
     @Override
@@ -50,18 +58,20 @@ public class RaceSubRaceService implements IRaceSubRaceService {
     }
 
     @Override
-    public void addNewSubRaceRaceRelation(Long raceId, EntryDTO subRace) {
+    public EntryDTO addNewSubRaceRaceRelation(Long raceId, EntryDTO subRace) {
         log.info("Adding subRace {} to race {}", subRace.name(), raceId);
         Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
-        SubRace subrace = subraceRepository.save(new SubRace(subRace.name(), subRace.description(), race));
-        race.getSubRaces().add(subrace);
+        SubRace newSubrace = subraceRepository.save(new SubRace(subRace.name(), subRace.description(), race));
+        race.getSubRaces().add(newSubrace);
+        return mapper.map(newSubrace);
     }
 
     @Override
-    public void addNewRaceSubRaceRelation(Long subRaceId, EntryDTO race) {
+    public EntryDTO addNewRaceSubRaceRelation(Long subRaceId, EntryDTO race) {
         SubRace subRace = subraceRepository.findById(subRaceId).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subRaceId)));
         Race newRace = raceRepository.save(new Race(race.name(), race.description(), subRace));
         subRace.setRace(newRace);
+        return mapper.map(newRace);
     }
 
     @Override

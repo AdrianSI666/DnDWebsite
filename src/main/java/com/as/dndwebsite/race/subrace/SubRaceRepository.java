@@ -18,4 +18,5 @@ public interface SubRaceRepository extends JpaRepository<SubRace, Long> {
     Page<EntryDTO> findAllByRegions_Name(String name, Pageable paging);
 
     List<EntryDTO> findAllByRaceId(Long id);
+    List<EntryDTO> findAllByRaceIdIsNull();
 }

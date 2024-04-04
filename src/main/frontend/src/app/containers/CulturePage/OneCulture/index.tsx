@@ -38,7 +38,7 @@ const oneCultureSelect = createSelector(makeSelectOneCulture, (culture) => ({
 
 export function OneCulture(props: IOneCultureProps) {
     let { name } = useParams();
-    const [ exist, setExist ] = useState(false);
+    const [exist, setExist] = useState(false);
     const { culture } = useAppSelector(oneCultureSelect);
     const { setCulture, addImageToCulture, removeImageFromCulture, updateCulture, addNewRegionToCulture, removeRegionFromCulture } = actionDispatch(useAppDispatch());
     const navigate = useNavigate();
@@ -48,7 +48,7 @@ export function OneCulture(props: IOneCultureProps) {
                 setCulture(response);
                 setExist(true)
             })
-            .catch((err) => {
+            .catch((_) => {
                 setExist(false)
             });
     }
@@ -153,7 +153,7 @@ export function OneCulture(props: IOneCultureProps) {
 
     if (!exist) return <div>
         <h1>Culture named {name} doesn't exist.</h1>
-        </div>;
+    </div>;
 
     return <div>
         <div className="d-grid gap-2">
@@ -163,16 +163,18 @@ export function OneCulture(props: IOneCultureProps) {
                     <Accordion.Header>
                         <h5><b>{culture.object?.name}</b></h5>
                     </Accordion.Header>
-                    <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={culture}
-                        deleteEntry={removeCulture}
-                        updateEntry={editCulture}
-                        saveImageToEntry={saveImageToCulture}
-                        deleteImageFromEntry={deleteImageFromCulture}
-                        subCategoryName={"Regions"} subCategoryLink={"regions"}
-                        fillTheListWithAllSubObjects={getAllRegions}
-                        addNewSubEntryToRelation={saveNewRegionToCulture}
-                        addExistingObjectToRelation={saveExistingRegionToCulture}
-                        deleteSubObject={removeRegionFromCultureFunction} />
+                    <Accordion.Body>
+                        <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={culture}
+                            deleteEntry={removeCulture}
+                            updateEntry={editCulture}
+                            saveImageToEntry={saveImageToCulture}
+                            deleteImageFromEntry={deleteImageFromCulture}
+                            subCategoryName={"Region"} subCategoryLink={"regions"}
+                            fillTheListWithAllSubObjects={getAllRegions}
+                            addNewSubEntryToRelation={saveNewRegionToCulture}
+                            addExistingObjectToRelation={saveExistingRegionToCulture}
+                            deleteSubObject={removeRegionFromCultureFunction} />
+                    </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
         </div>

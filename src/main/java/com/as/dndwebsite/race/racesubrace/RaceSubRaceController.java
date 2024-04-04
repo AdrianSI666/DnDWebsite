@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/races")
 @RequiredArgsConstructor
@@ -34,24 +36,27 @@ public class RaceSubRaceController {
         return ResponseEntity.ok().body(raceSubRaceService.getRaceOfSubRace(name));
     }
 
-    @PostMapping("/{raceId}/subrace")
-    public ResponseEntity<HttpStatus> addNewSubRaceRelation(@PathVariable("raceId") Long raceId,
+    @GetMapping("/unset/subRace")
+    public ResponseEntity<List<EntryDTO>> getAllSubRacesWithoutRace() {
+        return ResponseEntity.ok().body(raceSubRaceService.getAllSubRacesWithoutRace());
+    }
+
+    @PostMapping("/{raceId}/subRace")
+    public ResponseEntity<EntryDTO> addNewSubRaceRelation(@PathVariable("raceId") Long raceId,
                                                     @RequestBody EntryDTO subRace) {
-        raceSubRaceService.addNewSubRaceRaceRelation(raceId, subRace);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(raceSubRaceService.addNewSubRaceRaceRelation(raceId, subRace));
     }
 
-    @PostMapping("/subrace/{subraceId}")
-    public ResponseEntity<HttpStatus> addNewRaceRelation(@PathVariable("subraceId") Long subRaceId,
+    @PostMapping("/subRace/{subRaceId}")
+    public ResponseEntity<EntryDTO> addNewRaceRelation(@PathVariable("subRaceId") Long subRaceId,
                                                          @RequestBody EntryDTO race) {
-        raceSubRaceService.addNewRaceSubRaceRelation(subRaceId, race);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(raceSubRaceService.addNewRaceSubRaceRelation(subRaceId, race));
     }
 
-    @PutMapping("/{raceId}/subrace/{subraceId}")
+    @PutMapping("/{raceId}/subRace/{subRaceId}")
     public ResponseEntity<HttpStatus> addSubRaceRelationRace(@PathVariable("raceId") Long raceId,
-                                                 @PathVariable("subraceId") Long subraceId) {
-        raceSubRaceService.addSubRaceRaceRelation(raceId, subraceId);
+                                                 @PathVariable("subRaceId") Long subRaceId) {
+        raceSubRaceService.addSubRaceRaceRelation(raceId, subRaceId);
         return ResponseEntity.ok().build();
     }
 

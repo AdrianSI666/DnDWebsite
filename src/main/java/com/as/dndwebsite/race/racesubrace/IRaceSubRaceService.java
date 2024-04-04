@@ -10,12 +10,13 @@ public interface IRaceSubRaceService {
     Page<EntryDTO> getSubRacesOfRace(String name, PageInfo page);
 
     List<EntryDTO> getSubRacesOfRace(Long id);
+    List<EntryDTO> getAllSubRacesWithoutRace();
 
     EntryDTO getRaceOfSubRace(long id);
 
-    void addNewSubRaceRaceRelation(Long raceId, EntryDTO subRace);
+    EntryDTO addNewSubRaceRaceRelation(Long raceId, EntryDTO subRace);
 
-    void addNewRaceSubRaceRelation(Long subRaceId, EntryDTO race);
+    EntryDTO addNewRaceSubRaceRelation(Long subRaceId, EntryDTO race);
 
     void addSubRaceRaceRelation(Long raceId, Long subRaceId);
 

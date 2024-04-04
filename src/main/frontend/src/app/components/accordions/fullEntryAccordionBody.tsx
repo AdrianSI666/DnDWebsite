@@ -1,4 +1,4 @@
-import { Accordion, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { EntryDTO, EntryFullDTO } from "../../../services/openapi";
 import { DeleteConfirmationModal } from "../modals/deleteConfirmModal";
 import { EntryEditModal } from "../modals/entryEditModal";
@@ -37,7 +37,7 @@ const breakpointColumnsObj = {
 
 export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>) {
     return (
-        <Accordion.Body>
+        <>
             <DeleteConfirmationModal deleteObject={props.deleteEntry} categoryName={props.categoryName} title={props.entryFullDTO.object?.name!} id={props.entryFullDTO.object?.id!} />
             <Form.Control as="textarea" rows={12} readOnly value={props.entryFullDTO.object?.description} />
             <EntryEditModal updateFunction={props.updateEntry} categoryName={props.categoryName} id={props.entryFullDTO.object?.id!} name={props.entryFullDTO.object?.name!} description={props.entryFullDTO.object?.description!} />
@@ -45,28 +45,28 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
             <Dropzone onDrop={(acceptedFiles: Blob) => 
                 toast.promise(props.saveImageToEntry(acceptedFiles), {
                         loading: 'Saving...',
-                        success: `Sucesfully added image.`,
+                        success: `Successfully added image.`,
                         error: (err) => `Operation failed.\n ${err}`,
                       }) }/>
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="my-masonry-grid"
                 columnClassName="my-masonry-grid_column">
-                {props.entryFullDTO.images!.map(oneimage => {
-                    const imageSrc = "data:image/jpg;base64," + oneimage.content
-                    const imageName = oneimage.name
+                {props.entryFullDTO.images!.map(oneImage => {
+                    const imageSrc = "data:image/jpg;base64," + oneImage.content
+                    const imageName = oneImage.name
                     return (
-                        <div key={oneimage.id}>
+                        <div key={oneImage.id}>
                             <h3>{imageName}</h3>
                             <img src={imageSrc} className="img-fluid" width="300px" alt={imageName} />
-                            <DeleteConfirmationModal deleteObjectsInRelation={props.deleteImageFromEntry} categoryName="Image" title={oneimage.name!} id={props.entryFullDTO.object?.id!} secondId={oneimage.id!} />
+                            <DeleteConfirmationModal deleteObjectsInRelation={props.deleteImageFromEntry} categoryName="Image" title={oneImage.name!} id={props.entryFullDTO.object?.id!} secondId={oneImage.id} />
                         </div>)
                 })}
             </Masonry>
 
-            <h3>{props.subCategoryName}</h3>
-            <AddNewEntryModal categoryName={`new ${props.subCategoryName} that uses this ${props.categoryName}`} addNewSubEntryToRelation={props.addNewSubEntryToRelation} id={props.entryFullDTO.object?.id!} />
-            <AddFromListModal categoryName={`${props.subCategoryName} from the list`} fillTheListWithSubObjects={props.fillTheListWithAllSubObjects} addExistingObjectToRelation={props.addExistingObjectToRelation} id={props.entryFullDTO.object?.id!} />
+            <h3>{props.subCategoryName}s</h3>
+            <AddNewEntryModal categoryName={`new ${props.subCategoryName} that uses this ${props.categoryName}`} addNewSubEntryToRelation={props.addNewSubEntryToRelation} id={props.entryFullDTO.object?.id} />
+            <AddFromListModal categoryName={`${props.subCategoryName} from the list`} fillTheListWithSubObjects={props.fillTheListWithAllSubObjects} addExistingObjectToRelation={props.addExistingObjectToRelation} id={props.entryFullDTO.object?.id} />
 
             <List className="p-1">
                 {props.entryFullDTO.subObjects!.map(subObject => {
@@ -76,7 +76,7 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
                                 key={subObject.id}
                                 disableGutters
                                 secondaryAction={
-                                    <DeleteConfirmationModal deleteObjectsInRelation={props.deleteSubObject} categoryName="Region" title={subObject.name!} id={props.entryFullDTO.object?.id!} secondId={subObject.id!} />
+                                    <DeleteConfirmationModal deleteObjectsInRelation={props.deleteSubObject} categoryName={props.subCategoryName} title={subObject.name!} id={props.entryFullDTO.object?.id!} secondId={subObject.id} />
                                 }
                             >
                                 <ListItemText primary={subObject.name} secondary={
@@ -86,6 +86,6 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
                         </div>)
                 })}
             </List>
-        </Accordion.Body>
+        </>
     )
 }

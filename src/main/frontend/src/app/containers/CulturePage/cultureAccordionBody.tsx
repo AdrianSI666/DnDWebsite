@@ -5,6 +5,7 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { useAppDispatch } from "../../hooks";
 import "../../styles/subObjects.css"
 import { FullEntryAccordionBody } from "../../components/accordions/fullEntryAccordionBody";
+import { Accordion } from "react-bootstrap";
 
 interface ICultureAccordionBody {
   culture: EntryFullDTO
@@ -143,15 +144,17 @@ export function CultureAccordionBody(props: Readonly<ICultureAccordionBody>) {
 
 
   return (
-    <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={props.culture} 
-    deleteEntry={deleteCulture} 
-    updateEntry={editCulture} 
-    saveImageToEntry={saveImageToCulture}
-    deleteImageFromEntry={deleteImageFromCulture}
-    subCategoryName={"Regions"} subCategoryLink={"regions"} 
-    fillTheListWithAllSubObjects={getAllRegions}
-    addExistingObjectToRelation={saveExistingRegionToCulture}
-    deleteSubObject={removeRegionFromCultureFunction}
-    addNewSubEntryToRelation={saveNewRegionToCulture} />
+    <Accordion.Body>
+      <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={props.culture} 
+      deleteEntry={deleteCulture} 
+      updateEntry={editCulture} 
+      saveImageToEntry={saveImageToCulture}
+      deleteImageFromEntry={deleteImageFromCulture}
+      subCategoryName={"Region"} subCategoryLink={"regions"} 
+      fillTheListWithAllSubObjects={getAllRegions}
+      addExistingObjectToRelation={saveExistingRegionToCulture}
+      deleteSubObject={removeRegionFromCultureFunction}
+      addNewSubEntryToRelation={saveNewRegionToCulture} />
+    </Accordion.Body>
   )
 }

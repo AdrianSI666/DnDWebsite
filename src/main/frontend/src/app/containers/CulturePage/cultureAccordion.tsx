@@ -7,7 +7,7 @@ import { fillCultureData } from "./store/culturePageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 import { CultureAccordionBody } from "./cultureAccordionBody";
 
-const stateSelect = createSelector(makeSelectCulturePage, (page) => ({
+const stateCulturePageSelect = createSelector(makeSelectCulturePage, (page) => ({
   page
 }))
 
@@ -18,7 +18,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
 })
 
 export function CultureAccordion() {
-  const { page } = useAppSelector(stateSelect);
+  const { page } = useAppSelector(stateCulturePageSelect);
   const isEmptyPage = !page || !page.data || page.data.length === 0;
   const { fillCultureData } = actionDispatch(useAppDispatch());
   const fetchCultureData = async (name: string) => {
