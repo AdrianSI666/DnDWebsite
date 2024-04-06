@@ -35,7 +35,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
 const oneRaceSelect = createSelector(makeSelectOneRace, (raceDTO) => ({
     raceDTO
 }))
-//Test v2
+//Test v3
 export function OneRace(props: IOneRaceProps) {
     let { name } = useParams();
     const [exist, setExist] = useState(false);
