@@ -1,5 +1,6 @@
 <h1> DnDWebsite </h1>
 Website to write and store data of races, cultures and places.
+<h3>Check branch ReactTS for latest updates</h3>
 
 <h1>!!!!! This page went under hard reconstruction and now frontend from main branch doesn't match backend and won't work!!!!</h1>
 Backend still works fine, while frontend is beeing reconstructed on branch "reactTS". When I will finish, it will merge to main again, till then you can only use or get inspiration from backend reliably.
