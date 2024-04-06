@@ -36,6 +36,7 @@ const oneRaceSelect = createSelector(makeSelectOneRace, (raceDTO) => ({
     raceDTO
 }))
 
+//Test change
 export function OneRace(props: IOneRaceProps) {
     let { name } = useParams();
     const [exist, setExist] = useState(false);
