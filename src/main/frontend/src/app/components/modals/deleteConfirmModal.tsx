@@ -6,13 +6,13 @@ import toast from "react-hot-toast";
 interface ICultureModals {
   deleteObject?: (id: number) => Promise<void>;
   deleteObjectsInRelation?: (id: number, secondId: number) => Promise<void>;
-  categoryName: string,
+  deleteButtonActionText: string;
   title: string,
   id: number,
   secondId?: number
 }
 
-export function DeleteConfirmationModal(props: ICultureModals) {
+export function DeleteConfirmationModal(props: Readonly<ICultureModals>) {
   const [modalShow, setModalShow] = useState(false);
 
   return (
@@ -20,7 +20,7 @@ export function DeleteConfirmationModal(props: ICultureModals) {
       <Button variant="danger" onClick={() => {
         setModalShow(true);
       }}>
-        Delete {props.categoryName}
+        {props.deleteButtonActionText}
       </Button>
       <Modal
         show={modalShow}
@@ -30,7 +30,7 @@ export function DeleteConfirmationModal(props: ICultureModals) {
         centered>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {props.categoryName} delete confirmation
+            Confirm operation: {props.deleteButtonActionText}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

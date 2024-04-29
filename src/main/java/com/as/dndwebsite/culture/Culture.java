@@ -1,7 +1,7 @@
 package com.as.dndwebsite.culture;
 
 import com.as.dndwebsite.domain.Entry;
-import com.as.dndwebsite.maps.kingdom.region.Region;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PreRemove;

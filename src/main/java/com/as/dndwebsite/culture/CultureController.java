@@ -5,7 +5,7 @@ import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
-import com.as.dndwebsite.maps.kingdom.region.regionculture.IRegionCultureService;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionculture.IRegionCultureService;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

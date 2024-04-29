@@ -1,36 +1,17 @@
-import { Dispatch, createSelector } from "@reduxjs/toolkit";
+import { createSelector } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { Accordion } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import { ApiError, CultureControllerService, EntryDTO, EntryFullDTO, ImageDTO, RegionControllerService, RegionCultureControllerService } from "../../../../services/openapi";
+import { useParams } from "react-router-dom";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { addImageToCulture, addNewRegionToCulture, removeImageFromCulture, removeRegionFromCulture, setCulture, updateCulture } from "./store/oneCultureSlice";
+import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
+import { getAllRegions } from "../../../hookFunctions/RegionHooks";
+import { useAppSelector } from "../../../hooks";
+import { OneCultureSubObjectsFunction } from "./oneCultureSubObjectsFunction";
 import { makeSelectOneCulture } from "./store/selector";
+import { UseOneCultureFunction } from "./useOneCultureFunction";
 
 interface IOneCultureProps {
 }
-
-const actionDispatch = (dispatch: Dispatch) => ({
-    setCulture: (culture: EntryFullDTO) => {
-        dispatch(setCulture(culture))
-    },
-    updateCulture: (culture: EntryDTO) => {
-        dispatch(updateCulture(culture))
-    },
-    addImageToCulture: (imageDTO: ImageDTO) => {
-        dispatch(addImageToCulture(imageDTO))
-    },
-    removeImageFromCulture: (imageId: number) => {
-        dispatch(removeImageFromCulture(imageId))
-    },
-    addNewRegionToCulture: (regionDTO: EntryDTO) => {
-        dispatch(addNewRegionToCulture(regionDTO))
-    },
-    removeRegionFromCulture: (regionId: number) => {
-        dispatch(removeRegionFromCulture(regionId))
-    }
-})
 
 const oneCultureSelect = createSelector(makeSelectOneCulture, (culture) => ({
     culture
@@ -40,116 +21,14 @@ export function OneCulture(props: IOneCultureProps) {
     let { name } = useParams();
     const [exist, setExist] = useState(false);
     const { culture } = useAppSelector(oneCultureSelect);
-    const { setCulture, addImageToCulture, removeImageFromCulture, updateCulture, addNewRegionToCulture, removeRegionFromCulture } = actionDispatch(useAppDispatch());
-    const navigate = useNavigate();
-    const fetchCulture = async (name: string) => {
-        CultureControllerService.getCultureByName(name)
-            .then((response) => {
-                setCulture(response);
-                setExist(true)
-            })
-            .catch((_) => {
-                setExist(false)
-            });
-    }
+    const { fetchCulture, removeCulture, editCulture, saveImageToCulture, deleteImageFromCulture } = UseOneCultureFunction({ cultureId: culture.object?.id });
+    const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = OneCultureSubObjectsFunction({ cultureId: culture.object?.id });
 
-    const removeCulture = async (id: number) => {
-        return CultureControllerService.deleteCulture(id)
-            .then((_) => {
-                navigate("/cultures")
-            })
-            .catch((err) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const editCulture = async (id: number, name: string, description: string) => {
-        let entryDTO: EntryDTO = {
-            id: id,
-            name: name,
-            description: description
-        }
-        return CultureControllerService.updateCulture(id, entryDTO)
-            .then((_) => {
-                updateCulture(entryDTO)
-            })
-            .catch((err) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const saveImageToCulture = async (acceptedFiles: Blob) => {
-        return CultureControllerService.saveImageToCulture(culture.object?.id!, { image: acceptedFiles })
-            .then((res) => addImageToCulture(res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const deleteImageFromCulture = async (cultureId: number, imageId: number) => {
-        return CultureControllerService.deleteImageFromCulture(cultureId, imageId)
-            .then(() => removeImageFromCulture(imageId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const saveNewRegionToCulture = async (cultureId: number, name: string, description: string): Promise<void> => {
-        let entryDTO: EntryDTO = {
-            name: name,
-            description: description
-        }
-        return RegionCultureControllerService.addNewRegionCultureRegion(cultureId, entryDTO)
-            .then((result) => {
-                addNewRegionToCulture(result);
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const saveExistingRegionToCulture = async (cultureId: number, regionId: number, regionName: string, regionDescription: string): Promise<void> => {
-        let entryDTO: EntryDTO = {
-            name: regionName,
-            description: regionDescription,
-            id: regionId
-        }
-        return RegionCultureControllerService.addCultureRegionRelation(regionId, cultureId)
-            .then(() => {
-                addNewRegionToCulture(entryDTO);
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err.body);
-                throw err
-            });
-    }
-
-    const getAllRegions = async () => {
-        return await RegionControllerService.getAllRegions()
-            .catch((err) => {
-                console.log("My Error: ", err);
-            });
-    }
-
-    const removeRegionFromCultureFunction = async (cultureId: number, regionId: number): Promise<void> => {
-        return RegionCultureControllerService.deleteCulture(regionId, cultureId)
-            .then(() => {
-                removeRegionFromCulture(regionId);
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
 
     useEffect(() => {
-        fetchCulture(name!);
-    })
+        fetchCulture(name!).then((res) => setExist(res));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     if (!exist) return <div>
         <h1>Culture named {name} doesn't exist.</h1>
@@ -169,11 +48,19 @@ export function OneCulture(props: IOneCultureProps) {
                             updateEntry={editCulture}
                             saveImageToEntry={saveImageToCulture}
                             deleteImageFromEntry={deleteImageFromCulture}
-                            subCategoryName={"Region"} subCategoryLink={"regions"}
+                            deleteMainObjectButtonActionText={"Delete this culture"}
+                            deleteImageButtonActionText={"Delete image"} />
+                        <SubCategoryBody mainEntryId={culture.object?.id!}
+                            subObjects={culture.subObjects}
+                            subCategoryTitle={"Region"} subCategoryLink={"regions"}
                             fillTheListWithAllSubObjects={getAllRegions}
                             addNewSubEntryToRelation={saveNewRegionToCulture}
                             addExistingObjectToRelation={saveExistingRegionToCulture}
-                            deleteSubObject={removeRegionFromCultureFunction} />
+                            deleteSubObject={removeRegionFromCultureFunction}
+                            addButtonActionText={"Add new region that use this culture"}
+                            addExistingButtonActionText={"Link existing region from list to this culture"}
+                            deleteButtonActionText={`Unlink this region from ${culture.object?.name}`}
+                            subCategoryLinkText={"region"} />
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>

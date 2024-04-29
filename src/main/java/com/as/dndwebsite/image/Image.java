@@ -1,10 +1,10 @@
 package com.as.dndwebsite.image;
 
 import com.as.dndwebsite.culture.Culture;
-import com.as.dndwebsite.maps.Continent;
-import com.as.dndwebsite.maps.kingdom.Kingdom;
-import com.as.dndwebsite.maps.kingdom.region.Region;
-import com.as.dndwebsite.maps.kingdom.region.place.Place;
+import com.as.dndwebsite.maps.plane.continent.Continent;
+import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.place.Place;
 import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.subrace.SubRace;
 import com.fasterxml.jackson.annotation.JsonBackReference;

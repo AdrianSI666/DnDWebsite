@@ -86,12 +86,13 @@ export function CulturePage(props: ICulturePageProps) {
 
     useEffect(() => {
         changeCulturePage(undefined, 1, 10);
-    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return <div>
         <div className="d-grid gap-2">
             <h1>Cultures</h1>
-            <AddNewEntryModal addNewEntry={saveCulture} categoryName="Culture" />
+            <AddNewEntryModal addNewEntry={saveCulture} addButtonActionText={"Create new culture"} />
             <CustomPagination pageSize={pageSize} changePage={changeCulturePage} page={page} />
             <CultureAccordion />
         </div>

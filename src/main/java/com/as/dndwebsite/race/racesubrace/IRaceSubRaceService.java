@@ -5,6 +5,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IRaceSubRaceService {
     Page<EntryDTO> getSubRacesOfRace(String name, PageInfo page);
@@ -12,7 +13,7 @@ public interface IRaceSubRaceService {
     List<EntryDTO> getSubRacesOfRace(Long id);
     List<EntryDTO> getAllSubRacesWithoutRace();
 
-    EntryDTO getRaceOfSubRace(long id);
+    Optional<EntryDTO> getRaceOfSubRace(long id);
 
     EntryDTO addNewSubRaceRaceRelation(Long raceId, EntryDTO subRace);
 

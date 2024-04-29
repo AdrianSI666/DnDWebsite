@@ -4,8 +4,8 @@ import { IOneCultureState } from "../../types";
 
 const initialState: IOneCultureState = {
     culture: {
-        object: undefined,
-        domObjects: undefined,
+        object: {},
+        domObjects: {},
         subObjects: new Array<EntryDTO>(),
         images: new Array<ImageDTO>()
     }

@@ -14,8 +14,10 @@ import { CulturePage } from './app/containers/CulturePage';
 import { Home } from './app/containers/HomePage';
 import { RegionPage } from './app/containers/RegionPage';
 import { OneCulture } from './app/containers/CulturePage/OneCulture';
-import { RacePage } from './app/containers/RacePage';
-import { OneRace } from './app/containers/RacePage/OneCulture';
+import { RacePage } from './app/containers/Races/RacePage';
+import { OneRace } from './app/containers/Races/RacePage/OneRace';
+import { SubRacePage } from './app/containers/Races/SubRacePage';
+import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -32,6 +34,8 @@ root.render(
             <Route path={"cultures/:name"} element={<OneCulture />} />
             <Route path={"races"} element={<RacePage />} />
             <Route path={"races/:name"} element={<OneRace />} />
+            <Route path={"subraces"} element={<SubRacePage />} />
+            <Route path={"subraces/:name"} element={<OneSubRace />} />
             <Route path={"regions/:name"} element={<RegionPage />} />
           </Route>
         </Routes>

@@ -4,7 +4,7 @@ import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
-import com.as.dndwebsite.maps.kingdom.region.regionsubrace.IRegionSubRaceService;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionsubrace.IRegionSubRaceService;
 import com.as.dndwebsite.race.racesubrace.IRaceSubRaceService;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/subraces")
@@ -47,7 +48,7 @@ public class SubRaceController {
     @GetMapping("/{name}")
     public ResponseEntity<SubRaceDTO> getSubRaceByName(@PathVariable("name") String name) {
         EntryDTO subRace = subRaceService.getSubRaceByName(name);
-        EntryDTO race = raceSubRaceService.getRaceOfSubRace(subRace.id());
+        Optional<EntryDTO> race = raceSubRaceService.getRaceOfSubRace(subRace.id());
         List<ImageDTO> images = subRaceImagesService.getImagesOfSubRace(subRace.id());
         List<EntryDTO> regions = regionSubRaceService.getRegionsRelatedToSubRace(subRace.id());
         return ResponseEntity.ok().body(new SubRaceDTO(subRace, race, images, regions));

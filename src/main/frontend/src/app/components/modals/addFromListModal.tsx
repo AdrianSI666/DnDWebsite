@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 interface IAddFromListModal {
     addExistingObjectToRelation: (coreObjectId: number, objectToAddId: number, objectName: string, objectDescription: string) => Promise<void>;
     fillTheListWithSubObjects: () => Promise<void | EntryDTO[]>
+    addButtonActionText: string;
     categoryName: string;
     id?: number;
 }
@@ -21,7 +22,7 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
                     .then(result => setObjectsList(result!))
                 setModalShow(true);
             }}>
-                Add {props.categoryName}
+                {props.addButtonActionText}
             </Button>
             <Modal
                 show={modalShow}
@@ -32,7 +33,7 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        Adding {props.categoryName}
+                        {props.addButtonActionText}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

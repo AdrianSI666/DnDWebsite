@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.as.dndwebsite.race.RaceService.RACE_NOT_FOUND_MSG;
 import static com.as.dndwebsite.race.subrace.SubRaceService.SUB_RACE_NOT_FOUND_MSG;
@@ -48,8 +49,8 @@ public class RaceSubRaceService implements IRaceSubRaceService {
     }
 
     @Override
-    public EntryDTO getRaceOfSubRace(long id) {
-        return raceRepository.findBySubRaces_Id(id).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, id)));
+    public Optional<EntryDTO> getRaceOfSubRace(long id) {
+        return raceRepository.findBySubRaces_Id(id);
     }
 
     @Override

@@ -6,7 +6,7 @@ import { ApiError } from "../../../services/openapi";
 interface IAddNewEntryModal {
   addNewEntry?: (name: string, description: string) => Promise<void>;
   addNewSubEntryToRelation?: (id: number, name: string, description: string) => Promise<void>;
-  categoryName: string;
+  addButtonActionText: string;
   id?: number;
 }
 
@@ -21,7 +21,7 @@ export function AddNewEntryModal(props: Readonly<IAddNewEntryModal>) {
         setName("")
         setDescription("")
       }}>
-        Add {props.categoryName}
+        {props.addButtonActionText}
       </Button>
       <Modal
         show={modalShow}
@@ -32,7 +32,7 @@ export function AddNewEntryModal(props: Readonly<IAddNewEntryModal>) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Adding {props.categoryName}
+            {props.addButtonActionText}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
