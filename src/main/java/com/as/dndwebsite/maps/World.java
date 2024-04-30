@@ -22,7 +22,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @Table(name = "world", schema = "public")
 public class World extends Entry {
-    @OneToMany(mappedBy = "continent")
+    @OneToMany(mappedBy = "world")
     private Collection<Plane> planes = new ArrayList<>();
 
     public World(String name, String description) {

@@ -1,6 +1,7 @@
 package com.as.dndwebsite.maps.plane.continent;
 
 import com.as.dndwebsite.domain.Entry;
+import com.as.dndwebsite.maps.plane.Plane;
 import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
 import lombok.*;
 
@@ -18,7 +19,8 @@ import java.util.Collection;
 public class Continent extends Entry {
     @OneToMany(mappedBy = "continent")
     private Collection<Kingdom> kingdoms = new ArrayList<>();
-
+    @ManyToOne
+    private Plane plane;
     public Continent(String name, String description) {
         super(name, description);
     }
@@ -26,5 +28,10 @@ public class Continent extends Entry {
     public Continent(String name, String description, Kingdom kingdom) {
         super(name, description);
         this.kingdoms.add(kingdom);
+    }
+
+    public Continent(String name, String description, Plane plane) {
+        super(name, description);
+        this.plane = plane;
     }
 }

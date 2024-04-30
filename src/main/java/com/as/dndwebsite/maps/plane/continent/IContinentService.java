@@ -11,7 +11,7 @@ public interface IContinentService {
 
     EntryDTO getContinent(String name);
 
-    EntryDTO saveContinent(Continent continent);
+    EntryDTO saveContinent(EntryDTO continent);
 
     void updateContinent(EntryDTO continent, Long id);
 

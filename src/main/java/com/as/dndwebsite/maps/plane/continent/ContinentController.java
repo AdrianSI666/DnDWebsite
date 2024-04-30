@@ -6,6 +6,7 @@ import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.plane.continent.continentkingdom.IContinentKingdomService;
+import com.as.dndwebsite.maps.plane.planecontinent.IPlaneContinentService;
 import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class ContinentController {
     private final IContinentService continentService;
     private final IContinentImageService continentImageService;
     private final IContinentKingdomService continentKingdomService;
+    private final IPlaneContinentService planeContinentService;
     private final IPageMapper pageMapper;
 
     @GetMapping
@@ -46,13 +48,14 @@ public class ContinentController {
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getContinentByName(@PathVariable("name") String name) {
         EntryDTO continent = continentService.getContinent(name);
+        EntryDTO plane = planeContinentService.getPlaneOfContinent(continent.id());
         List<EntryDTO> kingdoms = continentKingdomService.getKingdomsRelatedToContinent(continent.id());
         List<ImageDTO> imageDTOS = continentImageService.getImagesOfContinent(continent.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(continent, null, kingdoms, imageDTOS));
+        return ResponseEntity.ok().body(new EntryFullDTO(continent, plane, kingdoms, imageDTOS));
     }
 
     @PostMapping
-    public ResponseEntity<EntryDTO> saveContinent(@RequestBody Continent continent) {
+    public ResponseEntity<EntryDTO> saveContinent(@RequestBody EntryDTO continent) {
         return ResponseEntity.status(HttpStatus.CREATED).body(continentService.saveContinent(continent));
     }
 

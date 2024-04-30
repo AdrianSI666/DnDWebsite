@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,10 +48,9 @@ public class ContinentService implements IContinentService {
     }
 
     @Override
-    public EntryDTO saveContinent(Continent continent) {
-        log.info("Saving new Continent {}", continent.getName());
-        continent.setImages(new ArrayList<>());
-        return mapper.map(continentRepository.save(continent));
+    public EntryDTO saveContinent(EntryDTO continent) {
+        log.info("Saving new Continent {}", continent.name());
+        return mapper.map(continentRepository.save(new Continent(continent.name(), continent.description())));
     }
 
     @Override
