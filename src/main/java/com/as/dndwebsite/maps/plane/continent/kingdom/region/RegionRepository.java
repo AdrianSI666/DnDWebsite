@@ -28,4 +28,6 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
     Page<EntryDTO> findAllBySubRaces_Name(String name, Pageable paging);
 
     Optional<EntryDTO> findAllByPlaces_Name(String name);
+
+    List<EntryDTO> findAllByKingdomIdIsNull();
 }

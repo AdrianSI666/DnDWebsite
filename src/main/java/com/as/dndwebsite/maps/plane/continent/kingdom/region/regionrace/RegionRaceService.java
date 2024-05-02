@@ -1,5 +1,6 @@
 package com.as.dndwebsite.maps.plane.continent.kingdom.region.regionrace;
 
+import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
@@ -8,6 +9,7 @@ import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionService;
 import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.RaceRepository;
+import com.as.dndwebsite.util.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +30,7 @@ import static com.as.dndwebsite.race.RaceService.RACE_NOT_FOUND_MSG;
 public class RegionRaceService implements IRegionRaceService {
     private final RegionRepository regionRepository;
     private final RaceRepository raceRepository;
-
+    private final DomainMapper<Entry, EntryDTO> mapper;
     @Override
     public Page<EntryDTO> getRacesRelatedToRegion(String name, PageInfo page) {
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
@@ -58,10 +60,11 @@ public class RegionRaceService implements IRegionRaceService {
     }
 
     @Override
-    public void addNewRaceToRegion(EntryDTO race, Long regionId) {
+    public EntryDTO addNewRaceToRegion(EntryDTO race, Long regionId) {
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
         Race newRace = raceRepository.save(new Race(race.name(), race.description(), region));
         region.getRaces().add(newRace);
+        return mapper.map(newRace);
     }
 
     @Override
@@ -76,9 +79,10 @@ public class RegionRaceService implements IRegionRaceService {
     }
 
     @Override
-    public void addNewRegionToRace(EntryDTO region, Long raceId) {
+    public EntryDTO addNewRegionToRace(EntryDTO region, Long raceId) {
         Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, raceId)));
         Region newRegion = regionRepository.save(new Region(region.name(), region.description(), race));
         race.getRegions().add(newRegion);
+        return mapper.map(newRegion);
     }
 }

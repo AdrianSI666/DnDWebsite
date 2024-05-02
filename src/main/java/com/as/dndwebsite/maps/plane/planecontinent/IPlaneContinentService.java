@@ -13,7 +13,7 @@ public interface IPlaneContinentService {
 
     EntryDTO getPlaneOfContinent(Long id);
 
-    void addNewContinentPlaneRelation(Long planeId, EntryDTO continent);
+    EntryDTO addNewContinentPlaneRelation(Long planeId, EntryDTO continent);
 
     void removeContinentPlaneRelation(Long planeId, Long continentId);
 
@@ -21,5 +21,7 @@ public interface IPlaneContinentService {
 
     Page<EntryDTO> getContinentsRelatedToPlane(String name, PageInfo pageInfo);
 
-    void addNewPlaneContinentRelation(Long continentId, EntryDTO plane);
+    EntryDTO addNewPlaneContinentRelation(Long continentId, EntryDTO plane);
+
+    List<EntryDTO> getAllContinentsWithoutPlane();
 }

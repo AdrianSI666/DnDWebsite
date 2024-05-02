@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/planes")
 @RequiredArgsConstructor
@@ -34,17 +36,20 @@ public class PlaneContinentController {
     }
 
     @PostMapping("/{planeId}/continent")
-    public ResponseEntity<HttpStatus> addNewContinentPlaneRelation(@PathVariable("planeId") Long planeId,
+    public ResponseEntity<EntryDTO> addNewContinentPlaneRelation(@PathVariable("planeId") Long planeId,
                                                                    @RequestBody EntryDTO continent) {
-        planeContinentService.addNewContinentPlaneRelation(planeId, continent);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(planeContinentService.addNewContinentPlaneRelation(planeId, continent));
     }
 
     @PostMapping("/continent/{continentId}")
-    public ResponseEntity<HttpStatus> addNewPlaneContinentRelation(@PathVariable("continentId") Long continentId,
+    public ResponseEntity<EntryDTO> addNewPlaneContinentRelation(@PathVariable("continentId") Long continentId,
                                                                    @RequestBody EntryDTO plane) {
-        planeContinentService.addNewPlaneContinentRelation(continentId, plane);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(planeContinentService.addNewPlaneContinentRelation(continentId, plane));
+    }
+
+    @GetMapping("/unset/continent")
+    public ResponseEntity<List<EntryDTO>> getAllContinentsWithoutPlane() {
+        return ResponseEntity.ok().body(planeContinentService.getAllContinentsWithoutPlane());
     }
 
     @PostMapping("/{planeId}/continent/{continentId}")

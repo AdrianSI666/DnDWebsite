@@ -1,5 +1,6 @@
 package com.as.dndwebsite.maps.plane.continent.continentkingdom;
 
+import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
@@ -8,6 +9,7 @@ import com.as.dndwebsite.maps.plane.continent.ContinentRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
 import com.as.dndwebsite.maps.plane.continent.kingdom.KingdomRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.KingdomService;
+import com.as.dndwebsite.util.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +30,7 @@ import static com.as.dndwebsite.maps.plane.continent.ContinentService.CONTINENT_
 public class ContinentKingdomService implements IContinentKingdomService {
     private final KingdomRepository kingdomRepository;
     private final ContinentRepository continentRepository;
-
+    private final DomainMapper<Entry, EntryDTO> mapper;
     @Override
     public List<EntryDTO> getKingdomsRelatedToContinent(Long continentId) {
         log.info("Getting kingdoms related to continent with id {}", continentId);
@@ -46,11 +48,12 @@ public class ContinentKingdomService implements IContinentKingdomService {
     }
 
     @Override
-    public void addNewKingdomContinentRelation(Long continentId, EntryDTO kingdom) {
+    public EntryDTO addNewKingdomContinentRelation(Long continentId, EntryDTO kingdom) {
         log.info("Adding kingdom {} to continent {}", kingdom.name(), continentId);
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
         Kingdom newKingdom = kingdomRepository.save(new Kingdom(kingdom.name(), kingdom.description(), continent));
         continent.getKingdoms().add(newKingdom);
+        return mapper.map(newKingdom);
     }
 
     @Override
@@ -78,9 +81,15 @@ public class ContinentKingdomService implements IContinentKingdomService {
     }
 
     @Override
-    public void addNewContinentKingdomRelation(Long kingdomId, EntryDTO continent) {
+    public EntryDTO addNewContinentKingdomRelation(Long kingdomId, EntryDTO continent) {
         Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, kingdomId)));
         Continent newContinent = continentRepository.save(new Continent(continent.name(), continent.description(), kingdom));
         kingdom.setContinent(newContinent);
+        return mapper.map(newContinent);
+    }
+
+    @Override
+    public List<EntryDTO> getAllKingdomsWithoutContinent() {
+        return kingdomRepository.findAllByContinentIdIsNull();
     }
 }

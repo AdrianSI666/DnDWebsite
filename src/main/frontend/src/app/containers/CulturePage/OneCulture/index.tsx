@@ -22,7 +22,7 @@ export function OneCulture(props: IOneCultureProps) {
     const [exist, setExist] = useState(false);
     const { culture } = useAppSelector(oneCultureSelect);
     const { fetchCulture, removeCulture, editCulture, saveImageToCulture, deleteImageFromCulture } = UseOneCultureFunction({ cultureId: culture.object?.id });
-    const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = OneCultureSubObjectsFunction({ cultureId: culture.object?.id });
+    const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = OneCultureSubObjectsFunction();
 
 
     useEffect(() => {

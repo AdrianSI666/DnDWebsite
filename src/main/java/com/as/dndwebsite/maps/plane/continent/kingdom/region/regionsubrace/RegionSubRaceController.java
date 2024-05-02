@@ -36,17 +36,15 @@ public class RegionSubRaceController {
     }
 
     @PostMapping("/{regionId}/subrace")
-    public ResponseEntity<HttpStatus> addNewSubRaceRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<EntryDTO> addNewSubRaceRelation(@PathVariable("regionId") Long regionId,
                                                             @RequestBody EntryDTO subRace) {
-        regionSubRaceService.addNewSubRaceToRegion(subRace, regionId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(regionSubRaceService.addNewSubRaceToRegion(subRace, regionId));
     }
 
     @PostMapping("/subrace/{subraceId}")
-    public ResponseEntity<HttpStatus> addNewRegionSubRaceRelation(@PathVariable("subraceId") Long subraceId,
+    public ResponseEntity<EntryDTO> addNewRegionSubRaceRelation(@PathVariable("subraceId") Long subraceId,
                                                                   @RequestBody EntryDTO region) {
-        regionSubRaceService.addNewRegionSubRaceRelation(region, subraceId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(regionSubRaceService.addNewRegionSubRaceRelation(region, subraceId));
     }
 
     @PutMapping("/{regionId}/subrace/{subraceId}")

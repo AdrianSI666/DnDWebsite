@@ -1,5 +1,6 @@
 package com.as.dndwebsite.maps.plane.planecontinent;
 
+import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
@@ -7,6 +8,7 @@ import com.as.dndwebsite.maps.plane.Plane;
 import com.as.dndwebsite.maps.plane.PlaneRepository;
 import com.as.dndwebsite.maps.plane.continent.Continent;
 import com.as.dndwebsite.maps.plane.continent.ContinentRepository;
+import com.as.dndwebsite.util.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import static com.as.dndwebsite.maps.plane.continent.ContinentService.CONTINENT_
 public class PlaneContinentService implements IPlaneContinentService {
     private final PlaneRepository planeRepository;
     private final ContinentRepository continentRepository;
+    private final DomainMapper<Entry, EntryDTO> mapper;
 
     @Override
     public List<EntryDTO> getContinentsRelatedToPlane(Long planeId) {
@@ -52,11 +55,12 @@ public class PlaneContinentService implements IPlaneContinentService {
     }
 
     @Override
-    public void addNewContinentPlaneRelation(Long planeId, EntryDTO continent) {
+    public EntryDTO addNewContinentPlaneRelation(Long planeId, EntryDTO continent) {
         log.info("Adding continent {} to plane {}", continent.name(), planeId);
         Plane plane = planeRepository.findById(planeId).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, planeId)));
         Continent newContinent = continentRepository.save(new Continent(continent.name(), continent.description(), plane));
         plane.getContinents().add(newContinent);
+        return mapper.map(newContinent);
     }
 
     @Override
@@ -79,11 +83,16 @@ public class PlaneContinentService implements IPlaneContinentService {
 
 
     @Override
-    public void addNewPlaneContinentRelation(Long continentId, EntryDTO plane) {
+    public EntryDTO addNewPlaneContinentRelation(Long continentId, EntryDTO plane) {
         log.info("Setting new plane {} to continent {}", plane.name(), continentId);
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
         Plane newPlane = planeRepository.save(new Plane(plane.name(), plane.description(), continent));
         continent.setPlane(newPlane);
+        return mapper.map(newPlane);
+    }
 
+    @Override
+    public List<EntryDTO> getAllContinentsWithoutPlane() {
+        return continentRepository.findAllByPlaneIdIsNull();
     }
 }

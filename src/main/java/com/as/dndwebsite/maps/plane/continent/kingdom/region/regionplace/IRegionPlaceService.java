@@ -13,13 +13,15 @@ public interface IRegionPlaceService {
 
     void addPlaceRegionRelation(Long regionId, Long placeId);
 
-    void addNewPlaceToRegionRelation(EntryDTO place, Long regionId);
+    EntryDTO addNewPlaceToRegionRelation(EntryDTO place, Long regionId);
 
     void removePlaceRegionRelation(Long regionId, Long placeId);
 
     EntryDTO getRegionRelatedToPlace(String name);
 
-    void addNewRegionToPlaceRelation(EntryDTO region, Long placeId);
+    EntryDTO addNewRegionToPlaceRelation(EntryDTO region, Long placeId);
 
     EntryDTO getRegionRelatedToPlace(Long id);
+
+    List<EntryDTO> getAllPlacesWithoutRegion();
 }

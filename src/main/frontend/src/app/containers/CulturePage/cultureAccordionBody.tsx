@@ -35,7 +35,7 @@ export function CultureAccordionBody(props: Readonly<ICultureAccordionBody>) {
         deleteSubObject={removeRegionFromCultureFunction}
         addNewSubEntryToRelation={saveNewRegionToCulture}
         addButtonActionText={"Add new region that use this culture"}
-        addExistingButtonActionText={"Link existing region from list to this culture"} 
+        addExistingButtonActionText={"Link existing region from list to this culture"}
         deleteButtonActionText={`Unlink this region from ${props.culture.object?.name}`}
         subCategoryLinkText={"region"} />
     </Accordion.Body>

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/worlds")
 @RequiredArgsConstructor
@@ -33,18 +35,21 @@ public class WorldPlaneController {
         return ResponseEntity.ok().body(worldPlaneService.getWorldOfPlane(name));
     }
 
+    @GetMapping("/unset/plane")
+    public ResponseEntity<List<EntryDTO>> getAllPlanesWithoutWorld() {
+        return ResponseEntity.ok().body(worldPlaneService.getAllPlanesWithoutWorld());
+    }
+
     @PostMapping("/{worldId}/plane")
-    public ResponseEntity<HttpStatus> addNewPlaneWorldRelation(@PathVariable("worldId") Long worldId,
+    public ResponseEntity<EntryDTO> addNewPlaneWorldRelation(@PathVariable("worldId") Long worldId,
                                                                @RequestBody EntryDTO plane) {
-        worldPlaneService.addNewPlaneWorldRelation(worldId, plane);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(worldPlaneService.addNewPlaneWorldRelation(worldId, plane));
     }
 
     @PostMapping("/plane/{planeId}")
-    public ResponseEntity<HttpStatus> addNewWorldPlaneRelation(@PathVariable("planeId") Long planeId,
+    public ResponseEntity<EntryDTO> addNewWorldPlaneRelation(@PathVariable("planeId") Long planeId,
                                                                @RequestBody EntryDTO world) {
-        worldPlaneService.addNewWorldPlaneRelation(planeId, world);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(worldPlaneService.addNewWorldPlaneRelation(planeId, world));
     }
 
     @PostMapping("/{worldId}/plane/{planeId}")

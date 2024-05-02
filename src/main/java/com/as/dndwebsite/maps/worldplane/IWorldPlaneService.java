@@ -15,11 +15,13 @@ public interface IWorldPlaneService {
 
     EntryDTO getWorldOfPlane(Long id);
 
-    void addNewPlaneWorldRelation(Long worldId, EntryDTO plane);
+    EntryDTO addNewPlaneWorldRelation(Long worldId, EntryDTO plane);
 
     void removePlaneWorldRelation(Long worldId, Long planeId);
 
     void addPlaneWorldRelation(Long worldId, Long planeId);
 
-    void addNewWorldPlaneRelation(Long planeId, EntryDTO world);
+    EntryDTO addNewWorldPlaneRelation(Long planeId, EntryDTO world);
+
+    List<EntryDTO> getAllPlanesWithoutWorld();
 }

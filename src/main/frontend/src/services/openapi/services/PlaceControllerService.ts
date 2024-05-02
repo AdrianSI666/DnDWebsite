@@ -5,6 +5,7 @@
 import type { EntryDTO } from '../models/EntryDTO';
 import type { EntryFullDTO } from '../models/EntryFullDTO';
 import type { ImageDTO } from '../models/ImageDTO';
+import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -48,18 +49,17 @@ export class PlaceControllerService {
     }
     /**
      * @param pageInfo
-     * @returns any OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getPlaces(
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Record<string, Record<string, any>>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/places',
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }

@@ -1,5 +1,6 @@
 package com.as.dndwebsite.maps.worldplane;
 
+import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
@@ -7,6 +8,7 @@ import com.as.dndwebsite.maps.World;
 import com.as.dndwebsite.maps.WorldRepository;
 import com.as.dndwebsite.maps.plane.Plane;
 import com.as.dndwebsite.maps.plane.PlaneRepository;
+import com.as.dndwebsite.util.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import static com.as.dndwebsite.maps.plane.PlaneService.PLANE_NOT_FOUND_MSG;
 public class WorldPlaneService implements IWorldPlaneService {
     private final WorldRepository worldRepository;
     private final PlaneRepository planeRepository;
+    private final DomainMapper<Entry, EntryDTO> mapper;
 
     @Override
     public List<EntryDTO> getPlanesRelatedToWorld(Long worldId) {
@@ -52,19 +55,26 @@ public class WorldPlaneService implements IWorldPlaneService {
     }
 
     @Override
-    public void addNewPlaneWorldRelation(Long worldId, EntryDTO plane) {
+    public EntryDTO addNewPlaneWorldRelation(Long worldId, EntryDTO plane) {
         log.info("Adding plane {} to world {}", plane.name(), worldId);
         World world = worldRepository.findById(worldId).orElseThrow(() -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, worldId)));
         Plane newPlane = planeRepository.save(new Plane(plane.name(), plane.description(), world));
         world.getPlanes().add(newPlane);
+        return mapper.map(newPlane);
     }
 
     @Override
-    public void addNewWorldPlaneRelation(Long planeId, EntryDTO world) {
+    public EntryDTO addNewWorldPlaneRelation(Long planeId, EntryDTO world) {
         log.info("Adding world {} to plane {}", world.name(), planeId);
         Plane plane = planeRepository.findById(planeId).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, planeId)));
-        World newWord = worldRepository.save(new World(world.name(), world.description(), plane));
-        plane.setWorld(newWord);
+        World newWorld = worldRepository.save(new World(world.name(), world.description(), plane));
+        plane.setWorld(newWorld);
+        return mapper.map(newWorld);
+    }
+
+    @Override
+    public List<EntryDTO> getAllPlanesWithoutWorld() {
+        return planeRepository.findAllByWorldIdIsNull();
     }
 
     @Override

@@ -40,7 +40,7 @@ export function RaceSubObjectsFunction() {
           name: name,
           description: description
         }
-        return RaceSubRaceControllerService.addNewSubRaceRelation1(raceId, entryDTO)
+        return RaceSubRaceControllerService.addNewSubRaceRelation(raceId, entryDTO)
           .then((result) => {
             addNewSubRaceToRace(raceId, result);
           })
@@ -67,7 +67,7 @@ export function RaceSubObjectsFunction() {
       }
     
       const getAllSubRaces = async () => {
-        return await RaceSubRaceControllerService.getSubRacesWithoutRace()
+        return await RaceSubRaceControllerService.getAllSubRacesWithoutRace()
           .catch((err) => {
             console.log("My Error: ", err);
           });
@@ -93,7 +93,7 @@ export function RaceSubObjectsFunction() {
         }
         return RegionRaceControllerService.addNewRegionRaceRelation(raceId, entryDTO)
           .then((result) => {
-            addNewRegionToRace(raceId, entryDTO);
+            addNewRegionToRace(raceId, result);
           })
           .catch((err: ApiError) => {
             console.log("My Error: ", err);

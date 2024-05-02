@@ -14,4 +14,5 @@ public interface KingdomRepository extends JpaRepository<Kingdom, Long> {
     Optional<EntryDTO> findByRegions_Name(String name);
     Page<EntryDTO> findAllByContinentName(String name, Pageable pageable);
     List<EntryDTO> findAllByContinentId(Long id);
+    List<EntryDTO> findAllByContinentIdIsNull();
 }

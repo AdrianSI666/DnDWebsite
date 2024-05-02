@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/kingdoms")
 @RequiredArgsConstructor
@@ -34,18 +36,21 @@ public class KingdomRegionController {
         return ResponseEntity.ok().body(kingdomRegionService.getKingdomRelatedToRegion(name));
     }
 
+    @GetMapping("/unset/region")
+    public ResponseEntity<List<EntryDTO>> getAllRegionsWithoutKingdom() {
+        return ResponseEntity.ok().body(kingdomRegionService.getAllRegionsWithoutKingdom());
+    }
+
     @PostMapping("/{kingdomId}/region")
-    public ResponseEntity<HttpStatus> addNewRegionKingdomRelation(@PathVariable("kingdomId") Long kingdomId,
+    public ResponseEntity<EntryDTO> addNewRegionKingdomRelation(@PathVariable("kingdomId") Long kingdomId,
                                                                   @RequestBody EntryDTO region) {
-        kingdomRegionService.addNewRegionKingdomRelation(kingdomId, region);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(kingdomRegionService.addNewRegionKingdomRelation(kingdomId, region));
     }
 
     @PostMapping("/region/{regionId}")
-    public ResponseEntity<HttpStatus> addNewKingdomRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<EntryDTO> addNewKingdomRegionRelation(@PathVariable("regionId") Long regionId,
                                                                   @RequestBody EntryDTO kingdom) {
-        kingdomRegionService.addNewKingdomRegionRelation(kingdom, regionId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(kingdomRegionService.addNewKingdomRegionRelation(kingdom, regionId));
     }
 
     @PutMapping("/{kingdomId}/region/{regionId}")

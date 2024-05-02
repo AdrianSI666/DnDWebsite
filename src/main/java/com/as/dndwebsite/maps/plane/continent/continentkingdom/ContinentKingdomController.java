@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/continents")
 @RequiredArgsConstructor
@@ -33,18 +35,21 @@ public class ContinentKingdomController {
         return ResponseEntity.ok().body(continentKingdomService.getContinentOfKingdom(name));
     }
 
+    @GetMapping("/unset/kingdom")
+    public ResponseEntity<List<EntryDTO>> getAllKingdomsWithoutContinent() {
+        return ResponseEntity.ok().body(continentKingdomService.getAllKingdomsWithoutContinent());
+    }
+
     @PostMapping("/{continentId}/kingdom")
-    public ResponseEntity<HttpStatus> addNewKingdomContinentRelation(@PathVariable("continentId") Long continentId,
+    public ResponseEntity<EntryDTO> addNewKingdomContinentRelation(@PathVariable("continentId") Long continentId,
                                                                      @RequestBody EntryDTO kingdom) {
-        continentKingdomService.addNewKingdomContinentRelation(continentId, kingdom);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(continentKingdomService.addNewKingdomContinentRelation(continentId, kingdom));
     }
 
     @PostMapping("/kingdom/{kingdomId}")
-    public ResponseEntity<HttpStatus> addNewContinentKingdomRelation(@PathVariable("kingdomId") Long kingdomId,
+    public ResponseEntity<EntryDTO> addNewContinentKingdomRelation(@PathVariable("kingdomId") Long kingdomId,
                                                                      @RequestBody EntryDTO continent) {
-        continentKingdomService.addNewContinentKingdomRelation(kingdomId, continent);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(continentKingdomService.addNewContinentKingdomRelation(kingdomId, continent));
     }
 
     @PostMapping("/{continentId}/kingdom/{kingdomId}")

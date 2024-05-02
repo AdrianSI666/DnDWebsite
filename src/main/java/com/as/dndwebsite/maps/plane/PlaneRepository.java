@@ -10,8 +10,14 @@ import java.util.Optional;
 
 public interface PlaneRepository extends JpaRepository<Plane, Long> {
     Optional<EntryDTO> findByName(String name);
+
     Optional<EntryDTO> findByContinents_Id(long id);
+
     Optional<EntryDTO> findByContinents_Name(String name);
+
     Page<EntryDTO> findAllByWorldName(String name, Pageable pageable);
+
     List<EntryDTO> findAllByWorldId(Long worldId);
+
+    List<EntryDTO> findAllByWorldIdIsNull();
 }

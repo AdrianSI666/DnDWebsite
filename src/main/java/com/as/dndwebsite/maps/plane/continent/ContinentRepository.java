@@ -14,4 +14,5 @@ public interface ContinentRepository extends JpaRepository<Continent, Long> {
     Optional<EntryDTO> findByKingdoms_Name(String name);
     Page<EntryDTO> findAllByPlaneName(String name, Pageable pageable);
     List<EntryDTO> findAllByPlaneId(Long planeId);
+    List<EntryDTO> findAllByPlaneIdIsNull();
 }

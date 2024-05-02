@@ -15,11 +15,11 @@ public interface IRegionRaceService {
 
     void removeRaceFromRegion(Long raceId, Long regionId);
 
-    void addNewRaceToRegion(EntryDTO race, Long regionId);
+    EntryDTO addNewRaceToRegion(EntryDTO race, Long regionId);
 
     List<EntryDTO> getRegionsRelatedToRace(Long id);
 
     Page<EntryDTO> getRegionsRelatedToRace(String name, PageInfo page);
 
-    void addNewRegionToRace(EntryDTO region, Long raceId);
+    EntryDTO addNewRegionToRace(EntryDTO region, Long raceId);
 }

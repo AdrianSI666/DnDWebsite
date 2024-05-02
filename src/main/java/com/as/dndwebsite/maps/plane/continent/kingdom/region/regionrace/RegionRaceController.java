@@ -38,17 +38,15 @@ public class RegionRaceController {
     }
 
     @PostMapping("/{regionId}/race")
-    public ResponseEntity<HttpStatus> addNewRaceRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<EntryDTO> addNewRaceRegionRelation(@PathVariable("regionId") Long regionId,
                                                  @RequestBody EntryDTO race) {
-        regionRaceService.addNewRaceToRegion(race, regionId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(regionRaceService.addNewRaceToRegion(race, regionId));
     }
 
     @PostMapping("/race/{raceId}")
-    public ResponseEntity<HttpStatus> addNewRegionRaceRelation(@PathVariable("raceId") Long raceId,
+    public ResponseEntity<EntryDTO> addNewRegionRaceRelation(@PathVariable("raceId") Long raceId,
                                                  @RequestBody EntryDTO region) {
-        regionRaceService.addNewRegionToRace(region, raceId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(regionRaceService.addNewRegionToRace(region, raceId));
     }
 
     @PutMapping("/{regionId}/race/{raceId}")

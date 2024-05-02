@@ -15,9 +15,9 @@ public interface IRegionSubRaceService {
 
     void removeSubRaceRegionRelation(Long subRaceId, Long regionId);
 
-    void addNewSubRaceToRegion(EntryDTO subRace, Long regionId);
+    EntryDTO addNewSubRaceToRegion(EntryDTO subRace, Long regionId);
 
-    void addNewRegionSubRaceRelation(EntryDTO region, Long subRaceId);
+    EntryDTO addNewRegionSubRaceRelation(EntryDTO region, Long subRaceId);
 
     List<EntryDTO> getRegionsRelatedToSubRace(Long id);
 

@@ -14,4 +14,6 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     Page<EntryDTO> findAllByRegionName(String name, Pageable pageable);
 
     List<EntryDTO> findAllByRegionId(Long id);
+
+    List<EntryDTO> findAllByRegionIdIsNull();
 }

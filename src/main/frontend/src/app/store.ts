@@ -6,6 +6,7 @@ import racePageSlice from './containers/Races/RacePage/store/racePageSlice';
 import oneRaceSlice from './containers/Races/RacePage/OneRace/store/oneRaceSlice';
 import subRacePageSlice from './containers/Races/SubRacePage/store/subRacePageSlice';
 import oneSubRaceSlice from './containers/Races/SubRacePage/OneSubRace/store/oneSubRaceSlice';
+import worldPageSlice from './containers/Maps/WorldPage/store/worldPageSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,7 +15,8 @@ export const store = configureStore({
     racePage: racePageSlice,
     oneRace: oneRaceSlice,
     subRacePage: subRacePageSlice,
-    oneSubRace: oneSubRaceSlice
+    oneSubRace: oneSubRaceSlice,
+    worldPage: worldPageSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()

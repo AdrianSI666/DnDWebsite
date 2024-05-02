@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Continent } from '../models/Continent';
 import type { EntryDTO } from '../models/EntryDTO';
 import type { EntryFullDTO } from '../models/EntryFullDTO';
 import type { ImageDTO } from '../models/ImageDTO';
+import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -49,18 +49,17 @@ export class ContinentControllerService {
     }
     /**
      * @param pageInfo
-     * @returns any OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getContinents(
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Record<string, Record<string, any>>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/continents',
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }
@@ -70,7 +69,7 @@ export class ContinentControllerService {
      * @throws ApiError
      */
     public static saveContinent(
-        requestBody: Continent,
+        requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {
         return __request(OpenAPI, {
             method: 'POST',

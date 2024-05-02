@@ -51,7 +51,7 @@ export function OneCultureSubObjectsFunction(props: IUseOneCultureFunction) {
     }
 
     const removeRegionFromCultureFunction = async (cultureId: number, regionId: number): Promise<void> => {
-        return RegionCultureControllerService.deleteCulture(regionId, cultureId)
+        return RegionCultureControllerService.deleteCultureRegionRelation(regionId, cultureId)
             .then(() => {
                 removeRegionFromCulture(regionId);
             })

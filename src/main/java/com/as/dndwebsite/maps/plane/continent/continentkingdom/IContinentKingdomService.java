@@ -13,7 +13,7 @@ public interface IContinentKingdomService {
 
     EntryDTO getContinentOfKingdom(Long id);
 
-    void addNewKingdomContinentRelation(Long continentId, EntryDTO kingdom);
+    EntryDTO addNewKingdomContinentRelation(Long continentId, EntryDTO kingdom);
 
     void removeKingdomContinentRelation(Long continentId, Long kingdomId);
 
@@ -21,5 +21,7 @@ public interface IContinentKingdomService {
 
     Page<EntryDTO> getKingdomsRelatedToContinent(String name, PageInfo pageInfo);
 
-    void addNewContinentKingdomRelation(Long kingdomId, EntryDTO continent);
+    EntryDTO addNewContinentKingdomRelation(Long kingdomId, EntryDTO continent);
+
+    List<EntryDTO> getAllKingdomsWithoutContinent();
 }
