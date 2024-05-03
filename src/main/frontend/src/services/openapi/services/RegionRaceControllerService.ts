@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { EntryDTO } from '../models/EntryDTO';
-import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import {Page} from "../models/Page";
 export class RegionRaceControllerService {
     /**
      * @param regionId
@@ -90,13 +90,13 @@ export class RegionRaceControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns PageDTOEntryDTO OK
+     * @returns Page<EntryDTO> OK
      * @throws ApiError
      */
     public static getRacesRelatedToRegion(
         name: string,
-        pageInfo: PageInfo,
-    ): CancelablePromise<PageDTOEntryDTO> {
+        pageInfo?: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/regions/{name}/race',
@@ -104,20 +104,21 @@ export class RegionRaceControllerService {
                 'name': name,
             },
             query: {
-                'pageInfo': pageInfo,
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
             },
         });
     }
     /**
      * @param name
      * @param pageInfo
-     * @returns PageDTOEntryDTO OK
+     * @returns Page<EntryDTO> OK
      * @throws ApiError
      */
     public static getRegionsRelatedToRace(
         name: string,
-        pageInfo: PageInfo,
-    ): CancelablePromise<PageDTOEntryDTO> {
+        pageInfo?: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/regions/race/{name}',
@@ -125,7 +126,8 @@ export class RegionRaceControllerService {
                 'name': name,
             },
             query: {
-                'pageInfo': pageInfo,
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
             },
         });
     }

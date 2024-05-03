@@ -4,12 +4,12 @@
 /* eslint-disable */
 import type { EntryDTO } from '../models/EntryDTO';
 import type { ImageDTO } from '../models/ImageDTO';
-import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { RegionDTO } from '../models/RegionDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import {Page} from "../models/Page";
 export class RegionControllerService {
     /**
      * @param id
@@ -49,17 +49,18 @@ export class RegionControllerService {
     }
     /**
      * @param pageInfo
-     * @returns PageDTOEntryDTO OK
+     * @returns Page<EntryDTO> OK
      * @throws ApiError
      */
     public static getRegions(
-        pageInfo: PageInfo,
-    ): CancelablePromise<PageDTOEntryDTO> {
+        pageInfo?: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/regions',
             query: {
-                'pageInfo': pageInfo,
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
             },
         });
     }

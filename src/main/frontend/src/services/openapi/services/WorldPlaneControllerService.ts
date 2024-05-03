@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { EntryDTO } from '../models/EntryDTO';
-import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import {Page} from "../models/Page";
 export class WorldPlaneControllerService {
     /**
      * @param worldId
@@ -90,13 +90,13 @@ export class WorldPlaneControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns PageDTOEntryDTO OK
+     * @returns Page<EntryDTO> OK
      * @throws ApiError
      */
     public static getPlanesWithRelationToWorld(
         name: string,
-        pageInfo: PageInfo,
-    ): CancelablePromise<PageDTOEntryDTO> {
+        pageInfo?: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/worlds/{name}/plane',
@@ -104,7 +104,8 @@ export class WorldPlaneControllerService {
                 'name': name,
             },
             query: {
-                'pageInfo': pageInfo,
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
             },
         });
     }

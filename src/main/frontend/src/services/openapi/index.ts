@@ -10,7 +10,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { EntryDTO } from './models/EntryDTO';
 export type { EntryFullDTO } from './models/EntryFullDTO';
 export type { ImageDTO } from './models/ImageDTO';
-export type { PageDTOEntryDTO } from './models/PageDTOEntryDTO';
+export type { Page } from './models/Page';
 export type { PageInfo } from './models/PageInfo';
 export type { RaceDTO } from './models/RaceDTO';
 export type { RegionDTO } from './models/RegionDTO';
