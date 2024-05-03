@@ -8,6 +8,7 @@ import '../../../styles/masonary.css';
 import "../../../styles/subObjects.css";
 import { SubRaceFunction } from "./subRaceFunction";
 import { SubRaceSubObjectsFunction } from "./subRaceSubObjectsFunction";
+import { SubRaceDomObjectsFunction } from "./subRaceDomObjectsFunction";
 
 interface ISubRaceAccordionBody {
     subRace: EntryFullDTO
@@ -15,8 +16,9 @@ interface ISubRaceAccordionBody {
 
 
 export function SubRaceAccordionBody(props: Readonly<ISubRaceAccordionBody>) {
-    const { deleteSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace } = SubRaceFunction({ SubRaceId: props.subRace.object?.id });
-    const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces, saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = SubRaceSubObjectsFunction();
+    const { deleteSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace } = SubRaceFunction({ subRaceId: props.subRace.object?.id });
+    const { saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = SubRaceSubObjectsFunction();
+    const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces } = SubRaceDomObjectsFunction();
     //console.log(props.subRace)
     return (
         <Accordion.Body>

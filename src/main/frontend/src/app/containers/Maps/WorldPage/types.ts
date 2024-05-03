@@ -1,8 +1,8 @@
-import { EntryDTO, EntryFullDTO } from "../../../../services/openapi";
+import { EntryFullDTO } from "../../../../services/openapi";
 import { Page } from "../../../../services/openapi/models/Page";
 
 interface IOneWorldState {
-    world: EntryDTO
+    world: EntryFullDTO
 }
 
 interface IWorldPageState {

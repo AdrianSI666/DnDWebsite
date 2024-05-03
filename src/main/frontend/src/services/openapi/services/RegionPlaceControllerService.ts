@@ -50,7 +50,7 @@ export class RegionPlaceControllerService {
     /**
      * @param regionId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewPlace(
@@ -70,7 +70,7 @@ export class RegionPlaceControllerService {
     /**
      * @param placeId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewRegion(
@@ -106,6 +106,16 @@ export class RegionPlaceControllerService {
             query: {
                 'pageInfo': pageInfo,
             },
+        });
+    }
+    /**
+     * @returns EntryDTO OK
+     * @throws ApiError
+     */
+    public static getAllPlacesWithoutRegion(): CancelablePromise<Array<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/regions/unset/place',
         });
     }
     /**

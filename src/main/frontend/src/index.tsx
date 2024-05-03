@@ -12,12 +12,18 @@ import {
 import { Root } from './app/containers/RootPage';
 import { CulturePage } from './app/containers/CulturePage';
 import { Home } from './app/containers/HomePage';
-import { RegionPage } from './app/containers/RegionPage';
+import { RegionPage } from './app/containers/Maps/RegionPage';
 import { OneCulture } from './app/containers/CulturePage/OneCulture';
 import { RacePage } from './app/containers/Races/RacePage';
 import { OneRace } from './app/containers/Races/RacePage/OneRace';
 import { SubRacePage } from './app/containers/Races/SubRacePage';
 import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
+import { WorldPage } from './app/containers/Maps/WorldPage';
+import { OneWorld } from './app/containers/Maps/WorldPage/OneWorld';
+import { PlanePage } from './app/containers/Maps/PlanePage';
+import { OnePlane } from './app/containers/Maps/PlanePage/OnePlane';
+import { ContinentPage } from './app/containers/Maps/ContinentPage';
+import { OneContinent } from './app/containers/Maps/ContinentPage/OneContinent';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -36,6 +42,12 @@ root.render(
             <Route path={"races/:name"} element={<OneRace />} />
             <Route path={"subraces"} element={<SubRacePage />} />
             <Route path={"subraces/:name"} element={<OneSubRace />} />
+            <Route path={"worlds"} element={<WorldPage />} />
+            <Route path={"worlds/:name"} element={<OneWorld />} />
+            <Route path={"planes"} element={<PlanePage />} />
+            <Route path={"planes/:name"} element={<OnePlane />} />
+            <Route path={"continents"} element={<ContinentPage />} />
+            <Route path={"continents/:name"} element={<OneContinent />} />
             <Route path={"regions/:name"} element={<RegionPage />} />
           </Route>
         </Routes>

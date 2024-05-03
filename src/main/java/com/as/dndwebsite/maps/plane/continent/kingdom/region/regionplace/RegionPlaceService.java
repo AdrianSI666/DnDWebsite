@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps.plane.continent.kingdom.region.regionplace;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
@@ -80,7 +81,7 @@ public class RegionPlaceService implements IRegionPlaceService {
     public void addPlaceRegionRelation(Long regionId, Long placeId) {
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new NotFoundException(String.format(PLACE_NOT_FOUND_MSG, regionId)));
-        region.getPlaces().add(place);
+        if(!region.getPlaces().add(place)) throw new BadRequestException("Region %s and Place %s are already linked".formatted(region.getName(), place.getName()));
         place.setRegion(region);
     }
 

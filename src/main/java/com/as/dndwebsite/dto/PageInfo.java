@@ -11,6 +11,6 @@ public record PageInfo(
 
     @Override
     public Integer size() {
-        return size== null ? 30 : size;
+        return size == null ? 30 : size;
     }
 }

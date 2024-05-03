@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../../hooks"
 import { addImageToSubRace, removeImageFromSubRace, removeSubRace, updateSubRace } from "./store/subRacePageSlice"
 
 interface ISubRaceFunction {
-    SubRaceId?: number
+    subRaceId?: number
 }
 
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -60,17 +60,17 @@ export function SubRaceFunction(props: ISubRaceFunction) {
     }
 
     async function saveImageToSubRace(acceptedFiles: Blob) {
-        return SubRaceControllerService.saveImageToSubRace(props.SubRaceId!, { image: acceptedFiles })
-            .then((res) => addImageToSubRace(res, props.SubRaceId!))
+        return SubRaceControllerService.saveImageToSubRace(props.subRaceId!, { image: acceptedFiles })
+            .then((res) => addImageToSubRace(res, props.subRaceId!))
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
                 throw err
             });
     }
 
-    async function deleteImageFromSubRace(SubRaceId: number, imageId: number): Promise<void> {
-        return SubRaceControllerService.deleteImageFromSubRace(SubRaceId, imageId)
-            .then(() => removeImageFromSubRace(imageId, SubRaceId))
+    async function deleteImageFromSubRace(subRaceId: number, imageId: number): Promise<void> {
+        return SubRaceControllerService.deleteImageFromSubRace(subRaceId, imageId)
+            .then(() => removeImageFromSubRace(imageId, subRaceId))
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
                 throw err

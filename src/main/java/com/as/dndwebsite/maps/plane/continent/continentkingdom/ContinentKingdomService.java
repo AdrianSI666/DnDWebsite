@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps.plane.continent.continentkingdom;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.plane.continent.Continent;
 import com.as.dndwebsite.maps.plane.continent.ContinentRepository;
@@ -70,7 +71,7 @@ public class ContinentKingdomService implements IContinentKingdomService {
         log.info("Adding kingdom {} to continent {}", kingdomId, continentId);
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
         Kingdom kingdom = kingdomRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, continentId)));
-        continent.getKingdoms().add(kingdom);
+        if(!continent.getKingdoms().add(kingdom)) throw new BadRequestException("Continent %s and Kingdom %s are already linked".formatted(continent.getName(), kingdom.getName()));
         kingdom.setContinent(continent);
     }
 

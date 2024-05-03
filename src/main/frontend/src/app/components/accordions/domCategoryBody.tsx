@@ -27,7 +27,7 @@ interface ISubCategoryBody {
 
 export function DomCategoryBody(props: Readonly<ISubCategoryBody>) {
     let header = props.descriptionOfNullConnectionString
-    if (props.domObject !== null) {
+    if (props.domObject !== null && props.domObject !== undefined) {
         header = props.descriptionOfConnectionString + " " + props.domObject?.name
     }
     return (

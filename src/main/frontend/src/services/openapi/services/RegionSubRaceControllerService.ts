@@ -50,7 +50,7 @@ export class RegionSubRaceControllerService {
     /**
      * @param regionId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewSubRaceRelation(
@@ -70,7 +70,7 @@ export class RegionSubRaceControllerService {
     /**
      * @param subraceId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewRegionSubRaceRelation(

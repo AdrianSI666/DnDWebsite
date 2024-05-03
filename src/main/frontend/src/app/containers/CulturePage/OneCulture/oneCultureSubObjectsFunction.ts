@@ -4,10 +4,6 @@ import { ApiError, EntryDTO, RegionCultureControllerService } from "../../../../
 import { useAppDispatch } from "../../../hooks"
 import { addNewRegionToCulture, removeRegionFromCulture } from "./store/oneCultureSlice"
 
-interface IUseOneCultureFunction {
-    cultureId?: number
-}
-
 const actionDispatch = (dispatch: Dispatch) => ({
     addNewRegionToCulture: (regionDTO: EntryDTO) => {
         dispatch(addNewRegionToCulture(regionDTO))
@@ -17,7 +13,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
     }
 })
 
-export function OneCultureSubObjectsFunction(props: IUseOneCultureFunction) {
+export function OneCultureSubObjectsFunction() {
     const { addNewRegionToCulture, removeRegionFromCulture } = actionDispatch(useAppDispatch());
     const saveNewRegionToCulture = async (cultureId: number, name: string, description: string): Promise<void> => {
         let entryDTO: EntryDTO = {

@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps.plane.continent.kingdom.kingdomregion;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
 import com.as.dndwebsite.maps.plane.continent.kingdom.KingdomRepository;
@@ -78,7 +79,7 @@ public class KingdomRegionService implements IKingdomRegionService {
     public void addRegionKingdomRelation(Long kingdomId, Long regionId) {
         Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, kingdomId)));
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
-        kingdom.getRegions().add(region);
+        if(!kingdom.getRegions().add(region)) throw new BadRequestException("Kingdom %s and Region %s are already linked".formatted(kingdom.getName(), region.getName()));
         region.setKingdom(kingdom);
     }
 

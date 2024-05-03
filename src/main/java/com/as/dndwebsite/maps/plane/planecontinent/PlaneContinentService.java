@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps.plane.planecontinent;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.plane.Plane;
 import com.as.dndwebsite.maps.plane.PlaneRepository;
@@ -77,7 +78,7 @@ public class PlaneContinentService implements IPlaneContinentService {
         log.info("Adding continent {} to plane {}", continentId, planeId);
         Plane plane = planeRepository.findById(planeId).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, planeId)));
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
-        plane.getContinents().add(continent);
+        if(!plane.getContinents().add(continent)) throw new BadRequestException("Plane %s and Continent %s are already linked".formatted(plane.getName(), continent.getName()));
         continent.setPlane(plane);
     }
 

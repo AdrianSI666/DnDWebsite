@@ -3,6 +3,7 @@ package com.as.dndwebsite.race.racesubrace;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.RaceRepository;
@@ -80,8 +81,8 @@ public class RaceSubRaceService implements IRaceSubRaceService {
         log.info("Adding subRace {} to race {}", subRaceId, raceId);
         Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
         SubRace subrace = subraceRepository.findById(subRaceId).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subRaceId)));
+        if(!race.getSubRaces().add(subrace)) throw new BadRequestException("Race %s and Sub Race %s are already linked".formatted(race.getName(), subrace.getName()));
         subrace.setRace(race);
-        race.getSubRaces().add(subrace);
     }
 
     @Override

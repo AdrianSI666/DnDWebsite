@@ -53,14 +53,14 @@ public class PlaneContinentController {
     }
 
     @PostMapping("/{planeId}/continent/{continentId}")
-    public ResponseEntity<HttpStatus> addContinentPlaneRelation(@PathVariable("planeId") Long planeId,
+    public ResponseEntity<HttpStatus> addPlaneContinentRelation(@PathVariable("planeId") Long planeId,
                                                                 @PathVariable("continentId") Long continentId) {
         planeContinentService.addContinentPlaneRelation(planeId, continentId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{planeId}/continent/{continentId}")
-    public ResponseEntity<HttpStatus> removeContinentPlaneRelation(@PathVariable("planeId") Long planeId,
+    public ResponseEntity<HttpStatus> removePlaneContinentRelation(@PathVariable("planeId") Long planeId,
                                                                    @PathVariable("continentId") Long continentId) {
         planeContinentService.removeContinentPlaneRelation(planeId, continentId);
         return ResponseEntity.ok().build();

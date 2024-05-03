@@ -11,6 +11,7 @@ import { makeSelectOneSubRace } from "./store/selector";
 import { UseOneSubRaceObjectFunction } from "./useOneSubRaceFunction";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
 import { OneSubRaceSubObjectsFunction } from "./oneSubRaceSubObjectsFunction";
+import { OneSubRaceDomObjectsFunction } from "./oneSubRaceDomObjectsFunction";
 
 interface IOneSubRaceProps {
 }
@@ -24,8 +25,9 @@ export function OneSubRace(props: IOneSubRaceProps) {
     const [exist, setExist] = useState(false);
     const { subRaceDTO } = useAppSelector(oneSubRaceSelect);
     const { fetchSubRace, removeSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace } = UseOneSubRaceObjectFunction({ subRaceId: subRaceDTO.subRace?.id });
-    const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces, saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = OneSubRaceSubObjectsFunction();
-
+    const { saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = OneSubRaceSubObjectsFunction();
+    const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces } = OneSubRaceDomObjectsFunction();
+    
     useEffect(() => {
         fetchSubRace(name!).then((res) => setExist(res));
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps.worldplane;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.World;
 import com.as.dndwebsite.maps.WorldRepository;
@@ -82,8 +83,8 @@ public class WorldPlaneService implements IWorldPlaneService {
         log.info("Adding world {} to plane {}", worldId, planeId);
         Plane plane = planeRepository.findById(planeId).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, planeId)));
         World world = worldRepository.findById(worldId).orElseThrow(() -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, worldId)));
+        if(!world.getPlanes().add(plane)) throw new BadRequestException("World %s and Plane %s are already linked".formatted(world.getName(), plane.getName()));
         plane.setWorld(world);
-        world.getPlanes().add(plane);
     }
 
     @Override

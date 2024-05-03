@@ -36,6 +36,7 @@ public class CultureController {
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getCultures(PageInfo pageInfo) {
+//        throw new RuntimeException(pageInfo.toString());
         Page<EntryDTO> dataToSend = cultureService.getCultures(pageInfo);
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(dataToSend));
     }

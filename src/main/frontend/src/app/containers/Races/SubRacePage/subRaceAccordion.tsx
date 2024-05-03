@@ -19,7 +19,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 export function SubRaceAccordion() {
   const { page } = useAppSelector(stateSelect);
-  const isEmptyPage = !page || !page.data || page.data.length === 0;
+  const isLoading = !page || page.data  === undefined
+  const isEmptyPage = page.data?.length === 0
   const { fillSubRaceData } = actionDispatch(useAppDispatch());
   const fetchSubRaceData = async (name: string) => {
     SubRaceControllerService.getSubRaceByName(name)
@@ -32,7 +33,8 @@ export function SubRaceAccordion() {
       });
   }
 
-  if (isEmptyPage) return <div>Loading...</div>;
+  if (isEmptyPage) return <div>No sub race created, yet.</div>;
+  if (isLoading) return <div>Loading...</div>;
   return <div className='lightbox'>
     {page && page.data && page.data.map((subRaceDTO) => (
       <Accordion key={subRaceDTO.subRace?.id} defaultActiveKey={['0']}>

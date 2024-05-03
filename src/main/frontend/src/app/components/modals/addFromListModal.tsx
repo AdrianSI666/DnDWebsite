@@ -18,7 +18,7 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
     return (
         <div className="d-grid gap-2 p-1">
             <Button variant="success" onClick={() => {
-                if (objectsList.length === 0) props.fillTheListWithSubObjects()
+                props.fillTheListWithSubObjects()
                     .then(result => setObjectsList(result!))
                 setModalShow(true);
             }}>

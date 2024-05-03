@@ -19,7 +19,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 export function RaceAccordion() {
   const { page } = useAppSelector(stateSelect);
-  const isEmptyPage = !page || !page.data || page.data.length === 0;
+  const isLoading = !page || page.data === undefined
+  const isEmptyPage = page.data?.length === 0
   const { fillRaceData } = actionDispatch(useAppDispatch());
   const fetchRaceData = async (name: string) => {
     RaceControllerService.getRaceByName(name)
@@ -31,7 +32,8 @@ export function RaceAccordion() {
       });
   }
 
-  if (isEmptyPage) return <div>Loading...</div>;
+  if (isEmptyPage) return <div>No race created, yet.</div>;
+  if (isLoading) return <div>Loading...</div>;
   return <div className='lightbox'>
     {page && page.data && page.data.map((raceDTO) => (
       <Accordion key={raceDTO.race?.id} defaultActiveKey={['0']}>

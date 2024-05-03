@@ -29,6 +29,10 @@ export function Header() {
                         </li>
                         <li className="nav-item">
                             <NavDropdown title="Places" id="basic-nav-dropdown">
+                                <HeaderLink name="worlds" />
+                                <NavDropdown.Divider />
+                                <HeaderLink name="planes" />
+                                <NavDropdown.Divider />
                                 <HeaderLink name="continents" />
                                 <NavDropdown.Divider />
                                 <HeaderLink name="kingdoms" />

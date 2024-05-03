@@ -19,7 +19,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 export function CultureAccordion() {
   const { page } = useAppSelector(stateCulturePageSelect);
-  const isEmptyPage = !page || !page.data || page.data.length === 0;
+  const isLoading = !page || page.data === undefined
+  const isEmptyPage = page.data?.length === 0
   const { fillCultureData } = actionDispatch(useAppDispatch());
   const fetchCultureData = async (name: string) => {
     CultureControllerService.getCultureByName(name)
@@ -31,7 +32,8 @@ export function CultureAccordion() {
       });
   }
 
-  if (isEmptyPage) return <div>Loading...</div>;
+  if (isEmptyPage) return <div>No culture created, yet.</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   return <div className='lightbox'>
     {page && page.data && page.data.map((culture) => (

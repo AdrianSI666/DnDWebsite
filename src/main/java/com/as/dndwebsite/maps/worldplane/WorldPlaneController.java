@@ -60,7 +60,7 @@ public class WorldPlaneController {
     }
 
     @DeleteMapping("/{worldId}/plane/{planeId}")
-    public ResponseEntity<HttpStatus> removePlaneWorldRelation(@PathVariable("worldId") Long worldId,
+    public ResponseEntity<HttpStatus> removeWorldPlaneRelation(@PathVariable("worldId") Long worldId,
                                                                @PathVariable("planeId") Long planeId) {
         worldPlaneService.removePlaneWorldRelation(worldId, planeId);
         return ResponseEntity.ok().build();

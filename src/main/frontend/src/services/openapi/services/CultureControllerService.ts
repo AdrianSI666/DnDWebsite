@@ -55,6 +55,7 @@ export class CultureControllerService {
     public static getCultures(
         pageInfo: PageInfo,
     ): CancelablePromise<PageDTOEntryDTO> {
+        console.log(pageInfo)
         return __request(OpenAPI, {
             method: 'GET',
             url: '/cultures',

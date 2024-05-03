@@ -19,7 +19,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 export function WorldAccordion() {
   const { page } = useAppSelector(stateWorldPageSelect);
-  const isEmptyPage = !page || !page.data || page.data.length === 0;
+  const isLoading = !page || page.data === undefined
+  const isEmptyPage = page.data?.length === 0
   const { fillWorldData } = actionDispatch(useAppDispatch());
   const fetchWorldData = async (name: string) => {
     WorldControllerService.getWorldByName(name)
@@ -31,8 +32,9 @@ export function WorldAccordion() {
       });
   }
 
-  if (isEmptyPage) return <div>Loading...</div>;
-
+  if (isEmptyPage) return <div>No worlds created, yet.</div>;
+  if (isLoading) return <div>Loading...</div>;
+  
   return <div className='lightbox'>
     {page && page.data && page.data.map((world) => (
       <Accordion key={world.object?.id} defaultActiveKey={['0']}>

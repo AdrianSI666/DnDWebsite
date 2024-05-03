@@ -50,7 +50,7 @@ export class KingdomRegionControllerService {
     /**
      * @param kingdomId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewRegionKingdomRelation(
@@ -70,7 +70,7 @@ export class KingdomRegionControllerService {
     /**
      * @param regionId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewKingdomRegionRelation(
@@ -106,6 +106,16 @@ export class KingdomRegionControllerService {
             query: {
                 'pageInfo': pageInfo,
             },
+        });
+    }
+    /**
+     * @returns EntryDTO OK
+     * @throws ApiError
+     */
+    public static getAllRegionsWithoutKingdom(): CancelablePromise<Array<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/kingdoms/unset/region',
         });
     }
     /**

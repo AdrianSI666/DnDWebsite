@@ -54,14 +54,14 @@ public class KingdomRegionController {
     }
 
     @PutMapping("/{kingdomId}/region/{regionId}")
-    public ResponseEntity<HttpStatus> addRegionKingdomRelation(@PathVariable("kingdomId") Long kingdomId,
+    public ResponseEntity<HttpStatus> addKingdomRegionRelation(@PathVariable("kingdomId") Long kingdomId,
                                                                @PathVariable("regionId") Long regionId) {
         kingdomRegionService.addRegionKingdomRelation(kingdomId, regionId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{kingdomId}/region/{regionId}")
-    public ResponseEntity<HttpStatus> removeRegionKingdomRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> removeKingdomRegionRelation(@PathVariable("regionId") Long regionId,
                                                                   @PathVariable("kingdomId") Long kingdomId) {
         kingdomRegionService.removeRegionKingdomRelation(kingdomId, regionId);
         return ResponseEntity.ok().build();

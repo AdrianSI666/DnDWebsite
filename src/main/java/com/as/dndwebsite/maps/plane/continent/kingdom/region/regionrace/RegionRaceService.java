@@ -3,6 +3,7 @@ package com.as.dndwebsite.maps.plane.continent.kingdom.region.regionrace;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
@@ -47,7 +48,7 @@ public class RegionRaceService implements IRegionRaceService {
     public void addRaceToRegion(Long raceId, Long regionId) {
         Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
-        region.getRaces().add(race);
+        if(!region.getRaces().add(race)) throw new BadRequestException("Region %s and Race %s are already linked".formatted(region.getName(), race.getName()));
         race.getRegions().add(region);
     }
 

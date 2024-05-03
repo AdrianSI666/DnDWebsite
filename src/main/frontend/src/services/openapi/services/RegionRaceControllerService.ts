@@ -50,7 +50,7 @@ export class RegionRaceControllerService {
     /**
      * @param regionId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewRaceRegionRelation(
@@ -70,7 +70,7 @@ export class RegionRaceControllerService {
     /**
      * @param raceId
      * @param requestBody
-     * @returns string OK
+     * @returns EntryDTO OK
      * @throws ApiError
      */
     public static addNewRegionRaceRelation(

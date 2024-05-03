@@ -21,6 +21,14 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 export function WorldSubObjectsFunction() {
   const { addNewPlaneToWorld, removePlaneFromWorld } = actionDispatch(useAppDispatch());
+
+  const getAllPlanesWithoutWorld = async () => {
+    return await WorldPlaneControllerService.getAllPlanesWithoutWorld()
+      .catch((err) => {
+        console.log("My Error: ", err);
+      });
+  }
+
   const saveNewPlaneToWorld = async (worldId: number, name: string, description: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
@@ -36,13 +44,13 @@ export function WorldSubObjectsFunction() {
       });
   }
 
-  const saveExistingPlaneToWorld = async (worldId: number, PlaneId: number, PlaneName: string, PlaneDescription: string): Promise<void> => {
+  const saveExistingPlaneToWorld = async (worldId: number, planeId: number, planeName: string, planeDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
-      name: PlaneName,
-      description: PlaneDescription,
-      id: PlaneId
+      name: planeName,
+      description: planeDescription,
+      id: planeId
     }
-    return WorldPlaneControllerService.addWorldPlaneRelation(PlaneId, worldId)
+    return WorldPlaneControllerService.addWorldPlaneRelation(worldId, planeId)
       .then(() => {
         addNewPlaneToWorld(worldId, entryDTO);
       })
@@ -52,10 +60,10 @@ export function WorldSubObjectsFunction() {
       });
   }
 
-  const removePlaneFromWorldFunction = async (worldId: number, PlaneId: number): Promise<void> => {
-    return WorldPlaneControllerService.removePlaneWorldRelation(PlaneId, worldId)
+  const removePlaneFromWorldFunction = async (worldId: number, planeId: number): Promise<void> => {
+    return WorldPlaneControllerService.removeWorldPlaneRelation(worldId, planeId)
       .then(() => {
-        removePlaneFromWorld(worldId, PlaneId);
+        removePlaneFromWorld(worldId, planeId);
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err);
@@ -63,5 +71,5 @@ export function WorldSubObjectsFunction() {
       });
   }
 
-  return { saveNewPlaneToWorld, saveExistingPlaneToWorld, removePlaneFromWorldFunction };
+  return { saveNewPlaneToWorld, saveExistingPlaneToWorld, removePlaneFromWorldFunction, getAllPlanesWithoutWorld };
 }
