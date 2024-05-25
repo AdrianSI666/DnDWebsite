@@ -91,7 +91,7 @@ export function OneRaceSubObjectsFunction() {
             description: subRaceDescription,
             id: regionId
         }
-        return RegionRaceControllerService.addRaceRegionRelation(regionId, raceId)
+        return RegionRaceControllerService.addRegionRaceRelation(regionId, raceId)
             .then(() => {
                 addNewRegionToRace(regionDTO);
             })
@@ -102,7 +102,7 @@ export function OneRaceSubObjectsFunction() {
     }
 
     const removeRegionFromRaceFunction = async (raceId: number, regionId: number): Promise<void> => {
-        return RegionRaceControllerService.deleteRaceRegionRelation(regionId, raceId)
+        return RegionRaceControllerService.deleteRegionRaceRelation(regionId, raceId)
             .then(() => {
                 removeRegionFromRace(regionId);
             })

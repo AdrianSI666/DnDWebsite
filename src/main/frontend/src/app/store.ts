@@ -12,6 +12,12 @@ import planePageSlice from './containers/Maps/PlanePage/store/planePageSlice';
 import onePlaneSlice from './containers/Maps/PlanePage/OnePlane/store/onePlaneSlice';
 import continentPageSlice from './containers/Maps/ContinentPage/store/continentPageSlice';
 import oneContinentSlice from './containers/Maps/ContinentPage/OneContinent/store/oneContinentSlice';
+import kingdomPageSlice from './containers/Maps/KingdomPage/store/kingdomPageSlice';
+import oneKingdomSlice from './containers/Maps/KingdomPage/OneKingdom/store/oneKingdomSlice';
+import regionPageSlice from './containers/Maps/RegionPage/store/regionPageSlice';
+import oneRegionSlice from './containers/Maps/RegionPage/OneRegion/store/oneRegionSlice';
+import placePageSlice from './containers/Maps/PlacePage/store/placePageSlice';
+import onePlaceSlice from './containers/Maps/PlacePage/OnePlace/store/onePlaceSlice';
 
 export const store = configureStore({
   reducer: {
@@ -26,7 +32,13 @@ export const store = configureStore({
     planePage: planePageSlice,
     onePlane: onePlaneSlice,
     continentPage: continentPageSlice,
-    oneContinent: oneContinentSlice
+    oneContinent: oneContinentSlice,
+    kingdomPage: kingdomPageSlice,
+    oneKingdom: oneKingdomSlice,
+    regionPage: regionPageSlice,
+    oneRegion: oneRegionSlice,
+    placePage: placePageSlice,
+    onePlace: onePlaceSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()

@@ -42,19 +42,19 @@ public class RegionPlaceController {
     }
 
     @PostMapping(path = "/{regionId}/place")
-    public ResponseEntity<EntryDTO> addNewPlace(@PathVariable("regionId") Long regionId,
-                                                @RequestBody EntryDTO place) {
+    public ResponseEntity<EntryDTO> addNewPlaceRegionRelation(@PathVariable("regionId") Long regionId,
+                                                              @RequestBody EntryDTO place) {
         return ResponseEntity.ok().body(regionPlaceService.addNewPlaceToRegionRelation(place, regionId));
     }
 
     @PostMapping("/place/{placeId}")
-    public ResponseEntity<EntryDTO> addNewRegion(@PathVariable("placeId") Long placeId,
-                                                 @RequestBody EntryDTO region) {
+    public ResponseEntity<EntryDTO> addNewRegionPlaceRelation(@PathVariable("placeId") Long placeId,
+                                                              @RequestBody EntryDTO region) {
         return ResponseEntity.ok().body(regionPlaceService.addNewRegionToPlaceRelation(region, placeId));
     }
 
     @PutMapping("/{regionId}/place/{placeId}")
-    public ResponseEntity<HttpStatus> addPlaceRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> addRegionPlaceRelation(@PathVariable("regionId") Long regionId,
                                                              @PathVariable("placeId") Long placeId) {
         regionPlaceService.addPlaceRegionRelation(regionId, placeId);
         return ResponseEntity.ok().build();
@@ -62,8 +62,8 @@ public class RegionPlaceController {
 
 
     @DeleteMapping(path = "/{regionId}/place/{placeId}")
-    public ResponseEntity<HttpStatus> deletePlace(@PathVariable("regionId") Long regionId,
-                                                  @PathVariable("placeId") Long placeId) {
+    public ResponseEntity<HttpStatus> removeRegionPlaceRelation(@PathVariable("regionId") Long regionId,
+                                                                @PathVariable("placeId") Long placeId) {
         regionPlaceService.removePlaceRegionRelation(regionId, placeId);
         return ResponseEntity.ok().build();
     }

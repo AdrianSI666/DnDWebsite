@@ -61,8 +61,8 @@ public class KingdomRegionController {
     }
 
     @DeleteMapping("/{kingdomId}/region/{regionId}")
-    public ResponseEntity<HttpStatus> removeKingdomRegionRelation(@PathVariable("regionId") Long regionId,
-                                                                  @PathVariable("kingdomId") Long kingdomId) {
+    public ResponseEntity<HttpStatus> removeKingdomRegionRelation(@PathVariable("kingdomId") Long kingdomId,
+                                                                  @PathVariable("regionId") Long regionId) {
         kingdomRegionService.removeRegionKingdomRelation(kingdomId, regionId);
         return ResponseEntity.ok().build();
     }

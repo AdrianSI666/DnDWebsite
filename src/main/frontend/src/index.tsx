@@ -24,6 +24,11 @@ import { PlanePage } from './app/containers/Maps/PlanePage';
 import { OnePlane } from './app/containers/Maps/PlanePage/OnePlane';
 import { ContinentPage } from './app/containers/Maps/ContinentPage';
 import { OneContinent } from './app/containers/Maps/ContinentPage/OneContinent';
+import { OneRegion } from './app/containers/Maps/RegionPage/OneRegion';
+import { KingdomPage } from './app/containers/Maps/KingdomPage';
+import { OneKingdom } from './app/containers/Maps/KingdomPage/OneKingdom';
+import { PlacePage } from './app/containers/Maps/PlacePage';
+import { OnePlace } from './app/containers/Maps/PlacePage/OnePlace';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -48,7 +53,12 @@ root.render(
             <Route path={"planes/:name"} element={<OnePlane />} />
             <Route path={"continents"} element={<ContinentPage />} />
             <Route path={"continents/:name"} element={<OneContinent />} />
-            <Route path={"regions/:name"} element={<RegionPage />} />
+            <Route path={"kingdoms"} element={<KingdomPage />} />
+            <Route path={"kingdoms/:name"} element={<OneKingdom />} />
+            <Route path={"regions"} element={<RegionPage />} />
+            <Route path={"regions/:name"} element={<OneRegion />} />
+            <Route path={"places"} element={<PlacePage />} />
+            <Route path={"places/:name"} element={<OnePlace />} />
           </Route>
         </Routes>
       </Router>

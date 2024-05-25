@@ -49,7 +49,7 @@ public class RegionCultureController {
     }
 
     @PutMapping(path = "/{regionId}/culture/{cultureId}")
-    public ResponseEntity<HttpStatus> addCultureRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> addRegionCultureRelation(@PathVariable("regionId") Long regionId,
                                                                @PathVariable("cultureId") Long culture) {
         regionCultureService.addCultureRegionRelation(culture, regionId);
         return ResponseEntity.ok().build();
@@ -57,7 +57,7 @@ public class RegionCultureController {
 
 
     @DeleteMapping("/{regionId}/culture/{cultureId}")
-    public ResponseEntity<HttpStatus> deleteCultureRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> deleteRegionCultureRelation(@PathVariable("regionId") Long regionId,
                                                                   @PathVariable("cultureId") Long cultureId) {
         regionCultureService.removeCultureRegionRelation(cultureId, regionId);
         return ResponseEntity.ok().build();

@@ -42,7 +42,7 @@ export function CultureSubObjectsFunction() {
       description: regionDescription,
       id: regionId
     }
-    return RegionCultureControllerService.addCultureRegionRelation(regionId, cultureId)
+    return RegionCultureControllerService.addRegionCultureRelation(regionId, cultureId)
       .then(() => {
         addNewRegionToCulture(cultureId, entryDTO);
       })
@@ -53,7 +53,7 @@ export function CultureSubObjectsFunction() {
   }
 
   const removeRegionFromCultureFunction = async (cultureId: number, regionId: number): Promise<void> => {
-    return RegionCultureControllerService.deleteCultureRegionRelation(regionId, cultureId)
+    return RegionCultureControllerService.deleteRegionCultureRelation(regionId, cultureId)
       .then(() => {
         removeRegionFromCulture(cultureId, regionId);
       })

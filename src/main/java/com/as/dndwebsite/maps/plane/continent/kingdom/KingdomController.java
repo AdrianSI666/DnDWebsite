@@ -44,6 +44,7 @@ public class KingdomController {
     public ResponseEntity<List<EntryDTO>> getAllKingdoms() {
         return ResponseEntity.ok().body(kingdomService.getAllKingdoms());
     }
+
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getKingdomByName(@PathVariable("name") String name) {
         EntryDTO kingdom = kingdomService.getKingdom(name);
@@ -81,8 +82,8 @@ public class KingdomController {
     }
 
     @DeleteMapping("/{kingdomId}/image/{imageId}")
-    public ResponseEntity<HttpStatus> deleteImageFromContinent(@PathVariable("kingdomId") Long kingdomId,
-                                                                            @PathVariable("imageId") Long imageId) {
+    public ResponseEntity<HttpStatus> deleteImageFromKingdom(@PathVariable("kingdomId") Long kingdomId,
+                                                             @PathVariable("imageId") Long imageId) {
         kingdomImageService.deleteImageFromKingdom(kingdomId, imageId);
         return ResponseEntity.ok().build();
     }

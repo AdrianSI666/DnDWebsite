@@ -31,31 +31,31 @@ public class RegionSubRaceController {
 
     @GetMapping("/subrace/{name}")
     public ResponseEntity<PageDTO<EntryDTO>> getRegionsRelatedToSubRace(@PathVariable("name") String name,
-                                                                          PageInfo pageInfo) {
+                                                                        PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionSubRaceService.getRegionsRelatedToSubRace(name, pageInfo)));
     }
 
     @PostMapping("/{regionId}/subrace")
-    public ResponseEntity<EntryDTO> addNewSubRaceRelation(@PathVariable("regionId") Long regionId,
-                                                            @RequestBody EntryDTO subRace) {
+    public ResponseEntity<EntryDTO> addNewSubRaceRegionRelation(@PathVariable("regionId") Long regionId,
+                                                          @RequestBody EntryDTO subRace) {
         return ResponseEntity.ok().body(regionSubRaceService.addNewSubRaceToRegion(subRace, regionId));
     }
 
     @PostMapping("/subrace/{subraceId}")
     public ResponseEntity<EntryDTO> addNewRegionSubRaceRelation(@PathVariable("subraceId") Long subraceId,
-                                                                  @RequestBody EntryDTO region) {
+                                                                @RequestBody EntryDTO region) {
         return ResponseEntity.ok().body(regionSubRaceService.addNewRegionSubRaceRelation(region, subraceId));
     }
 
     @PutMapping("/{regionId}/subrace/{subraceId}")
-    public ResponseEntity<HttpStatus> addSubRaceRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> addRegionSubRaceRelation(@PathVariable("regionId") Long regionId,
                                                                @PathVariable("subraceId") Long subRaceId) {
         regionSubRaceService.addSubRaceRegionRelation(subRaceId, regionId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{regionId}/subrace/{subraceId}")
-    public ResponseEntity<HttpStatus> deleteSubRaceRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> deleteRegionSubRaceRelation(@PathVariable("regionId") Long regionId,
                                                                   @PathVariable("subraceId") Long subRaceId) {
         regionSubRaceService.removeSubRaceRegionRelation(subRaceId, regionId);
         return ResponseEntity.ok().build();

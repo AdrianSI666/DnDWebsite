@@ -32,32 +32,32 @@ public class RegionRaceController {
 
     @GetMapping("/race/{name}")
     public ResponseEntity<PageDTO<EntryDTO>> getRegionsRelatedToRace(@PathVariable("name") String name,
-                                                                       PageInfo pageInfo) {
+                                                                     PageInfo pageInfo) {
 
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionRaceService.getRegionsRelatedToRace(name, pageInfo)));
     }
 
     @PostMapping("/{regionId}/race")
     public ResponseEntity<EntryDTO> addNewRaceRegionRelation(@PathVariable("regionId") Long regionId,
-                                                 @RequestBody EntryDTO race) {
+                                                             @RequestBody EntryDTO race) {
         return ResponseEntity.ok().body(regionRaceService.addNewRaceToRegion(race, regionId));
     }
 
     @PostMapping("/race/{raceId}")
     public ResponseEntity<EntryDTO> addNewRegionRaceRelation(@PathVariable("raceId") Long raceId,
-                                                 @RequestBody EntryDTO region) {
+                                                             @RequestBody EntryDTO region) {
         return ResponseEntity.ok().body(regionRaceService.addNewRegionToRace(region, raceId));
     }
 
     @PutMapping("/{regionId}/race/{raceId}")
-    public ResponseEntity<HttpStatus> addRaceRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> addRegionRaceRelation(@PathVariable("regionId") Long regionId,
                                                             @PathVariable("raceId") Long raceId) {
         regionRaceService.addRaceToRegion(raceId, regionId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{regionId}/race/{raceId}")
-    public ResponseEntity<HttpStatus> deleteRaceRegionRelation(@PathVariable("regionId") Long regionId,
+    public ResponseEntity<HttpStatus> deleteRegionRaceRelation(@PathVariable("regionId") Long regionId,
                                                                @PathVariable("raceId") Long raceId) {
         regionRaceService.removeRaceFromRegion(raceId, regionId);
         return ResponseEntity.ok().build();
