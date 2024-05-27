@@ -1,7 +1,7 @@
 package com.as.dndwebsite.race.subrace;
 
 import com.as.dndwebsite.domain.Entry;
-import com.as.dndwebsite.maps.kingdom.region.Region;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import com.as.dndwebsite.race.Race;
 import jakarta.persistence.PreRemove;
 import lombok.AllArgsConstructor;

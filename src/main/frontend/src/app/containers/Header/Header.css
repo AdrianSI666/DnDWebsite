@@ -1,0 +1,5 @@
+li.nav-item:not(:last-child) {
+  margin-right: 5px;
+  padding-right: 5px;
+  border-right: 1px solid;
+}

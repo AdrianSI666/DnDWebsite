@@ -1,10 +1,12 @@
 package com.as.dndwebsite.image;
 
 import com.as.dndwebsite.culture.Culture;
-import com.as.dndwebsite.maps.Continent;
-import com.as.dndwebsite.maps.kingdom.Kingdom;
-import com.as.dndwebsite.maps.kingdom.region.Region;
-import com.as.dndwebsite.maps.kingdom.region.place.Place;
+import com.as.dndwebsite.maps.World;
+import com.as.dndwebsite.maps.plane.Plane;
+import com.as.dndwebsite.maps.plane.continent.Continent;
+import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.place.Place;
 import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.subrace.SubRace;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -49,6 +51,12 @@ public class Image {
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Culture> cultures;
+        @ManyToMany(mappedBy = "images")
+        @JsonBackReference
+        private Collection<World> worlds;
+        @ManyToMany(mappedBy = "images")
+        @JsonBackReference
+        private Collection<Plane> planes;
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Continent> continents;
