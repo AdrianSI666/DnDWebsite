@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/places")
@@ -46,7 +47,7 @@ public class PlaceController {
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getPlaceByName(@PathVariable("name") String name) {
         EntryDTO place = placeService.getPlace(name);
-        EntryDTO region = regionPlaceService.getRegionRelatedToPlace(place.id());
+        Optional<EntryDTO> region = regionPlaceService.getRegionRelatedToPlace(place.id());
         List<ImageDTO> imageDTOS = placeImageService.getImagesOfPlace(place.id());
         return ResponseEntity.ok().body(new EntryFullDTO(place, region, null, imageDTOS));
     }

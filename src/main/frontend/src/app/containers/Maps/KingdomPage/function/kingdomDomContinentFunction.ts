@@ -1,27 +1,14 @@
 
-import { Dispatch } from "@reduxjs/toolkit";
-import { ApiError, EntryDTO, ContinentControllerService, ContinentKingdomControllerService } from "../../../../services/openapi";
-import { useAppDispatch } from "../../../hooks";
-import { removeContinentFromKingdom, setContinentToKingdom } from "./store/kingdomPageSlice";
+import { ApiError, ContinentControllerService, ContinentKingdomControllerService, EntryDTO } from "../../../../../services/openapi";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  setContinentToKingdom: (kingdomId: number, continentDTO: EntryDTO) => {
-    dispatch(setContinentToKingdom({
-        kingdomId,
-        continentDTO
-    }))
-  },
-  removeContinentFromKingdom: (kingdomId: number, continentId: number) => {
-    dispatch(removeContinentFromKingdom({
-        kingdomId,
-        subObjectId: continentId
-    }))
-  }
-})
+interface IKingdomDomContinentFunction {
+  setContinentToKingdom?: (kingdomId: number, continentDTO: EntryDTO) => void
+  setContinentToOneKingdom?: (continentDTO: EntryDTO) => void
+  removeContinentFromKingdom?: (kingdomId: number, continentId: number) => void
+  removeContinentFromOneKingdom?: (continentId: number) => void
+}
 
-export function KingdomDomObjectsFunction() {
-  const { setContinentToKingdom, removeContinentFromKingdom } = actionDispatch(useAppDispatch());
-
+export function KingdomDomContinentFunction(props: IKingdomDomContinentFunction) {
   const setNewContinentToKingdom = async (kingdomId: number, name: string, description: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
@@ -29,7 +16,9 @@ export function KingdomDomObjectsFunction() {
     }
     return ContinentKingdomControllerService.addNewContinentKingdomRelation(kingdomId, entryDTO)
       .then((result) => {
-        setContinentToKingdom(kingdomId, result);
+        if (props.setContinentToKingdom) props.setContinentToKingdom(kingdomId, result);
+        else if (props.setContinentToOneKingdom) props.setContinentToOneKingdom(result);
+        else throw new Error("Didn't sepcify dispatch action when adding new continent to kingdom relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err);
@@ -43,9 +32,12 @@ export function KingdomDomObjectsFunction() {
       description: continentDescription,
       id: continentId
     }
+    console.log(kingdomId)
     return ContinentKingdomControllerService.addContinentKingdomRelation(continentId, kingdomId)
       .then(() => {
-        setContinentToKingdom(kingdomId, entryDTO);
+        if (props.setContinentToKingdom) props.setContinentToKingdom(kingdomId, entryDTO);
+        else if (props.setContinentToOneKingdom) props.setContinentToOneKingdom(entryDTO);
+        else throw new Error("Didn't sepcify dispatch action when adding existing continent to kingdom relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err.body);
@@ -63,7 +55,9 @@ export function KingdomDomObjectsFunction() {
   const removeContinentFromKingdomFunction = async (kingdomId: number, continentId: number): Promise<void> => {
     return ContinentKingdomControllerService.removeContinentKingdomRelation(continentId, kingdomId)
       .then(() => {
-        removeContinentFromKingdom(kingdomId, continentId);
+        if (props.removeContinentFromKingdom) props.removeContinentFromKingdom(kingdomId, continentId);
+        else if (props.removeContinentFromOneKingdom) props.removeContinentFromOneKingdom(continentId);
+        else throw new Error("Didn't sepcify dispatch action when removing continent from kingdom relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err);

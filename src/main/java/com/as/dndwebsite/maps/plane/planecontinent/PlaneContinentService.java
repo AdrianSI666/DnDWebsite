@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.as.dndwebsite.maps.plane.PlaneService.PLANE_NOT_FOUND_MSG;
 import static com.as.dndwebsite.maps.plane.continent.ContinentService.CONTINENT_NOT_FOUND_MSG;
@@ -51,8 +52,8 @@ public class PlaneContinentService implements IPlaneContinentService {
     }
 
     @Override
-    public EntryDTO getPlaneOfContinent(Long id) {
-        return planeRepository.findByContinents_Id(id).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, id)));
+    public Optional<EntryDTO> getPlaneOfContinent(Long id) {
+        return planeRepository.findByContinents_Id(id);
     }
 
     @Override

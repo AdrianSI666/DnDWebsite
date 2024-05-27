@@ -5,10 +5,12 @@ import { useParams } from "react-router-dom";
 import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { useAppSelector } from "../../../../hooks";
 
-import { makeSelectOnePlace } from "./store/selector";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
+import { PlaceDomRegionFunction } from "../function/placeDomRegionFunction";
+import { PlaceFunction } from "../function/placeFunction";
+import { OnePlaceDispatcher } from "./store/dispatcher";
+import { makeSelectOnePlace } from "./store/selector";
 import { UseOnePlaceObjectFunction } from "./useOnePlaceFunction";
-import { OnePlaceDomObjectsFunction } from "./onePlaceDomObjectsFunction";
 
 interface IOnePlaceProps {
 }
@@ -21,8 +23,18 @@ export function OnePlace(props: IOnePlaceProps) {
     let { name } = useParams();
     const [exist, setExist] = useState(false);
     const { placeDTO } = useAppSelector(onePlaceSelect);
-    const { fetchPlace, removePlace, editPlace, saveImageToPlace, deleteImageFromPlace } = UseOnePlaceObjectFunction({ placeId: placeDTO.object?.id });
-    const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = OnePlaceDomObjectsFunction();
+    const { addImageToPlace, removeImageFromPlace, updatePlace } = OnePlaceDispatcher();
+    const { fetchPlace, removePlace } = UseOnePlaceObjectFunction({ placeId: placeDTO.object?.id });
+    const { editPlace, saveImageToPlace, deleteImageFromPlace } = PlaceFunction({placeId: placeDTO.object?.id,
+        addImageToOnePlace: addImageToPlace, 
+        removeImageFromOnePlace: removeImageFromPlace,
+        updateOnePlace: updatePlace
+    })
+    const { setRegionToPlace, removeRegionFromPlace } = OnePlaceDispatcher();
+    const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceDomRegionFunction({
+        setRegionToOnePlace: setRegionToPlace,
+        removeRegionFromOnePlace: removeRegionFromPlace
+    });
     
     useEffect(() => {
         fetchPlace(name!).then((res) => setExist(res));

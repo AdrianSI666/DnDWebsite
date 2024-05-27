@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.as.dndwebsite.maps.plane.continent.ContinentService.CONTINENT_NOT_FOUND_MSG;
 
@@ -44,8 +45,8 @@ public class ContinentKingdomService implements IContinentKingdomService {
     }
 
     @Override
-    public EntryDTO getContinentOfKingdom(Long id) {
-        return continentRepository.findByKingdoms_Id(id).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, id)));
+    public Optional<EntryDTO> getContinentOfKingdom(Long id) {
+        return continentRepository.findByKingdoms_Id(id);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class ContinentKingdomService implements IContinentKingdomService {
     public void addKingdomContinentRelation(Long continentId, Long kingdomId) {
         log.info("Adding kingdom {} to continent {}", kingdomId, continentId);
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
-        Kingdom kingdom = kingdomRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, continentId)));
+        Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, continentId)));
         if(!continent.getKingdoms().add(kingdom)) throw new BadRequestException("Continent %s and Kingdom %s are already linked".formatted(continent.getName(), kingdom.getName()));
         kingdom.setContinent(continent);
     }

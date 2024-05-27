@@ -1,27 +1,14 @@
 
-import { Dispatch } from "@reduxjs/toolkit";
-import { ApiError, RaceControllerService, EntryDTO, RegionRaceControllerService } from "../../../../../services/openapi";
-import { useAppDispatch } from "../../../../hooks";
-import { addNewRaceToRegion, removeRaceFromRegion } from "../store/regionPageSlice";
+import { ApiError, EntryDTO, RaceControllerService, RegionRaceControllerService } from "../../../../../services/openapi";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    addNewRaceToRegion: (regionId: number, subObjectDTO: EntryDTO) => {
-        dispatch(addNewRaceToRegion({
-            regionId,
-            subObjectDTO
-        }))
-    },
-    removeRaceFromRegion: (regionId: number, raceId: number) => {
-        dispatch(removeRaceFromRegion({
-            regionId,
-            subObjectId: raceId
-        }))
-    }
-})
+interface IRegionRaceProps {
+    addNewRaceToRegion?: (regionId: number, subObjectDTO: EntryDTO) => void
+    addNewRaceToOneRegion?: (subObjectDTO: EntryDTO) => void
+    removeRaceFromRegion?: (regionId: number, raceId: number) => void
+    removeRaceFromOneRegion?: (raceId: number) => void
+}
 
-export function RegionRacesFunction() {
-    const { addNewRaceToRegion, removeRaceFromRegion } = actionDispatch(useAppDispatch());
-
+export function RegionRacesFunction(props: IRegionRaceProps) {
     const getAllRaces = async () => {
         return await RaceControllerService.getAllRaces()
             .catch((err) => {
@@ -36,7 +23,9 @@ export function RegionRacesFunction() {
         }
         return RegionRaceControllerService.addNewRaceRegionRelation(regionId, entryDTO)
             .then((result) => {
-                addNewRaceToRegion(regionId, result);
+                if(props.addNewRaceToRegion)props.addNewRaceToRegion(regionId, result);
+                else if(props.addNewRaceToOneRegion) props.addNewRaceToOneRegion(result);
+                else throw new Error("Didn't sepcify dispatch action when adding new race to region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
@@ -52,7 +41,9 @@ export function RegionRacesFunction() {
         }
         return RegionRaceControllerService.addRegionRaceRelation(regionId, raceId)
             .then(() => {
-                addNewRaceToRegion(regionId, entryDTO);
+                if(props.addNewRaceToRegion)props.addNewRaceToRegion(regionId, entryDTO);
+                else if(props.addNewRaceToOneRegion) props.addNewRaceToOneRegion(entryDTO);
+                else throw new Error("Didn't sepcify dispatch action when adding existing race to region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err.body);
@@ -63,7 +54,9 @@ export function RegionRacesFunction() {
     const removeRaceFromRegionFunction = async (regionId: number, raceId: number): Promise<void> => {
         return RegionRaceControllerService.deleteRegionRaceRelation(regionId, raceId)
             .then(() => {
-                removeRaceFromRegion(regionId, raceId);
+                if(props.removeRaceFromRegion)props.removeRaceFromRegion(regionId, raceId);
+                else if(props.removeRaceFromOneRegion) props.removeRaceFromOneRegion(raceId);
+                else throw new Error("Didn't sepcify dispatch action when removing race from region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);

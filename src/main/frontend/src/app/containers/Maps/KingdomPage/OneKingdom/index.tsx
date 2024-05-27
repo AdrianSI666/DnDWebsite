@@ -6,11 +6,13 @@ import { FullEntryAccordionBody } from "../../../../components/accordions/fullEn
 import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
 import { useAppSelector } from "../../../../hooks";
 
+import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
+import { KingdomDomContinentFunction } from "../function/kingdomDomContinentFunction";
+import { KingdomFunction } from "../function/kingdomFunction";
+import { KingdomRegionsFunction } from "../function/kingdomRegionsFunction";
+import { OneKingdomDispatcher } from "./store/dispatcher";
 import { makeSelectOneKingdom } from "./store/selector";
 import { UseOneKingdomObjectFunction } from "./useOneKingdomFunction";
-import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
-import { OneKingdomSubObjectsFunction } from "./oneKingdomSubObjectsFunction";
-import { OneKingdomDomObjectsFunction } from "./oneKingdomDomObjectsFunction";
 
 interface IOneKingdomProps {
 }
@@ -23,9 +25,23 @@ export function OneKingdom(props: IOneKingdomProps) {
     let { name } = useParams();
     const [exist, setExist] = useState(false);
     const { kingdomDTO } = useAppSelector(oneKingdomSelect);
-    const { fetchKingdom, removeKingdom, editKingdom, saveImageToKingdom, deleteImageFromKingdom } = UseOneKingdomObjectFunction({ kingdomId: kingdomDTO.object?.id });
-    const { saveNewRegionToKingdom, saveExistingRegionToKingdom, removeRegionFromKingdomFunction, getAllRegionsWithoutKingdom } = OneKingdomSubObjectsFunction();
-    const { setNewContinentToKingdom, setExistingContinentToKingdom, removeContinentFromKingdomFunction, getAllContinents } = OneKingdomDomObjectsFunction();
+    const { addImageToKingdom, removeImageFromKingdom, updateKingdom } = OneKingdomDispatcher();
+    const { fetchKingdom, removeKingdom } = UseOneKingdomObjectFunction({ kingdomId: kingdomDTO.object?.id });
+    const { editKingdom, saveImageToKingdom, deleteImageFromKingdom } = KingdomFunction({ kingdomId: kingdomDTO.object?.id,
+        updateOneKingdom: updateKingdom,
+        addImageToOneKingdom: addImageToKingdom, 
+        removeImageFromOneKingdom: removeImageFromKingdom
+     });
+    const { addNewRegionToKingdom, removeRegionFromKingdom } = OneKingdomDispatcher();
+    const { saveNewRegionToKingdom, saveExistingRegionToKingdom, removeRegionFromKingdomFunction, getAllRegionsWithoutKingdom } = KingdomRegionsFunction({
+        addNewRegionToOneKingdom: addNewRegionToKingdom, 
+        removeRegionFromOneKingdom: removeRegionFromKingdom
+    });
+    const { setContinentToKingdom, removeContinentFromKingdom } = OneKingdomDispatcher();
+    const { setNewContinentToKingdom, setExistingContinentToKingdom, removeContinentFromKingdomFunction, getAllContinents } = KingdomDomContinentFunction({
+        setContinentToOneKingdom: setContinentToKingdom, 
+        removeContinentFromOneKingdom: removeContinentFromKingdom
+    });
     
     useEffect(() => {
         fetchKingdom(name!).then((res) => setExist(res));

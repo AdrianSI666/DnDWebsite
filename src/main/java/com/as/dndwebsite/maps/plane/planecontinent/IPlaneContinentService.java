@@ -5,13 +5,14 @@ import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPlaneContinentService {
     List<EntryDTO> getContinentsRelatedToPlane(Long planeId);
 
     EntryDTO getPlaneOfContinent(String name);
 
-    EntryDTO getPlaneOfContinent(Long id);
+    Optional<EntryDTO> getPlaneOfContinent(Long id);
 
     EntryDTO addNewContinentPlaneRelation(Long planeId, EntryDTO continent);
 

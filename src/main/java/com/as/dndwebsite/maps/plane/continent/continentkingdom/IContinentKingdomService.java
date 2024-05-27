@@ -5,13 +5,14 @@ import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IContinentKingdomService {
     List<EntryDTO> getKingdomsRelatedToContinent(Long continentId);
 
     EntryDTO getContinentOfKingdom(String name);
 
-    EntryDTO getContinentOfKingdom(Long id);
+    Optional<EntryDTO> getContinentOfKingdom(Long id);
 
     EntryDTO addNewKingdomContinentRelation(Long continentId, EntryDTO kingdom);
 

@@ -4,20 +4,32 @@ import { FullEntryAccordionBody } from "../../../components/accordions/fullEntry
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
 import '../../../styles/masonary.css';
 import "../../../styles/subObjects.css";
-import { KingdomFunction } from "./kingdomFunction";
-import { KingdomSubObjectsFunction } from "./kingdomSubObjectsFunction";
+import { KingdomFunction } from "./function/kingdomFunction";
+import { KingdomRegionsFunction } from "./function/kingdomRegionsFunction";
 import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
-import { KingdomDomObjectsFunction } from "./kingdomDomObjectsFunction";
+import { KingdomDomContinentFunction } from "./function/kingdomDomContinentFunction";
+import { KingdomsDispatcher } from "./store/dispatcher";
 
 interface IKingdomAccordionBody {
     kingdom: EntryFullDTO
 }
 
 export function KingdomAccordionBody(props: Readonly<IKingdomAccordionBody>) {
+    const { removeKingdom, updateKingdom, addImageToKingdom, removeImageFromKingdom } = KingdomsDispatcher();
+    const { deleteKingdom, editKingdom, saveImageToKingdom, deleteImageFromKingdom } = KingdomFunction({
+        kingdomId: props.kingdom.object?.id,
+        removeKingdom, updateKingdom, addImageToKingdom, removeImageFromKingdom
+    });
 
-    const { deleteKingdom, editKingdom, saveImageToKingdom, deleteImageFromKingdom } = KingdomFunction({ kingdomId: props.kingdom.object?.id });
-    const { saveNewRegionToKingdom, saveExistingRegionToKingdom, removeRegionFromKingdomFunction, getAllRegionsWithoutKingdom } = KingdomSubObjectsFunction();
-    const { setNewContinentToKingdom, setExistingContinentToKingdom, removeContinentFromKingdomFunction, getAllContinents } = KingdomDomObjectsFunction();
+    const { addNewRegionToKingdom, removeRegionFromKingdom } = KingdomsDispatcher();
+    const { saveNewRegionToKingdom, saveExistingRegionToKingdom, removeRegionFromKingdomFunction, getAllRegionsWithoutKingdom } = KingdomRegionsFunction({
+        addNewRegionToKingdom, removeRegionFromKingdom
+    });
+
+    const { setContinentToKingdom, removeContinentFromKingdom } = KingdomsDispatcher();
+    const { setNewContinentToKingdom, setExistingContinentToKingdom, removeContinentFromKingdomFunction, getAllContinents } = KingdomDomContinentFunction({
+        setContinentToKingdom, removeContinentFromKingdom
+    });
 
     return (
         <Accordion.Body>

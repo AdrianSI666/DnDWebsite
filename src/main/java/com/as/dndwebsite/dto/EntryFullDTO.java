@@ -1,10 +1,11 @@
 package com.as.dndwebsite.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 public record EntryFullDTO(
         EntryDTO object,
-        EntryDTO domObjects,
+        Optional<EntryDTO> domObjects,
         List<EntryDTO> subObjects,
         List<ImageDTO> images
 ) {

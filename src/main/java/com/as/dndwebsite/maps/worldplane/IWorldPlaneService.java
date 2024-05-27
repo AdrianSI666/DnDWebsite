@@ -5,6 +5,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IWorldPlaneService {
     List<EntryDTO> getPlanesRelatedToWorld(Long worldId);
@@ -13,7 +14,7 @@ public interface IWorldPlaneService {
 
     EntryDTO getWorldOfPlane(String name);
 
-    EntryDTO getWorldOfPlane(Long id);
+    Optional<EntryDTO> getWorldOfPlane(Long id);
 
     EntryDTO addNewPlaneWorldRelation(Long worldId, EntryDTO plane);
 

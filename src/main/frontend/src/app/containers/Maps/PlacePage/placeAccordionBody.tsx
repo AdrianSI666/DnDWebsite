@@ -1,11 +1,12 @@
 import { Accordion } from "react-bootstrap";
 import { EntryFullDTO } from "../../../../services/openapi";
+import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import '../../../styles/masonary.css';
 import "../../../styles/subObjects.css";
-import { PlaceFunction } from "./placeFunction";
-import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
-import { PlaceDomObjectsFunction } from "./placeDomObjectsFunction";
+import { PlaceDomRegionFunction } from "./function/placeDomRegionFunction";
+import { PlaceFunction } from "./function/placeFunction";
+import { PlaceDispatcher } from "./store/dispatcher";
 
 
 interface IPlaceAccordionBody {
@@ -13,9 +14,15 @@ interface IPlaceAccordionBody {
 }
 
 export function PlaceAccordionBody(props: Readonly<IPlaceAccordionBody>) {
-
-    const { deletePlace, editPlace, saveImageToPlace, deleteImageFromPlace } = PlaceFunction({ placeId: props.place.object?.id });
-    const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceDomObjectsFunction();
+    const { removePlace, addImageToPlace, removeImageFromPlace, updatePlace } = PlaceDispatcher();
+    const { setRegionToPlace, removeRegionFromPlace } = PlaceDispatcher();
+    const { deletePlace, editPlace, saveImageToPlace, deleteImageFromPlace } = PlaceFunction({
+        placeId: props.place.object?.id,
+        removePlace, addImageToPlace, removeImageFromPlace, updatePlace
+    });
+    const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceDomRegionFunction({
+        setRegionToPlace, removeRegionFromPlace
+    });
 
     return (
         <Accordion.Body>

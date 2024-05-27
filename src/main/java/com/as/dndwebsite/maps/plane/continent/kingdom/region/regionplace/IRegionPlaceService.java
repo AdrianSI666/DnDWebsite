@@ -5,6 +5,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IRegionPlaceService {
     Page<EntryDTO> getPlacesRelatedToRegion(String name, PageInfo page);
@@ -21,7 +22,7 @@ public interface IRegionPlaceService {
 
     EntryDTO addNewRegionToPlaceRelation(EntryDTO region, Long placeId);
 
-    EntryDTO getRegionRelatedToPlace(Long id);
+    Optional<EntryDTO> getRegionRelatedToPlace(Long id);
 
     List<EntryDTO> getAllPlacesWithoutRegion();
 }

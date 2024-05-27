@@ -11,20 +11,44 @@ import { RegionKingdomFunction } from "./function/regionKingdomFunction";
 import { RegionCulturesFunction } from "./function/regionCulturesFunction";
 import { RegionRacesFunction } from "./function/regionRacesFunction";
 import { RegionSubRacesFunction } from "./function/regionSubRacesFunction";
+import { RegionsDispatcher } from "./store/dispatcher";
 
 interface IRegionAccordionBody {
     region: RegionDTO
 }
 
 export function RegionAccordionBody(props: Readonly<IRegionAccordionBody>) {
+    const { addNewCultureToRegion, removeCultureFromRegion } = RegionsDispatcher();
+    const { removeRegion, addImageToRegion, removeImageFromRegion, updateRegion } = RegionsDispatcher();
+    const { setKingdomToRegion, removeKingdomFromRegion } = RegionsDispatcher();
+    const { addNewPlaceToRegion, removePlaceFromRegion } = RegionsDispatcher();
+    const { addNewRaceToRegion, removeRaceFromRegion } = RegionsDispatcher();
+    const { addNewSubRaceToRegion, removeSubRaceFromRegion } = RegionsDispatcher();
 
-    const { deleteRegion, editRegion, saveImageToRegion, deleteImageFromRegion } = RegionFunction({ regionId: props.region.region?.id });
-    const { saveNewPlaceToRegion, saveExistingPlaceToRegion, removePlaceFromRegionFunction, getAllPlacesWithoutRegion } = RegionPlacesFunction();
-    const { setNewKingdomToRegion, setExistingKingdomToRegion, removeKingdomFromRegionFunction, getAllKingdoms } = RegionKingdomFunction();
-    const { saveNewCultureToRegion, saveExistingCultureToRegion, removeCultureFromRegionFunction, getAllCultures } = RegionCulturesFunction();
-    const { saveNewRaceToRegion, saveExistingRaceToRegion, removeRaceFromRegionFunction, getAllRaces } = RegionRacesFunction();
-    const { saveNewSubRaceToRegion, saveExistingSubRaceToRegion, removeSubRaceFromRegionFunction, getAllSubRaces } = RegionSubRacesFunction();
-
+    const { deleteRegion, editRegion, saveImageToRegion, deleteImageFromRegion } = RegionFunction({
+        regionId: props.region.region?.id,
+        removeRegion, addImageToRegion, removeImageFromRegion, updateRegion
+    });
+    const { saveNewPlaceToRegion, saveExistingPlaceToRegion, removePlaceFromRegionFunction, getAllPlacesWithoutRegion } = RegionPlacesFunction({
+        addNewPlaceToRegion,
+        removePlaceFromRegion
+    });
+    const { setNewKingdomToRegion, setExistingKingdomToRegion, removeKingdomFromRegionFunction, getAllKingdoms } = RegionKingdomFunction({
+        setKingdomToRegion,
+        removeKingdomFromRegion
+    });
+    const { saveNewCultureToRegion, saveExistingCultureToRegion, removeCultureFromRegionFunction, getAllCultures } = RegionCulturesFunction({
+        addNewCultureToRegion,
+        removeCultureFromRegion
+    });
+    const { saveNewRaceToRegion, saveExistingRaceToRegion, removeRaceFromRegionFunction, getAllRaces } = RegionRacesFunction({
+        addNewRaceToRegion,
+        removeRaceFromRegion
+    });
+    const { saveNewSubRaceToRegion, saveExistingSubRaceToRegion, removeSubRaceFromRegionFunction, getAllSubRaces } = RegionSubRacesFunction({
+        addNewSubRaceToRegion,
+        removeSubRaceFromRegion
+    });
     return (
         <Accordion.Body>
             <DomCategoryBody categoryName={"Region"} mainEntryId={props.region.region?.id!}
@@ -38,7 +62,12 @@ export function RegionAccordionBody(props: Readonly<IRegionAccordionBody>) {
                 addButtonActionText={`Set new kingdom to ${props.region.region?.name}`}
                 deleteButtonActionText={`Unlink this region from kingdom`}
                 addExistingButtonActionText={`Set existing kingdom to ${props.region.region?.name}`} />
-            <FullEntryAccordionBody categoryName={"Region"} entryFullDTO={props.region}
+            <FullEntryAccordionBody categoryName={"Region"} entryFullDTO={{
+                object: props.region.region,
+                domObjects: props.region.kingdom,
+                subObjects: props.region.places,
+                images: props.region.images,
+            }}
                 deleteEntry={deleteRegion}
                 updateEntry={editRegion}
                 saveImageToEntry={saveImageToRegion}

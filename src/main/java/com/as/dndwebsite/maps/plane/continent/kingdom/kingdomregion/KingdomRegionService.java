@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -49,8 +50,8 @@ public class KingdomRegionService implements IKingdomRegionService {
     }
 
     @Override
-    public EntryDTO getKingdomOfRegion(Long id) {
-        return kingdomRepository.findByRegions_Id(id).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, id)));
+    public Optional<EntryDTO> getKingdomOfRegion(Long id) {
+        return kingdomRepository.findByRegions_Id(id);
     }
 
     @Override

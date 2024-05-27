@@ -1,27 +1,14 @@
 
-import { Dispatch } from "@reduxjs/toolkit";
-import { ApiError, SubRaceControllerService, EntryDTO, RegionSubRaceControllerService } from "../../../../../services/openapi";
-import { useAppDispatch } from "../../../../hooks";
-import { addNewSubRaceToRegion, removeSubRaceFromRegion } from "../store/regionPageSlice";
+import { ApiError, EntryDTO, RegionSubRaceControllerService, SubRaceControllerService } from "../../../../../services/openapi";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    addNewSubRaceToRegion: (regionId: number, subObjectDTO: EntryDTO) => {
-        dispatch(addNewSubRaceToRegion({
-            regionId,
-            subObjectDTO
-        }))
-    },
-    removeSubRaceFromRegion: (regionId: number, subSubRaceId: number) => {
-        dispatch(removeSubRaceFromRegion({
-            regionId,
-            subObjectId: subSubRaceId
-        }))
-    }
-})
+interface IRegionSubRaceProps {
+    addNewSubRaceToRegion?: (regionId: number, subObjectDTO: EntryDTO) => void
+    addNewSubRaceToOneRegion?: (subObjectDTO: EntryDTO) => void
+    removeSubRaceFromRegion?: (regionId: number, subRaceId: number) => void
+    removeSubRaceFromOneRegion?: (subRaceId: number) => void
+}
 
-export function RegionSubRacesFunction() {
-    const { addNewSubRaceToRegion, removeSubRaceFromRegion } = actionDispatch(useAppDispatch());
-
+export function RegionSubRacesFunction(props: IRegionSubRaceProps) {
     const getAllSubRaces = async () => {
         return await SubRaceControllerService.getAllSubRaces()
             .catch((err) => {
@@ -36,7 +23,9 @@ export function RegionSubRacesFunction() {
         }
         return RegionSubRaceControllerService.addNewSubRaceRegionRelation(regionId, entryDTO)
             .then((result) => {
-                addNewSubRaceToRegion(regionId, result);
+                if(props.addNewSubRaceToRegion)props.addNewSubRaceToRegion(regionId, result);
+                else if(props.addNewSubRaceToOneRegion) props.addNewSubRaceToOneRegion(result);
+                else throw new Error("Didn't sepcify dispatch action when adding new sub race to region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
@@ -52,7 +41,9 @@ export function RegionSubRacesFunction() {
         }
         return RegionSubRaceControllerService.addRegionSubRaceRelation(regionId, subSubRaceId)
             .then(() => {
-                addNewSubRaceToRegion(regionId, entryDTO);
+                if(props.addNewSubRaceToRegion)props.addNewSubRaceToRegion(regionId, entryDTO);
+                else if(props.addNewSubRaceToOneRegion) props.addNewSubRaceToOneRegion(entryDTO);
+                else throw new Error("Didn't sepcify dispatch action when adding existing sub race to region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err.body);
@@ -63,7 +54,9 @@ export function RegionSubRacesFunction() {
     const removeSubRaceFromRegionFunction = async (regionId: number, subSubRaceId: number): Promise<void> => {
         return RegionSubRaceControllerService.deleteRegionSubRaceRelation(regionId, subSubRaceId)
             .then(() => {
-                removeSubRaceFromRegion(regionId, subSubRaceId);
+                if(props.removeSubRaceFromRegion)props.removeSubRaceFromRegion(regionId, subSubRaceId);
+                else if(props.removeSubRaceFromOneRegion) props.removeSubRaceFromOneRegion(subSubRaceId);
+                else throw new Error("Didn't sepcify dispatch action when removing sub race from region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);

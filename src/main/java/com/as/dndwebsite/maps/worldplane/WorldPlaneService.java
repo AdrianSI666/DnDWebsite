@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.as.dndwebsite.maps.WorldService.WORLD_NOT_FOUND_MSG;
 import static com.as.dndwebsite.maps.plane.PlaneService.PLANE_NOT_FOUND_MSG;
@@ -51,8 +52,8 @@ public class WorldPlaneService implements IWorldPlaneService {
     }
 
     @Override
-    public EntryDTO getWorldOfPlane(Long id) {
-        return worldRepository.findByPlanes_Id(id).orElseThrow(() -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, id)));
+    public Optional<EntryDTO> getWorldOfPlane(Long id) {
+        return worldRepository.findByPlanes_Id(id);
     }
 
     @Override

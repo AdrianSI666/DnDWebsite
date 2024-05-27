@@ -1,26 +1,15 @@
 
-import { Dispatch } from "@reduxjs/toolkit";
-import { ApiError, EntryDTO, RegionControllerService, RegionPlaceControllerService } from "../../../../services/openapi";
-import { useAppDispatch } from "../../../hooks";
-import { removeRegionFromPlace, setRegionToPlace } from "./store/placePageSlice";
+import { ApiError, EntryDTO, RegionControllerService, RegionPlaceControllerService } from "../../../../../services/openapi";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  setRegionToPlace: (placeId: number, regionDTO: EntryDTO) => {
-    dispatch(setRegionToPlace({
-      placeId,
-      regionDTO
-    }))
-  },
-  removeRegionFromPlace: (placeId: number, regionId: number) => {
-    dispatch(removeRegionFromPlace({
-      placeId,
-      subObjectId: regionId
-    }))
-  }
-})
+interface IPlaceDomRegionFunction {
+  setRegionToPlace?: (placeId: number, regionDTO: EntryDTO) => void
+  setRegionToOnePlace?: (regionDTO: EntryDTO) => void
+  removeRegionFromPlace?: (placeId: number, regionId: number) => void
+  removeRegionFromOnePlace?: (regionId: number) => void
+}
 
-export function PlaceDomObjectsFunction() {
-  const { setRegionToPlace, removeRegionFromPlace } = actionDispatch(useAppDispatch());
+
+export function PlaceDomRegionFunction(props: IPlaceDomRegionFunction) {
 
   const setNewRegionToPlace = async (placeId: number, name: string, description: string): Promise<void> => {
     let entryDTO: EntryDTO = {
@@ -29,7 +18,9 @@ export function PlaceDomObjectsFunction() {
     }
     return RegionPlaceControllerService.addNewRegionPlaceRelation(placeId, entryDTO)
       .then((result) => {
-        setRegionToPlace(placeId, result);
+        if (props.setRegionToPlace) props.setRegionToPlace(placeId, result);
+        else if (props.setRegionToOnePlace) props.setRegionToOnePlace(result);
+        else throw new Error("Didn't sepcify dispatch action when adding new region to place relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err);
@@ -45,7 +36,9 @@ export function PlaceDomObjectsFunction() {
     }
     return RegionPlaceControllerService.addRegionPlaceRelation(regionId, placeId)
       .then(() => {
-        setRegionToPlace(placeId, entryDTO);
+        if (props.setRegionToPlace) props.setRegionToPlace(placeId, entryDTO);
+        else if (props.setRegionToOnePlace) props.setRegionToOnePlace(entryDTO);
+        else throw new Error("Didn't sepcify dispatch action when adding existing region to place relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err.body);
@@ -63,7 +56,9 @@ export function PlaceDomObjectsFunction() {
   const removeRegionFromPlaceFunction = async (placeId: number, regionId: number): Promise<void> => {
     return RegionPlaceControllerService.removeRegionPlaceRelation(regionId, placeId)
       .then(() => {
-        removeRegionFromPlace(placeId, regionId);
+        if (props.removeRegionFromPlace) props.removeRegionFromPlace(placeId, regionId);
+        else if (props.removeRegionFromOnePlace) props.removeRegionFromOnePlace(regionId);
+        else throw new Error("Didn't sepcify dispatch action when removing region from place relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err);

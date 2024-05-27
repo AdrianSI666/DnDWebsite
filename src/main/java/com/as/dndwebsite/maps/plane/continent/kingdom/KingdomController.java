@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/kingdoms")
@@ -48,7 +49,7 @@ public class KingdomController {
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getKingdomByName(@PathVariable("name") String name) {
         EntryDTO kingdom = kingdomService.getKingdom(name);
-        EntryDTO continent = continentKingdomService.getContinentOfKingdom(kingdom.id());
+        Optional<EntryDTO> continent = continentKingdomService.getContinentOfKingdom(kingdom.id());
         List<EntryDTO> regions = kingdomRegionService.getRegionsRelatedToKingdom(kingdom.id());
         List<ImageDTO> imageDTOS = kingdomImageService.getImagesOfKingdom(kingdom.id());
         return ResponseEntity.ok().body(new EntryFullDTO(kingdom, continent, regions, imageDTOS));

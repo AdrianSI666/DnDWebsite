@@ -5,6 +5,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IKingdomRegionService {
     EntryDTO addNewRegionKingdomRelation(Long kingdomId, EntryDTO region);
@@ -21,7 +22,7 @@ public interface IKingdomRegionService {
 
     EntryDTO getKingdomRelatedToRegion(String name);
 
-    EntryDTO getKingdomOfRegion(Long id);
+    Optional<EntryDTO> getKingdomOfRegion(Long id);
 
     List<EntryDTO> getAllRegionsWithoutKingdom();
 }

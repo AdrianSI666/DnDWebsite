@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/planes")
@@ -48,7 +49,7 @@ public class PlaneController {
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getPlaneByName(@PathVariable("name") String name) {
         EntryDTO plane = planeService.getPlane(name);
-        EntryDTO world = worldPlaneService.getWorldOfPlane(plane.id());
+        Optional<EntryDTO> world = worldPlaneService.getWorldOfPlane(plane.id());
         List<EntryDTO> continents = planeContinentService.getContinentsRelatedToPlane(plane.id());
         List<ImageDTO> imageDTOS = planeImagesService.getImagesOfPlane(plane.id());
         return ResponseEntity.ok().body(new EntryFullDTO(plane, world, continents, imageDTOS));

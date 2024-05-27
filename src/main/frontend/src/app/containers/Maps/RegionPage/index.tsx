@@ -1,6 +1,6 @@
 import { Dispatch, createSelector } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
-import { ApiError, RegionControllerService, EntryDTO, EntryFullDTO, PageInfo, Page } from "../../../../services/openapi";
+import { ApiError, EntryDTO, Page, PageInfo, RegionControllerService, RegionDTO } from "../../../../services/openapi";
 import { AddNewEntryModal } from "../../../components/modals/addNewEntryModal";
 import { CustomPagination } from "../../../components/pagination/pagination";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -13,13 +13,16 @@ interface IRegionPageProps {
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setRegionPage: (page: Page<EntryDTO>) => {
-        let fullPage: Page<EntryFullDTO> = {
+        let fullPage: Page<RegionDTO> = {
             data: page.data?.map((regionDTO) => {
-                let entryFullDTO: EntryFullDTO = {
-                    object: regionDTO,
+                let entryFullDTO: RegionDTO = {
+                    region: regionDTO,
                     images: [],
-                    domObjects: {},
-                    subObjects: []
+                    kingdom: {},
+                    places: [],
+                    cultures: [],
+                    races: [],
+                    subRaces: []
                 }
                 return entryFullDTO
             }),
@@ -28,12 +31,15 @@ const actionDispatch = (dispatch: Dispatch) => ({
         }
         dispatch(setRegionPage(fullPage))
     },
-    addRegion: (Region: EntryDTO) => {
-        let entryFullDTO: EntryFullDTO = {
-            object: Region,
+    addRegion: (region: EntryDTO) => {
+        let entryFullDTO: RegionDTO = {
+            region: region,
             images: [],
-            domObjects: {},
-            subObjects: []
+            kingdom: {},
+            places: [],
+            cultures: [],
+            races: [],
+            subRaces: []
         }
         dispatch(addRegion(entryFullDTO))
     }

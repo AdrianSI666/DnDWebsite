@@ -1,27 +1,16 @@
 
-import { Dispatch } from "@reduxjs/toolkit";
 import { ApiError, CultureControllerService, EntryDTO, RegionCultureControllerService } from "../../../../../services/openapi";
-import { useAppDispatch } from "../../../../hooks";
-import { addNewCultureToRegion, removeCultureFromRegion } from "../store/regionPageSlice";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    addNewCultureToRegion: (regionId: number, subObjectDTO: EntryDTO) => {
-        dispatch(addNewCultureToRegion({
-            regionId,
-            subObjectDTO
-        }))
-    },
-    removeCultureFromRegion: (regionId: number, cultureId: number) => {
-        dispatch(removeCultureFromRegion({
-            regionId,
-            subObjectId: cultureId
-        }))
-    }
-})
+interface IRegionCultureProps {
+    addNewCultureToRegion?: (regionId: number, subObjectDTO: EntryDTO) => void
+    addNewCultureToOneRegion?: (subObjectDTO: EntryDTO) => void
+    removeCultureFromRegion?: (regionId: number, cultureId: number) => void
+    removeCultureFromOneRegion?: (cultureId: number) => void
+}
 
-export function RegionCulturesFunction() {
-    const { addNewCultureToRegion, removeCultureFromRegion } = actionDispatch(useAppDispatch());
 
+export function RegionCulturesFunction(props: IRegionCultureProps) {
+    
     const getAllCultures = async () => {
         return await CultureControllerService.getAllCultures()
             .catch((err) => {
@@ -36,7 +25,9 @@ export function RegionCulturesFunction() {
         }
         return RegionCultureControllerService.addNewCultureRegionRelation(regionId, entryDTO)
             .then((result) => {
-                addNewCultureToRegion(regionId, result);
+                if(props.addNewCultureToRegion)props.addNewCultureToRegion(regionId, result);
+                else if(props.addNewCultureToOneRegion) props.addNewCultureToOneRegion(result);
+                else throw new Error("Didn't sepcify dispatch action when adding new culture to region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
@@ -52,7 +43,9 @@ export function RegionCulturesFunction() {
         }
         return RegionCultureControllerService.addRegionCultureRelation(regionId, cultureId)
             .then(() => {
-                addNewCultureToRegion(regionId, entryDTO);
+                if(props.addNewCultureToRegion)props.addNewCultureToRegion(regionId, entryDTO);
+                else if(props.addNewCultureToOneRegion) props.addNewCultureToOneRegion(entryDTO);
+                else throw new Error("Didn't sepcify dispatch action when adding existing culture to region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err.body);
@@ -63,7 +56,9 @@ export function RegionCulturesFunction() {
     const removeCultureFromRegionFunction = async (regionId: number, cultureId: number): Promise<void> => {
         return RegionCultureControllerService.deleteRegionCultureRelation(regionId, cultureId)
             .then(() => {
-                removeCultureFromRegion(regionId, cultureId);
+                if(props.removeCultureFromRegion)props.removeCultureFromRegion(regionId, cultureId);
+                else if(props.removeCultureFromOneRegion) props.removeCultureFromOneRegion(cultureId);
+                else throw new Error("Didn't sepcify dispatch action when removing culture from region relation.");
             })
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);

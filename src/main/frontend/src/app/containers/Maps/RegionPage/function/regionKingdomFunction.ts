@@ -1,25 +1,13 @@
-import { Dispatch } from "@reduxjs/toolkit";
 import { ApiError, EntryDTO, KingdomControllerService, KingdomRegionControllerService } from "../../../../../services/openapi";
-import { useAppDispatch } from "../../../../hooks";
-import { removeKingdomFromRegion, setKingdomToRegion } from "../store/regionPageSlice";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  setKingdomToRegion: (regionId: number, kingdomDTO: EntryDTO) => {
-    dispatch(setKingdomToRegion({
-        regionId,
-        kingdomDTO
-    }))
-  },
-  removeKingdomFromRegion: (regionId: number, kingdomId: number) => {
-    dispatch(removeKingdomFromRegion({
-        regionId,
-        subObjectId: kingdomId
-    }))
-  }
-})
+interface IRegionKingdomProps {
+  setKingdomToRegion?: (regionId: number, kingdomDTO: EntryDTO) => void
+  setKingdomToOneRegion?: (kingdomDTO: EntryDTO) => void
+  removeKingdomFromRegion?: (regionId: number, kingdomId: number) => void
+  removeKingdomFromOneRegion?: (kingdomId: number) => void
+}
 
-export function RegionKingdomFunction() {
-  const { setKingdomToRegion, removeKingdomFromRegion } = actionDispatch(useAppDispatch());
+export function RegionKingdomFunction(props: IRegionKingdomProps) {
 
   const setNewKingdomToRegion = async (regionId: number, name: string, description: string): Promise<void> => {
     let entryDTO: EntryDTO = {
@@ -28,7 +16,9 @@ export function RegionKingdomFunction() {
     }
     return KingdomRegionControllerService.addNewKingdomRegionRelation(regionId, entryDTO)
       .then((result) => {
-        setKingdomToRegion(regionId, result);
+        if (props.setKingdomToRegion) props.setKingdomToRegion(regionId, result);
+        else if (props.setKingdomToOneRegion) props.setKingdomToOneRegion(result);
+        else throw new Error("Didn't sepcify dispatch action when adding new kingodm to region relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err);
@@ -44,7 +34,9 @@ export function RegionKingdomFunction() {
     }
     return KingdomRegionControllerService.addKingdomRegionRelation(kingdomId, regionId)
       .then(() => {
-        setKingdomToRegion(regionId, entryDTO);
+        if (props.setKingdomToRegion) props.setKingdomToRegion(regionId, entryDTO);
+        else if (props.setKingdomToOneRegion) props.setKingdomToOneRegion(entryDTO);
+        else throw new Error("Didn't sepcify dispatch action when adding existing kingdom to region relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err.body);
@@ -62,7 +54,9 @@ export function RegionKingdomFunction() {
   const removeKingdomFromRegionFunction = async (regionId: number, kingdomId: number): Promise<void> => {
     return KingdomRegionControllerService.removeKingdomRegionRelation(kingdomId, regionId)
       .then(() => {
-        removeKingdomFromRegion(regionId, kingdomId);
+        if (props.removeKingdomFromRegion) props.removeKingdomFromRegion(regionId, kingdomId);
+        else if (props.removeKingdomFromOneRegion) props.removeKingdomFromOneRegion(kingdomId);
+        else throw new Error("Didn't sepcify dispatch action when removing kingdom from region relation.");
       })
       .catch((err: ApiError) => {
         console.log("My Error: ", err);
