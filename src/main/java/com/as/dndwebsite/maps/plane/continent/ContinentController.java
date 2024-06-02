@@ -1,5 +1,7 @@
 package com.as.dndwebsite.maps.plane.continent;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
@@ -7,8 +9,9 @@ import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.plane.continent.continentkingdom.IContinentKingdomService;
 import com.as.dndwebsite.maps.plane.planecontinent.IPlaneContinentService;
-import com.as.dndwebsite.util.IPageMapper;
+import com.as.dndwebsite.mappers.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,8 @@ public class ContinentController {
     private final IContinentKingdomService continentKingdomService;
     private final IPlaneContinentService planeContinentService;
     private final IPageMapper pageMapper;
+    @Qualifier("continentDescriptionService")
+    private final IDescriptionEntryService continentDescriptionService;
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getContinents(PageInfo pageInfo) {
@@ -51,8 +56,9 @@ public class ContinentController {
         EntryDTO continent = continentService.getContinent(name);
         Optional<EntryDTO> plane = planeContinentService.getPlaneOfContinent(continent.id());
         List<EntryDTO> kingdoms = continentKingdomService.getKingdomsRelatedToContinent(continent.id());
+        List<DescriptionDTO> descriptions = continentDescriptionService.getDescriptionsOfEntry(continent.id());
         List<ImageDTO> imageDTOS = continentImageService.getImagesOfContinent(continent.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(continent, plane, kingdoms, imageDTOS));
+        return ResponseEntity.ok().body(new EntryFullDTO(continent, plane, kingdoms, descriptions, imageDTOS));
     }
 
     @PostMapping
@@ -76,7 +82,7 @@ public class ContinentController {
     @PostMapping(path = "{continentId}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ImageDTO> saveImageToContinent(@PathVariable("continentId") long continentId,
+    public ResponseEntity<ImageDTO> saveImageToContinent(@PathVariable("continentId") Long continentId,
                                                          @RequestParam("image") MultipartFile imageFile) {
         return ResponseEntity.ok().body(continentImageService.saveImageToContinent(imageFile, continentId));
     }
@@ -85,6 +91,24 @@ public class ContinentController {
     public ResponseEntity<HttpStatus> deleteImageFromContinent(@PathVariable("continentId") Long continentId,
                                                                @PathVariable("imageId") Long imageId) {
         continentImageService.deleteImageFromContinent(continentId, imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+                                                                @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(continentDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(continentDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{continentId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("continentId") Long continentId,
+                                                                @PathVariable("descriptionId") Long imageId) {
+        continentDescriptionService.deleteDescriptionFromEntry(continentId, imageId);
         return ResponseEntity.ok().build();
     }
 

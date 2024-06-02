@@ -9,7 +9,7 @@ import com.as.dndwebsite.maps.plane.Plane;
 import com.as.dndwebsite.maps.plane.PlaneRepository;
 import com.as.dndwebsite.maps.plane.continent.Continent;
 import com.as.dndwebsite.maps.plane.continent.ContinentRepository;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,7 +60,7 @@ public class PlaneContinentService implements IPlaneContinentService {
     public EntryDTO addNewContinentPlaneRelation(Long planeId, EntryDTO continent) {
         log.info("Adding continent {} to plane {}", continent.name(), planeId);
         Plane plane = planeRepository.findById(planeId).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, planeId)));
-        Continent newContinent = continentRepository.save(new Continent(continent.name(), continent.description(), plane));
+        Continent newContinent = continentRepository.save(new Continent(continent.name(), continent.shortDescription(), plane));
         plane.getContinents().add(newContinent);
         return mapper.map(newContinent);
     }
@@ -88,7 +88,7 @@ public class PlaneContinentService implements IPlaneContinentService {
     public EntryDTO addNewPlaneContinentRelation(Long continentId, EntryDTO plane) {
         log.info("Setting new plane {} to continent {}", plane.name(), continentId);
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
-        Plane newPlane = planeRepository.save(new Plane(plane.name(), plane.description(), continent));
+        Plane newPlane = planeRepository.save(new Plane(plane.name(), plane.shortDescription(), continent));
         continent.setPlane(newPlane);
         return mapper.map(newPlane);
     }

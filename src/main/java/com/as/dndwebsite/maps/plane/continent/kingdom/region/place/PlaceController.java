@@ -1,13 +1,16 @@
 package com.as.dndwebsite.maps.plane.continent.kingdom.region.place;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionplace.IRegionPlaceService;
-import com.as.dndwebsite.util.IPageMapper;
+import com.as.dndwebsite.mappers.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,8 @@ public class PlaceController {
     private final IPlaceImageService placeImageService;
     private final IRegionPlaceService regionPlaceService;
     private final IPageMapper pageMapper;
+    @Qualifier("placeDescriptionService")
+    private final IDescriptionEntryService placeDescriptionService;
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getPlaces(PageInfo pageInfo) {
@@ -48,8 +53,9 @@ public class PlaceController {
     public ResponseEntity<EntryFullDTO> getPlaceByName(@PathVariable("name") String name) {
         EntryDTO place = placeService.getPlace(name);
         Optional<EntryDTO> region = regionPlaceService.getRegionRelatedToPlace(place.id());
+        List<DescriptionDTO> descriptions = placeDescriptionService.getDescriptionsOfEntry(place.id());
         List<ImageDTO> imageDTOS = placeImageService.getImagesOfPlace(place.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(place, region, null, imageDTOS));
+        return ResponseEntity.ok().body(new EntryFullDTO(place, region, null, descriptions, imageDTOS));
     }
 
     @PostMapping
@@ -82,6 +88,23 @@ public class PlaceController {
     public ResponseEntity<HttpStatus> deleteImageFromRegion(@PathVariable("placeId") Long placeId,
                                                             @PathVariable("imageId") Long imageId) {
         placeImageService.deleteImageFromPlace(placeId, imageId);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+                                                                @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(placeDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(placeDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{placeId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("placeId") Long placeId,
+                                                                @PathVariable("descriptionId") Long imageId) {
+        placeDescriptionService.deleteDescriptionFromEntry(placeId, imageId);
         return ResponseEntity.ok().build();
     }
 }

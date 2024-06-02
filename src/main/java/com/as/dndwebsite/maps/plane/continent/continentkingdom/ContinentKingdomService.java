@@ -10,7 +10,7 @@ import com.as.dndwebsite.maps.plane.continent.ContinentRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
 import com.as.dndwebsite.maps.plane.continent.kingdom.KingdomRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.KingdomService;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -53,7 +53,7 @@ public class ContinentKingdomService implements IContinentKingdomService {
     public EntryDTO addNewKingdomContinentRelation(Long continentId, EntryDTO kingdom) {
         log.info("Adding kingdom {} to continent {}", kingdom.name(), continentId);
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
-        Kingdom newKingdom = kingdomRepository.save(new Kingdom(kingdom.name(), kingdom.description(), continent));
+        Kingdom newKingdom = kingdomRepository.save(new Kingdom(kingdom.name(), kingdom.shortDescription(), continent));
         continent.getKingdoms().add(newKingdom);
         return mapper.map(newKingdom);
     }
@@ -85,7 +85,7 @@ public class ContinentKingdomService implements IContinentKingdomService {
     @Override
     public EntryDTO addNewContinentKingdomRelation(Long kingdomId, EntryDTO continent) {
         Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, kingdomId)));
-        Continent newContinent = continentRepository.save(new Continent(continent.name(), continent.description(), kingdom));
+        Continent newContinent = continentRepository.save(new Continent(continent.name(), continent.shortDescription(), kingdom));
         kingdom.setContinent(newContinent);
         return mapper.map(newContinent);
     }

@@ -10,7 +10,7 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionService;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,7 +56,7 @@ public class RegionCultureService implements IRegionCultureService {
     @Override
     public EntryDTO addNewRegionToCultureRelation(EntryDTO region, Long cultureId) {
         Culture culture = cultureRepository.findById(cultureId).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, cultureId)));
-        Region newRegion = regionRepository.save(new Region(region.name(), region.description(), culture));
+        Region newRegion = regionRepository.save(new Region(region.name(), region.shortDescription(), culture));
         culture.getRegions().add(newRegion);
         return mapper.map(newRegion);
     }
@@ -64,7 +64,7 @@ public class RegionCultureService implements IRegionCultureService {
     @Override
     public EntryDTO addNewCultureToRegionRelation(EntryDTO culture, Long regionId) {
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
-        Culture newCulture = cultureRepository.save(new Culture(culture.name(), culture.description(), region));
+        Culture newCulture = cultureRepository.save(new Culture(culture.name(), culture.shortDescription(), region));
         region.getCultures().add(newCulture);
         return mapper.map(newCulture);
     }

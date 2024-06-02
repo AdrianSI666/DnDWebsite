@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -50,7 +50,7 @@ public class SubRaceService implements ISubRaceService {
     @Override
     public EntryDTO saveSubRace(EntryDTO entryDTO) {
         log.info("Saving new SubRace {}", entryDTO.name());
-        SubRace subRace = new SubRace(entryDTO.name(), entryDTO.description());
+        SubRace subRace = new SubRace(entryDTO.name(), entryDTO.shortDescription());
         subRace.setImages(new ArrayList<>());
         return mapper.map(subraceRepository.save(subRace));
     }
@@ -61,7 +61,7 @@ public class SubRaceService implements ISubRaceService {
         SubRace oldSubrace = subraceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, id)));
         oldSubrace.setName(entryDTO.name());
-        oldSubrace.setDescription(entryDTO.description());
+        oldSubrace.setShortDescription(entryDTO.shortDescription());
     }
 
     @Override

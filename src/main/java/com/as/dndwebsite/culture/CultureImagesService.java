@@ -35,8 +35,8 @@ public class CultureImagesService implements ICultureImagesService {
     }
 
     @Override
-    public void deleteImageFromCulture(Long raceId, Long imageId) {
-        Culture culture = cultureRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, raceId)));
+    public void deleteImageFromCulture(Long cultureId, Long imageId) {
+        Culture culture = cultureRepository.findById(cultureId).orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, cultureId)));
         imageService.deleteImageFromEntry(culture, imageId);
     }
 }

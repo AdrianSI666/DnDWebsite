@@ -10,7 +10,7 @@ import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionService;
 import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.RaceRepository;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -63,7 +63,7 @@ public class RegionRaceService implements IRegionRaceService {
     @Override
     public EntryDTO addNewRaceToRegion(EntryDTO race, Long regionId) {
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
-        Race newRace = raceRepository.save(new Race(race.name(), race.description(), region));
+        Race newRace = raceRepository.save(new Race(race.name(), race.shortDescription(), region));
         region.getRaces().add(newRace);
         return mapper.map(newRace);
     }
@@ -82,7 +82,7 @@ public class RegionRaceService implements IRegionRaceService {
     @Override
     public EntryDTO addNewRegionToRace(EntryDTO region, Long raceId) {
         Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, raceId)));
-        Region newRegion = regionRepository.save(new Region(region.name(), region.description(), race));
+        Region newRegion = regionRepository.save(new Region(region.name(), region.shortDescription(), race));
         race.getRegions().add(newRegion);
         return mapper.map(newRegion);
     }

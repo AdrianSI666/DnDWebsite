@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import com.as.dndwebsite.util.ImageConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +31,9 @@ public class ImageServiceImp implements IImageService {
                 throw new IOException("Empty file.");
             }
             log.info("Saving image to entry of {}", entry.getName());
-            Image image1 = converterToJpg.convert(file, image);
-            entry.getImages().add(image1);
-            return imageMapper.map(image1);
+            Image convertedImage = converterToJpg.convert(file, image);
+            entry.getImages().add(convertedImage);
+            return imageMapper.map(convertedImage);
         } catch (IOException e) {
             throw new BadRequestException("Couldn't read file." + e.getMessage());
         }
@@ -42,6 +42,6 @@ public class ImageServiceImp implements IImageService {
     public void deleteImageFromEntry(Entry entry, Long imageId) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new NotFoundException(String.format(IMAGE_NOT_FOUND_MSG, imageId)));
         entry.getImages().remove(image);
-        imageRepository.deleteById(imageId);
+        imageRepository.delete(image);
     }
 }

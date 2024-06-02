@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,7 @@ public class CultureService implements ICultureService {
 
     @Override
     public EntryDTO getCulture(String name) {
-        log.info("Getting Culture with name: " + name);
+        log.info("Getting Culture with name: {}", name);
         return mapper.map(cultureRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, name))));
     }
@@ -49,7 +49,7 @@ public class CultureService implements ICultureService {
     @Override
     public EntryDTO saveCulture(EntryDTO culture) {
         log.info("Saving new Culture {}", culture.name());
-        Culture savedCulture = cultureRepository.save(new Culture(culture.name(), culture.description()));
+        Culture savedCulture = cultureRepository.save(new Culture(culture.name(), culture.shortDescription()));
         return mapper.map(savedCulture);
     }
 
@@ -59,7 +59,7 @@ public class CultureService implements ICultureService {
         Culture oldCulture = cultureRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, id)));
         oldCulture.setName(culture.name());
-        oldCulture.setDescription(culture.description());
+        oldCulture.setShortDescription(culture.shortDescription());
     }
 
     @Override

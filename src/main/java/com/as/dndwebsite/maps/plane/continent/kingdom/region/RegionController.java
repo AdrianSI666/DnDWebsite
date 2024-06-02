@@ -1,16 +1,19 @@
 package com.as.dndwebsite.maps.plane.continent.kingdom.region;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.mappers.IPageMapper;
 import com.as.dndwebsite.maps.plane.continent.kingdom.kingdomregion.IKingdomRegionService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionculture.IRegionCultureService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionplace.IRegionPlaceService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionrace.IRegionRaceService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionsubrace.IRegionSubRaceService;
-import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +43,8 @@ public class RegionController {
     private final IRegionRaceService regionRaceService;
     private final IRegionSubRaceService regionSubRaceService;
     private final IPageMapper pageMapper;
+    @Qualifier("regionDescriptionService")
+    private final IDescriptionEntryService regionDescriptionService;
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getRegions(PageInfo pageInfo) {
@@ -57,10 +62,11 @@ public class RegionController {
         Optional<EntryDTO> kingdom = kingdomRegionService.getKingdomOfRegion(region.id());
         List<EntryDTO> places = regionPlaceService.getPlacesRelatedToRegion(region.id());
         List<ImageDTO> imageDTOS = regionImageService.getImagesOfRegion(region.id());
+        List<DescriptionDTO> descriptions = regionDescriptionService.getDescriptionsOfEntry(region.id());
         List<EntryDTO> cultures = regionCultureService.getCulturesRelatedToRegion(region.id());
         List<EntryDTO> races = regionRaceService.getRacesRelatedToRegion(region.id());
         List<EntryDTO> subRaces = regionSubRaceService.getSubRacesRelatedToRegion(region.id());
-        return ResponseEntity.ok().body(new RegionDTO(region, kingdom, places, imageDTOS, cultures, races, subRaces));
+        return ResponseEntity.ok().body(new RegionDTO(region, kingdom, places, descriptions, imageDTOS, cultures, races, subRaces));
     }
 
     @PostMapping
@@ -93,6 +99,24 @@ public class RegionController {
     public ResponseEntity<HttpStatus> deleteImageFromRegion(@PathVariable("regionId") Long regionId,
                                                             @PathVariable("imageId") Long imageId) {
         regionImageService.deleteImageFromRegion(regionId, imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+                                                                @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(regionDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(regionDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{regionId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("regionId") Long regionId,
+                                                                @PathVariable("descriptionId") Long imageId) {
+        regionDescriptionService.deleteDescriptionFromEntry(regionId, imageId);
         return ResponseEntity.ok().build();
     }
 }

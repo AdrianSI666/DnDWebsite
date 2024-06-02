@@ -3,7 +3,7 @@ package com.as.dndwebsite.maps.plane.continent.kingdom.region.regionplace;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
-import com.as.dndwebsite.util.IPageMapper;
+import com.as.dndwebsite.mappers.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

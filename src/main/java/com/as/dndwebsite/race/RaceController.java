@@ -1,13 +1,16 @@
 package com.as.dndwebsite.race;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.mappers.IPageMapper;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionrace.IRegionRaceService;
 import com.as.dndwebsite.race.racesubrace.IRaceSubRaceService;
-import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,8 @@ public class RaceController {
     private final IRaceSubRaceService raceSubRaceService;
     private final IRegionRaceService regionRaceService;
     private final IPageMapper pageMapper;
+    @Qualifier("raceDescriptionService")
+    private final IDescriptionEntryService raceDescriptionService;
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getRaces(PageInfo pageInfo) {
@@ -48,9 +53,10 @@ public class RaceController {
     public ResponseEntity<RaceDTO> getRaceByName(@PathVariable("name") String name) {
         EntryDTO race = raceService.getRace(name);
         List<EntryDTO> subRaces = raceSubRaceService.getSubRacesOfRace(race.id());
+        List<DescriptionDTO> descriptionDTOS = raceDescriptionService.getDescriptionsOfEntry(race.id());
         List<ImageDTO> imageDTOS = raceImagesService.getImagesOfRace(race.id());
         List<EntryDTO> regions = regionRaceService.getRegionsRelatedToRace(race.id());
-        return ResponseEntity.ok().body(new RaceDTO(race, subRaces, imageDTOS, regions));
+        return ResponseEntity.ok().body(new RaceDTO(race, subRaces, descriptionDTOS, imageDTOS, regions));
     }
 
     @PostMapping
@@ -72,7 +78,7 @@ public class RaceController {
     }
 
     @GetMapping("/{id}/images")
-    public ResponseEntity<List<ImageDTO>> getImagesOfRace(@PathVariable("id") long id) {
+    public ResponseEntity<List<ImageDTO>> getImagesOfRace(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(raceImagesService.getImagesOfRace(id));
     }
 
@@ -88,6 +94,24 @@ public class RaceController {
     public ResponseEntity<HttpStatus> deleteImageFromRace(@PathVariable("raceId") Long raceId,
                                                           @PathVariable("imageId") Long imageId) {
         raceImagesService.deleteImageFromRace(raceId, imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+                                                                @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(raceDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(raceDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{raceId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("raceId") Long raceId,
+                                                                @PathVariable("descriptionId") Long imageId) {
+        raceDescriptionService.deleteDescriptionFromEntry(raceId, imageId);
         return ResponseEntity.ok().build();
     }
 

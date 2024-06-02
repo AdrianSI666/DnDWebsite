@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,7 +44,7 @@ public class RegionService implements IRegionService {
     @Override
     public EntryDTO saveRegion(EntryDTO region) {
         log.info("Saving new Region {}", region.name());
-        return mapper.map(regionRepository.save(new Region(region.name(), region.description())));
+        return mapper.map(regionRepository.save(new Region(region.name(), region.shortDescription())));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class RegionService implements IRegionService {
         Region oldRegion = regionRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, id)));
         log.info("Updating Region: " + oldRegion.getName());
         oldRegion.setName(region.name());
-        oldRegion.setDescription(region.description());
+        oldRegion.setShortDescription(region.shortDescription());
     }
 
     @Override

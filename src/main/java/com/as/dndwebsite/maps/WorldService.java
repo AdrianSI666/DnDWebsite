@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,7 +48,7 @@ public class WorldService implements IWorldService {
     @Override
     public EntryDTO saveWorld(EntryDTO world) {
         log.info("Saving new world {}", world.name());
-        return mapper.map(worldRepository.save(new World(world.name(), world.description())));
+        return mapper.map(worldRepository.save(new World(world.name(), world.shortDescription())));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class WorldService implements IWorldService {
         World oldWorld = worldRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(WORLD_NOT_FOUND_MSG.formatted(id)));
         oldWorld.setName(world.name());
-        oldWorld.setDescription(world.description());
+        oldWorld.setShortDescription(world.shortDescription());
     }
 
     @Override

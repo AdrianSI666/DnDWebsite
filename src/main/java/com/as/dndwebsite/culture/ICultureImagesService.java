@@ -10,5 +10,5 @@ public interface ICultureImagesService {
 
     ImageDTO saveImageToCulture(MultipartFile file, Long id);
 
-    void deleteImageFromCulture(Long raceId, Long imageId);
+    void deleteImageFromCulture(Long cultureId, Long imageId);
 }

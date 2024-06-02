@@ -10,7 +10,7 @@ import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.place.Place;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.place.PlaceRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionService;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -64,7 +64,7 @@ public class RegionPlaceService implements IRegionPlaceService {
     @Override
     public EntryDTO addNewRegionToPlaceRelation(EntryDTO region, Long placeId) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new NotFoundException(String.format(PLACE_NOT_FOUND_MSG, placeId)));
-        Region newRegion = regionRepository.save(new Region(region.name(), region.description(), place));
+        Region newRegion = regionRepository.save(new Region(region.name(), region.shortDescription(), place));
         place.setRegion(newRegion);
         return mapper.map(newRegion);
     }
@@ -73,7 +73,7 @@ public class RegionPlaceService implements IRegionPlaceService {
     public EntryDTO addNewPlaceToRegionRelation(EntryDTO place, Long regionId) {
         log.info("Adding place {} to region {}", place.name(), regionId);
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
-        Place newPlace = placeRepository.save(new Place(place.name(), place.description(), region));
+        Place newPlace = placeRepository.save(new Place(place.name(), place.shortDescription(), region));
         region.getPlaces().add(newPlace);
         return mapper.map(newPlace);
     }

@@ -9,7 +9,7 @@ import com.as.dndwebsite.race.Race;
 import com.as.dndwebsite.race.RaceRepository;
 import com.as.dndwebsite.race.subrace.SubRace;
 import com.as.dndwebsite.race.subrace.SubRaceRepository;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -63,7 +63,7 @@ public class RaceSubRaceService implements IRaceSubRaceService {
     public EntryDTO addNewSubRaceRaceRelation(Long raceId, EntryDTO subRace) {
         log.info("Adding subRace {} to race {}", subRace.name(), raceId);
         Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
-        SubRace newSubrace = subraceRepository.save(new SubRace(subRace.name(), subRace.description(), race));
+        SubRace newSubrace = subraceRepository.save(new SubRace(subRace.name(), subRace.shortDescription(), race));
         race.getSubRaces().add(newSubrace);
         return mapper.map(newSubrace);
     }
@@ -71,7 +71,7 @@ public class RaceSubRaceService implements IRaceSubRaceService {
     @Override
     public EntryDTO addNewRaceSubRaceRelation(Long subRaceId, EntryDTO race) {
         SubRace subRace = subraceRepository.findById(subRaceId).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subRaceId)));
-        Race newRace = raceRepository.save(new Race(race.name(), race.description(), subRace));
+        Race newRace = raceRepository.save(new Race(race.name(), race.shortDescription(), subRace));
         subRace.setRace(newRace);
         return mapper.map(newRace);
     }

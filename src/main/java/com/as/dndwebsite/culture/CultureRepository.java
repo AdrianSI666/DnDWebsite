@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface CultureRepository extends JpaRepository<Culture, Long> {
     Optional<Culture> findByName(String name);
     List<EntryDTO> findAllByRegions_Id(Long id);
-
     Page<EntryDTO> findAllByRegions_Name(String name, Pageable paging);
 }

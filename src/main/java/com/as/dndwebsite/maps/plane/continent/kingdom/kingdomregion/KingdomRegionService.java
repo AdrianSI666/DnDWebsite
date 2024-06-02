@@ -11,7 +11,7 @@ import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
 import com.as.dndwebsite.maps.plane.continent.kingdom.KingdomService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionService;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -63,7 +63,7 @@ public class KingdomRegionService implements IKingdomRegionService {
     public EntryDTO addNewRegionKingdomRelation(Long kingdomId, EntryDTO region) {
         log.info("Adding region {} to kingdom {}", region.name(), kingdomId);
         Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KingdomService.KINGDOM_NOT_FOUND_MSG, kingdomId)));
-        Region newRegion = regionRepository.save(new Region(region.name(), region.description(), kingdom));
+        Region newRegion = regionRepository.save(new Region(region.name(), region.shortDescription(), kingdom));
         kingdom.getRegions().add(newRegion);
         return mapper.map(newRegion);
     }
@@ -71,7 +71,7 @@ public class KingdomRegionService implements IKingdomRegionService {
     @Override
     public EntryDTO addNewKingdomRegionRelation(EntryDTO kingdom, Long regionId) {
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
-        Kingdom newKingdom = kingdomRepository.save(new Kingdom(kingdom.name(), kingdom.description(), region));
+        Kingdom newKingdom = kingdomRepository.save(new Kingdom(kingdom.name(), kingdom.shortDescription(), region));
         region.setKingdom(newKingdom);
         return mapper.map(newKingdom);
     }

@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,7 +48,7 @@ public class PlaneService implements IPlaneService {
     @Override
     public EntryDTO savePlane(EntryDTO plane) {
         log.info("Saving new plane {}", plane.name());
-        return mapper.map(planeRepository.save(new Plane(plane.name(), plane.description())));
+        return mapper.map(planeRepository.save(new Plane(plane.name(), plane.shortDescription())));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PlaneService implements IPlaneService {
         Plane oldPlane = planeRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(PLANE_NOT_FOUND_MSG.formatted(id)));
         oldPlane.setName(plane.name());
-        oldPlane.setDescription(plane.description());
+        oldPlane.setShortDescription(plane.shortDescription());
     }
 
     @Override

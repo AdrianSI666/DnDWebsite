@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,7 +43,7 @@ public class PlaceService implements IPlaceService {
     @Override
     public EntryDTO savePlace(EntryDTO place) {
         log.info("Saving new Place {}", place.name());
-        return mapper.map(placeRepository.save(new Place(place.name(), place.description())));
+        return mapper.map(placeRepository.save(new Place(place.name(), place.shortDescription())));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PlaceService implements IPlaceService {
         Place oldPlace = placeRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(PLACE_NOT_FOUND_MSG, id)));
         oldPlace.setName(place.name());
-        oldPlace.setDescription(place.description());
+        oldPlace.setShortDescription(place.shortDescription());
     }
 
     @Override

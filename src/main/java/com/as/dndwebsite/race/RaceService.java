@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,7 +43,7 @@ public class RaceService implements IRaceService {
     @Override
     public EntryDTO saveRace(EntryDTO race) {
         log.info("Saving new race {}", race.name());
-        Race savedRace = raceRepository.save(new Race(race.name(), race.description()));
+        Race savedRace = raceRepository.save(new Race(race.name(), race.shortDescription()));
         return mapper.map(savedRace);
     }
 
@@ -53,7 +53,7 @@ public class RaceService implements IRaceService {
         Race oldRace = raceRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, id)));
         oldRace.setName(race.name());
-        oldRace.setDescription(race.description());
+        oldRace.setShortDescription(race.shortDescription());
     }
 
     @Override

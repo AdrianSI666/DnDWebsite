@@ -1,13 +1,16 @@
 package com.as.dndwebsite.culture;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.mappers.IPageMapper;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionculture.IRegionCultureService;
-import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +36,8 @@ public class CultureController {
     private final ICultureImagesService cultureImagesService;
     private final IRegionCultureService regionCultureService;
     private final IPageMapper pageMapper;
+    @Qualifier("cultureDescriptionService")
+    private final IDescriptionEntryService cultureDescriptionService;
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getCultures(PageInfo pageInfo) {
@@ -53,9 +58,10 @@ public class CultureController {
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getCultureByName(@PathVariable("name") String name) {
         EntryDTO culture = cultureService.getCulture(name);
+        List<DescriptionDTO> descriptionDTOS = cultureDescriptionService.getDescriptionsOfEntry(culture.id());
         List<ImageDTO> imageDTOS = cultureImagesService.getImagesOfCulture(culture.id());
         List<EntryDTO> regions = regionCultureService.getRegionsRelatedToCulture(culture.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(culture, null, regions, imageDTOS));
+        return ResponseEntity.ok().body(new EntryFullDTO(culture, null, regions, descriptionDTOS, imageDTOS));
     }
 
     @PostMapping
@@ -79,15 +85,34 @@ public class CultureController {
     @PostMapping(path = "{id}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ImageDTO> saveImageToCulture(@PathVariable("id") long cultureId,
+    public ResponseEntity<ImageDTO> saveImageToCulture(@PathVariable("id") Long cultureId,
                                                        @RequestParam("image") MultipartFile imageFile) {
         return ResponseEntity.ok().body(cultureImagesService.saveImageToCulture(imageFile, cultureId));
     }
 
     @DeleteMapping(path = "/{cultureId}/image/{imageId}")
     public ResponseEntity<HttpStatus> deleteImageFromCulture(@PathVariable("cultureId") Long cultureId,
-                                                    @PathVariable("imageId") Long imageId) {
+                                                             @PathVariable("imageId") Long imageId) {
         cultureImagesService.deleteImageFromCulture(cultureId, imageId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToCulture(@PathVariable("id") Long id,
+                                                                   @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cultureDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfCulture(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(cultureDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{cultureId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromCulture(@PathVariable("cultureId") Long cultureId,
+                                                                   @PathVariable("descriptionId") Long imageId) {
+        cultureDescriptionService.deleteDescriptionFromEntry(cultureId, imageId);
+        return ResponseEntity.ok().build();
+    }
+
 }

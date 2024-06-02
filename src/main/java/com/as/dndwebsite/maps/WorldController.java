@@ -1,13 +1,16 @@
 package com.as.dndwebsite.maps;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
+import com.as.dndwebsite.mappers.IPageMapper;
 import com.as.dndwebsite.maps.worldplane.IWorldPlaneService;
-import com.as.dndwebsite.util.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +35,8 @@ public class WorldController {
     private final IWorldImageService worldImagesService;
     private final IPageMapper pageMapper;
     private final IWorldPlaneService worldPlaneService;
-
+    @Qualifier("worldDescriptionService")
+    private final IDescriptionEntryService worldDescriptionService;
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getWorlds(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(worldService.getWorlds(pageInfo)));
@@ -47,8 +51,9 @@ public class WorldController {
     public ResponseEntity<EntryFullDTO> getWorldByName(@PathVariable("name") String name) {
         EntryDTO world = worldService.getWorld(name);
         List<EntryDTO> planes = worldPlaneService.getPlanesRelatedToWorld(world.id());
+        List<DescriptionDTO> descriptions = worldDescriptionService.getDescriptionsOfEntry(world.id());
         List<ImageDTO> imageDTOS = worldImagesService.getImagesOfWorld(world.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(world, null, planes, imageDTOS));
+        return ResponseEntity.ok().body(new EntryFullDTO(world, null, planes, descriptions, imageDTOS));
     }
 
     @PostMapping
@@ -70,7 +75,7 @@ public class WorldController {
     }
 
     @GetMapping("/{id}/images")
-    public ResponseEntity<List<ImageDTO>> getImagesOfWorld(@PathVariable("id") long id) {
+    public ResponseEntity<List<ImageDTO>> getImagesOfWorld(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(worldImagesService.getImagesOfWorld(id));
     }
 
@@ -86,6 +91,24 @@ public class WorldController {
     public ResponseEntity<HttpStatus> deleteImageFromWorld(@PathVariable("worldId") Long worldId,
                                                            @PathVariable("imageId") Long imageId) {
         worldImagesService.deleteImageFromWorld(worldId, imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+                                                                @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(worldDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(worldDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{worldId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("worldId") Long worldId,
+                                                                @PathVariable("descriptionId") Long imageId) {
+        worldDescriptionService.deleteDescriptionFromEntry(worldId, imageId);
         return ResponseEntity.ok().build();
     }
 }

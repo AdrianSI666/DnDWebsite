@@ -9,7 +9,7 @@ import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.RegionRepository;
 import com.as.dndwebsite.race.subrace.SubRace;
 import com.as.dndwebsite.race.subrace.SubRaceRepository;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -63,7 +63,7 @@ public class RegionSubRaceService implements IRegionSubRaceService {
     @Override
     public EntryDTO addNewSubRaceToRegion(EntryDTO subRace, Long regionId) {
         Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(REGION_NOT_FOUND_MSG, regionId)));
-        SubRace newSubRace = subRaceRepository.save(new SubRace(subRace.name(), subRace.description(), region));
+        SubRace newSubRace = subRaceRepository.save(new SubRace(subRace.name(), subRace.shortDescription(), region));
         region.getSubRaces().add(newSubRace);
         return mapper.map(newSubRace);
     }
@@ -71,7 +71,7 @@ public class RegionSubRaceService implements IRegionSubRaceService {
     @Override
     public EntryDTO addNewRegionSubRaceRelation(EntryDTO region, Long subRaceId) {
         SubRace subRace = subRaceRepository.findById(subRaceId).orElseThrow(() -> new NotFoundException(String.format(SUB_RACE_NOT_FOUND_MSG, subRaceId)));
-        Region newRegion = regionRepository.save(new Region(region.name(), region.description(), subRace));
+        Region newRegion = regionRepository.save(new Region(region.name(), region.shortDescription(), subRace));
         subRace.getRegions().add(newRegion);
         return mapper.map(newRegion);
     }

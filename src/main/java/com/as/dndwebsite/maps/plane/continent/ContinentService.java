@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -50,7 +50,7 @@ public class ContinentService implements IContinentService {
     @Override
     public EntryDTO saveContinent(EntryDTO continent) {
         log.info("Saving new Continent {}", continent.name());
-        return mapper.map(continentRepository.save(new Continent(continent.name(), continent.description())));
+        return mapper.map(continentRepository.save(new Continent(continent.name(), continent.shortDescription())));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ContinentService implements IContinentService {
         Continent oldContinent = continentRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, id)));
         log.info("Updating continent {} with id {}", oldContinent.getName(), id);
-        oldContinent.setDescription(continent.description());
+        oldContinent.setShortDescription(continent.shortDescription());
         oldContinent.setName(continent.name());
     }
 

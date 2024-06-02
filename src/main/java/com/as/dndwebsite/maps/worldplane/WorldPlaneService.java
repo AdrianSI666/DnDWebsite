@@ -9,7 +9,7 @@ import com.as.dndwebsite.maps.World;
 import com.as.dndwebsite.maps.WorldRepository;
 import com.as.dndwebsite.maps.plane.Plane;
 import com.as.dndwebsite.maps.plane.PlaneRepository;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,7 +60,7 @@ public class WorldPlaneService implements IWorldPlaneService {
     public EntryDTO addNewPlaneWorldRelation(Long worldId, EntryDTO plane) {
         log.info("Adding plane {} to world {}", plane.name(), worldId);
         World world = worldRepository.findById(worldId).orElseThrow(() -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, worldId)));
-        Plane newPlane = planeRepository.save(new Plane(plane.name(), plane.description(), world));
+        Plane newPlane = planeRepository.save(new Plane(plane.name(), plane.shortDescription(), world));
         world.getPlanes().add(newPlane);
         return mapper.map(newPlane);
     }
@@ -69,7 +69,7 @@ public class WorldPlaneService implements IWorldPlaneService {
     public EntryDTO addNewWorldPlaneRelation(Long planeId, EntryDTO world) {
         log.info("Adding world {} to plane {}", world.name(), planeId);
         Plane plane = planeRepository.findById(planeId).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, planeId)));
-        World newWorld = worldRepository.save(new World(world.name(), world.description(), plane));
+        World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), plane));
         plane.setWorld(newWorld);
         return mapper.map(newWorld);
     }

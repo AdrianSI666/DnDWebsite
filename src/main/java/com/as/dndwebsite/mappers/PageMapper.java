@@ -1,4 +1,4 @@
-package com.as.dndwebsite.util;
+package com.as.dndwebsite.mappers;
 
 import com.as.dndwebsite.dto.PageDTO;
 import org.springframework.data.domain.Page;

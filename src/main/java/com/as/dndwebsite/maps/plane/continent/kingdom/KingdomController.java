@@ -1,5 +1,7 @@
 package com.as.dndwebsite.maps.plane.continent.kingdom;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
@@ -7,8 +9,9 @@ import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.plane.continent.continentkingdom.IContinentKingdomService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.kingdomregion.IKingdomRegionService;
-import com.as.dndwebsite.util.IPageMapper;
+import com.as.dndwebsite.mappers.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,8 @@ public class KingdomController {
     private final IContinentKingdomService continentKingdomService;
     private final IKingdomRegionService kingdomRegionService;
     private final IPageMapper pageMapper;
+    @Qualifier("kingdomDescriptionService")
+    private final IDescriptionEntryService kingdomDescriptionService;
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getKingdoms(PageInfo pageInfo) {
@@ -51,8 +56,9 @@ public class KingdomController {
         EntryDTO kingdom = kingdomService.getKingdom(name);
         Optional<EntryDTO> continent = continentKingdomService.getContinentOfKingdom(kingdom.id());
         List<EntryDTO> regions = kingdomRegionService.getRegionsRelatedToKingdom(kingdom.id());
+        List<DescriptionDTO> descriptions = kingdomDescriptionService.getDescriptionsOfEntry(kingdom.id());
         List<ImageDTO> imageDTOS = kingdomImageService.getImagesOfKingdom(kingdom.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(kingdom, continent, regions, imageDTOS));
+        return ResponseEntity.ok().body(new EntryFullDTO(kingdom, continent, regions, descriptions, imageDTOS));
     }
 
     @PostMapping
@@ -86,6 +92,24 @@ public class KingdomController {
     public ResponseEntity<HttpStatus> deleteImageFromKingdom(@PathVariable("kingdomId") Long kingdomId,
                                                              @PathVariable("imageId") Long imageId) {
         kingdomImageService.deleteImageFromKingdom(kingdomId, imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+                                                                @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(kingdomDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(kingdomDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{kingdomId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("kingdomId") Long kingdomId,
+                                                                @PathVariable("descriptionId") Long imageId) {
+        kingdomDescriptionService.deleteDescriptionFromEntry(kingdomId, imageId);
         return ResponseEntity.ok().build();
     }
 }

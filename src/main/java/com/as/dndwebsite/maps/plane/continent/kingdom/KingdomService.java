@@ -4,7 +4,7 @@ import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
-import com.as.dndwebsite.util.DomainMapper;
+import com.as.dndwebsite.mappers.DomainMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,7 +44,7 @@ public class KingdomService implements IKingdomService {
     @Override
     public EntryDTO saveKingdom(EntryDTO kingdom) {
         log.info("Saving new kingdom {}", kingdom.name());
-        return mapper.map(kingdomRepository.save(new Kingdom(kingdom.name(), kingdom.description())));
+        return mapper.map(kingdomRepository.save(new Kingdom(kingdom.name(), kingdom.shortDescription())));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class KingdomService implements IKingdomService {
         log.info("Updating continent {} with id {}", kingdom.name(), kingdomId);
         Kingdom oldKingdom = kingdomRepository.findById(kingdomId).orElseThrow(
                 () -> new NotFoundException(String.format(KINGDOM_NOT_FOUND_MSG, kingdomId)));
-        oldKingdom.setDescription(kingdom.description());
+        oldKingdom.setShortDescription(kingdom.shortDescription());
         oldKingdom.setName(kingdom.name());
     }
 

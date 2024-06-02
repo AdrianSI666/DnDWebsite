@@ -1,13 +1,16 @@
 package com.as.dndwebsite.race.subrace;
 
+import com.as.dndwebsite.description.IDescriptionEntryService;
+import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionsubrace.IRegionSubRaceService;
 import com.as.dndwebsite.race.racesubrace.IRaceSubRaceService;
-import com.as.dndwebsite.util.IPageMapper;
+import com.as.dndwebsite.mappers.IPageMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,8 @@ public class SubRaceController {
     private final ISubRaceImagesService subRaceImagesService;
     private final IRegionSubRaceService regionSubRaceService;
     private final IPageMapper pageMapper;
+    @Qualifier("subRaceDescriptionService")
+    private final IDescriptionEntryService subRaceDescriptionService;
 
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getSubRaces(PageInfo pageInfo) {
@@ -49,9 +54,10 @@ public class SubRaceController {
     public ResponseEntity<SubRaceDTO> getSubRaceByName(@PathVariable("name") String name) {
         EntryDTO subRace = subRaceService.getSubRaceByName(name);
         Optional<EntryDTO> race = raceSubRaceService.getRaceOfSubRace(subRace.id());
+        List<DescriptionDTO> descriptions = subRaceDescriptionService.getDescriptionsOfEntry(subRace.id());
         List<ImageDTO> images = subRaceImagesService.getImagesOfSubRace(subRace.id());
         List<EntryDTO> regions = regionSubRaceService.getRegionsRelatedToSubRace(subRace.id());
-        return ResponseEntity.ok().body(new SubRaceDTO(subRace, race, images, regions));
+        return ResponseEntity.ok().body(new SubRaceDTO(subRace, race, descriptions, images, regions));
     }
 
     @PostMapping
@@ -73,7 +79,7 @@ public class SubRaceController {
     }
 
     @GetMapping("/{id}/images")
-    public ResponseEntity<List<ImageDTO>> getImagesOfSubRace(@PathVariable("id") long id) {
+    public ResponseEntity<List<ImageDTO>> getImagesOfSubRace(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(subRaceImagesService.getImagesOfSubRace(id));
     }
 
@@ -89,6 +95,24 @@ public class SubRaceController {
     public ResponseEntity<HttpStatus> deleteImageFromSubRace(@PathVariable("id") Long id,
                                                              @PathVariable("imageId") Long imageId) {
         subRaceImagesService.deleteImageFromSubRace(id, imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "{id}/description")
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+                                                                @RequestBody DescriptionDTO descriptionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(subRaceDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
+    }
+
+    @GetMapping(path = "{id}/description")
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(subRaceDescriptionService.getDescriptionsOfEntry(id));
+    }
+
+    @DeleteMapping(path = "/{subRaceId}/description/{descriptionId}")
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("subRaceId") Long raceId,
+                                                                @PathVariable("descriptionId") Long imageId) {
+        subRaceDescriptionService.deleteDescriptionFromEntry(raceId, imageId);
         return ResponseEntity.ok().build();
     }
 }
