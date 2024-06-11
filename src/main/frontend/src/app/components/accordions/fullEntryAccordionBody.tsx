@@ -7,7 +7,7 @@ import { AddNewDescriptionModal } from "../modals/addNewDescriptionModal";
 import { DeleteConfirmationModal } from "../modals/deleteConfirmModal";
 import { EditDescriptionModal } from "../modals/editDescriptionModal";
 import { GriddingNotes, IGridNotes } from "../../utils/griddingNotes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IFullEntryAccordionBody {
     categoryName: string;
@@ -35,11 +35,15 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
         rows: []
     };
     const [grid, setGrid] = useState(init)
-    if (props.entryFullDTO.descriptions!.length > 0) {
-        grindNotes(props.entryFullDTO.descriptions!).then(res => {
-            setGrid(res)
-        })
-    }
+    useEffect(() => {
+        if (props.entryFullDTO.descriptions!.length > 0) {
+            grindNotes(props.entryFullDTO.descriptions!).then(res => {
+                setGrid(res)
+            })
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.entryFullDTO.descriptions])
+
     return (
         <div>
             <h3>Description board</h3>
