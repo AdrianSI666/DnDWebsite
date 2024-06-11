@@ -96,18 +96,18 @@ public class KingdomController {
     }
 
     @PostMapping(path = "{id}/description")
-    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+    public ResponseEntity<DescriptionDTO> saveDescriptionToKingdom(@PathVariable("id") Long id,
                                                                 @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(kingdomDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
     @GetMapping(path = "{id}/description")
-    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfKingdom(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(kingdomDescriptionService.getDescriptionsOfEntry(id));
     }
 
     @DeleteMapping(path = "/{kingdomId}/description/{descriptionId}")
-    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("kingdomId") Long kingdomId,
+    public ResponseEntity<HttpStatus> deleteDescriptionFromKingdom(@PathVariable("kingdomId") Long kingdomId,
                                                                 @PathVariable("descriptionId") Long imageId) {
         kingdomDescriptionService.deleteDescriptionFromEntry(kingdomId, imageId);
         return ResponseEntity.ok().build();

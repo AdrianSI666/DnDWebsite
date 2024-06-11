@@ -1,6 +1,6 @@
 import { Dispatch } from "@reduxjs/toolkit"
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi"
-import { setRegionToPlace, removeRegionFromPlace, setPlace, updatePlace, addImageToPlace, removeImageFromPlace } from "./onePlaceSlice"
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi"
+import { setRegionToPlace, removeRegionFromPlace, setPlace, updatePlace, addImageToPlace, removeImageFromPlace, addPlaceDescription, updatePlaceDescription, removePlaceDescription } from "./onePlaceSlice"
 import { useAppDispatch } from "../../../../../hooks"
 
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -10,12 +10,24 @@ const actionDispatch = (dispatch: Dispatch) => ({
     removeRegionFromPlace: () => {
         dispatch(removeRegionFromPlace())
     },
+
     setPlace: (place: EntryFullDTO) => {
         dispatch(setPlace(place))
     },
     updatePlace: (place: EntryDTO) => {
         dispatch(updatePlace(place))
     },
+
+    addNewStatePlaceDescription: (descriptionDTO: DescriptionDTO) => {
+        dispatch(addPlaceDescription(descriptionDTO))
+    },
+    updateStatePlaceDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updatePlaceDescription({ descriptionId, descriptionDTO }))
+    },
+    removeStatePlaceDescription: (descriptionId: number) => {
+        dispatch(removePlaceDescription(descriptionId))
+    },
+
     addImageToPlace: (imageDTO: ImageDTO) => {
         dispatch(addImageToPlace(imageDTO))
     },
@@ -25,8 +37,14 @@ const actionDispatch = (dispatch: Dispatch) => ({
 })
 
 export function OnePlaceDispatcher() {
-    const { removeRegionFromPlace, setRegionToPlace, removeImageFromPlace, addImageToPlace, updatePlace } = actionDispatch(useAppDispatch());
+    const { removeRegionFromPlace, setRegionToPlace,
+        removeImageFromPlace, addImageToPlace,
+        updatePlace, setPlace,
+        addNewStatePlaceDescription, updateStatePlaceDescription, removeStatePlaceDescription } = actionDispatch(useAppDispatch());
     return {
-        removeRegionFromPlace, setRegionToPlace, removeImageFromPlace, addImageToPlace, updatePlace
+        removeRegionFromPlace, setRegionToPlace,
+        removeImageFromPlace, addImageToPlace,
+        updatePlace, setPlace,
+        addNewStatePlaceDescription, updateStatePlaceDescription, removeStatePlaceDescription
     };
 }

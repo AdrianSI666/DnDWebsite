@@ -1,27 +1,24 @@
 import { createSelector } from "reselect";
-import { makeSelectKingdomPage } from "./store/selector";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { Accordion } from "react-bootstrap";
-import { KingdomControllerService, EntryFullDTO } from "../../../../services/openapi";
-import { fillKingdomData } from "./store/kingdomPageSlice";
-import { Dispatch } from "@reduxjs/toolkit";
+import { KingdomControllerService } from "../../../../services/openapi";
+import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { useAppSelector } from "../../../hooks";
+import { KingdomFunction } from "./function/kingdomFunction";
 import { KingdomAccordionBody } from "./kingdomAccordionBody";
+import { KingdomsDispatcher } from "./store/dispatcher";
+import { makeSelectKingdomPage } from "./store/selector";
 
 const stateKingdomPageSelect = createSelector(makeSelectKingdomPage, (page) => ({
   page
 }))
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  fillKingdomData: (data: EntryFullDTO) => {
-    dispatch(fillKingdomData(data))
-  }
-})
-
 export function KingdomAccordion() {
   const { page } = useAppSelector(stateKingdomPageSelect);
   const isLoading = !page || page?.data === undefined
   const isEmptyPage = page.data?.length === 0
-  const { fillKingdomData } = actionDispatch(useAppDispatch());
+  const { removeKingdom, updateKingdom, fillKingdomData } = KingdomsDispatcher();
+  const { deleteKingdom, editKingdom, } = KingdomFunction({
+    removeKingdom, updateKingdom
+  });
   const fetchKingdomData = async (name: string) => {
     KingdomControllerService.getKingdomByName(name)
       .then((response) => {
@@ -34,19 +31,14 @@ export function KingdomAccordion() {
 
   if (isEmptyPage) return <div>No kingdoms created, yet.</div>;
   if (isLoading) return <div>Loading...</div>;
-  
+
   return <div className='lightbox'>
     {page && page.data && page.data.map((kingdom) => (
-      <Accordion key={kingdom.object?.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={'' + kingdom.object?.id!} onClick={(_) => {
-          if (kingdom.images && kingdom.domObjects && kingdom.subObjects) fetchKingdomData(kingdom.object?.name!)
-        }} className="borderFix">
-          <Accordion.Header>
-            <h5><b>{kingdom.object?.name}</b></h5>
-          </Accordion.Header>
-          <KingdomAccordionBody kingdom={kingdom} />
-        </Accordion.Item>
-      </Accordion>
+      <AccordionHeaderLayout categoryName={"kingdom"} updateEntry={editKingdom}
+        deleteEntry={deleteKingdom} deleteMainObjectButtonActionText={"Delete"}
+        entryFullDTO={kingdom} fetchFullValue={fetchKingdomData} key={kingdom.object?.id}>
+        <KingdomAccordionBody kingdom={kingdom} />
+      </AccordionHeaderLayout>
     ))}
   </div>
 }

@@ -1,11 +1,12 @@
 import { createSelector } from "reselect";
 import { makeSelectPlanePage } from "./store/selector";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { Accordion } from "react-bootstrap";
 import { PlaneControllerService, EntryFullDTO } from "../../../../services/openapi";
 import { fillPlaneData } from "./store/planePageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 import { PlaneAccordionBody } from "./planeAccordionBody";
+import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { PlaneFunction } from "./planeFunction";
 
 const statePlanePageSelect = createSelector(makeSelectPlanePage, (page) => ({
   page
@@ -31,22 +32,17 @@ export function PlaneAccordion() {
         console.log("My Error: ", err);
       });
   }
-
+  const { deletePlane, editPlane } = PlaneFunction();
   if (isEmptyPage) return <div>No planes created, yet.</div>;
   if (isLoading) return <div>Loading...</div>;
-  
+
   return <div className='lightbox'>
     {page && page.data && page.data.map((plane) => (
-      <Accordion key={plane.object?.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={'' + plane.object?.id!} onClick={(_) => {
-          if (plane.images && plane.domObjects && plane.subObjects) fetchPlaneData(plane.object?.name!)
-        }} className="borderFix">
-          <Accordion.Header>
-            <h5><b>{plane.object?.name}</b></h5>
-          </Accordion.Header>
-          <PlaneAccordionBody plane={plane} />
-        </Accordion.Item>
-      </Accordion>
+      <AccordionHeaderLayout categoryName={"plane"} updateEntry={editPlane}
+        deleteEntry={deletePlane} deleteMainObjectButtonActionText={"Delete"}
+        entryFullDTO={plane} fetchFullValue={fetchPlaneData} key={plane.object?.id}>
+        <PlaneAccordionBody plane={plane} />
+      </AccordionHeaderLayout>
     ))}
   </div>
 }

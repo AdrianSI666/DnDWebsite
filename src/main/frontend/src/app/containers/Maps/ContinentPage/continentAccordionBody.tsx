@@ -15,7 +15,7 @@ interface IContinentAccordionBody {
 
 export function ContinentAccordionBody(props: Readonly<IContinentAccordionBody>) {
 
-    const { deleteContinent, editContinent, saveImageToContinent, deleteImageFromContinent } = ContinentFunction({ continentId: props.continent.object?.id });
+    const { saveImageToContinent, deleteImageFromContinent, addNewDesctiptionToContinent, deleteDescriptionFromContinent, updateContinentDescription } = ContinentFunction();
     const { saveNewKingdomToContinent, saveExistingKingdomToContinent, removeKingdomFromContinentFunction, getAllKingdomsWithoutContinent } = ContinentSubObjectsFunction();
     const { setNewPlaneToContinent, setExistingPlaneToContinent, removePlaneFromContinentFunction, getAllPlanes } = ContinentDomObjectsFunction();
 
@@ -33,12 +33,12 @@ export function ContinentAccordionBody(props: Readonly<IContinentAccordionBody>)
                 deleteButtonActionText={`Unlink this continent from plane`}
                 addExistingButtonActionText={`Set existing plane to ${props.continent.object?.name}`} />
             <FullEntryAccordionBody categoryName={"Continent"} entryFullDTO={props.continent}
-                deleteEntry={deleteContinent}
-                updateEntry={editContinent}
-                saveImageToEntry={saveImageToContinent}
-                deleteImageFromEntry={deleteImageFromContinent}
-                deleteMainObjectButtonActionText={"Delete this continent"}
-                deleteImageButtonActionText={"Delete image"} />
+            saveImageToEntry={saveImageToContinent}
+            deleteImageFromEntry={deleteImageFromContinent}
+            deleteImageButtonActionText={"Delete image"}
+            addNewDescriptionToEntry={addNewDesctiptionToContinent}
+            updateDescription={updateContinentDescription}
+            deleteDescriptionFromEntry={deleteDescriptionFromContinent} />
             <SubCategoryBody mainEntryId={props.continent.object?.id!}
                 subObjects={props.continent.subObjects}
                 subCategoryTitle={"Kingdoms"} subCategoryLink={"kingdoms"}

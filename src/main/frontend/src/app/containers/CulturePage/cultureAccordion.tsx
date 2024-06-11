@@ -1,11 +1,12 @@
-import { createSelector } from "reselect";
-import { makeSelectCulturePage } from "./store/selector";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { Accordion } from "react-bootstrap";
-import { CultureControllerService, EntryFullDTO } from "../../../services/openapi";
-import { fillCultureData } from "./store/culturePageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
+import { CultureControllerService, EntryFullDTO } from "../../../services/openapi";
+import { AccordionHeaderLayout } from "../../components/accordions/accordionHeaderLayout";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { CultureAccordionBody } from "./cultureAccordionBody";
+import { CultureFunction } from "./cultureFunction";
+import { fillCultureData } from "./store/culturePageSlice";
+import { makeSelectCulturePage } from "./store/selector";
 
 const stateCulturePageSelect = createSelector(makeSelectCulturePage, (page) => ({
   page
@@ -31,22 +32,19 @@ export function CultureAccordion() {
         console.log("My Error: ", err);
       });
   }
+  
+  const { editCulture, deleteCulture } = CultureFunction();
 
   if (isEmptyPage) return <div>No culture created, yet.</div>;
   if (isLoading) return <div>Loading...</div>;
 
   return <div className='lightbox'>
     {page && page.data && page.data.map((culture) => (
-      <Accordion key={culture.object?.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={'' + culture.object?.id!} onClick={(_) => {
-          if (culture.images && culture.domObjects && culture.subObjects) fetchCultureData(culture.object?.name!)
-        }} className="borderFix">
-          <Accordion.Header>
-            <h5><b>{culture.object?.name}</b></h5>
-          </Accordion.Header>
-          <CultureAccordionBody culture={culture} />
-        </Accordion.Item>
-      </Accordion>
+      <AccordionHeaderLayout categoryName={"culture"} updateEntry={editCulture}
+      deleteEntry={deleteCulture} deleteMainObjectButtonActionText={"Delete"}
+      entryFullDTO={culture} fetchFullValue={fetchCultureData} key={culture.object?.id}>
+        <CultureAccordionBody culture={culture} />
+      </AccordionHeaderLayout>
     ))}
   </div>
 }

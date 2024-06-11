@@ -16,10 +16,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
 export function OnePlaneDomObjectsFunction() {
     const { setWorldToPlane, removeWorldFromPlane } = actionDispatch(useAppDispatch());
 
-    const setNewWorldToPlane = async (planeId: number, name: string, description: string): Promise<void> => {
+    const setNewWorldToPlane = async (planeId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return WorldPlaneControllerService.addNewWorldPlaneRelation(planeId, entryDTO)
             .then((result) => {
@@ -34,7 +34,7 @@ export function OnePlaneDomObjectsFunction() {
     const setExistingWorldToPlane = async (planeId: number, worldId: number, worldName: string, worldDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: worldName,
-            description: worldDescription,
+            shortDescription: worldDescription,
             id: worldId
         }
         return WorldPlaneControllerService.addWorldPlaneRelation(worldId, planeId)

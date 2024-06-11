@@ -16,10 +16,10 @@ export function RegionSubRacesFunction(props: IRegionSubRaceProps) {
             });
     }
 
-    const saveNewSubRaceToRegion = async (regionId: number, name: string, description: string): Promise<void> => {
+    const saveNewSubRaceToRegion = async (regionId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return RegionSubRaceControllerService.addNewSubRaceRegionRelation(regionId, entryDTO)
             .then((result) => {
@@ -36,7 +36,7 @@ export function RegionSubRacesFunction(props: IRegionSubRaceProps) {
     const saveExistingSubRaceToRegion = async (regionId: number, subSubRaceId: number, subSubRaceName: string, subSubRaceDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: subSubRaceName,
-            description: subSubRaceDescription,
+            shortDescription: subSubRaceDescription,
             id: subSubRaceId
         }
         return RegionSubRaceControllerService.addRegionSubRaceRelation(regionId, subSubRaceId)

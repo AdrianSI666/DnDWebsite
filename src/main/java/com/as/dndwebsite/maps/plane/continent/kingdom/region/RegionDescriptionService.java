@@ -27,7 +27,7 @@ public class RegionDescriptionService implements IDescriptionEntryService {
 
     @Override
     public List<DescriptionDTO> getDescriptionsOfEntry(long id) {
-        return descriptionRepository.findAllByRegions_Id(id);
+        return descriptionRepository.findAllByRegions_IdOrderById(id);
     }
 
     @Override

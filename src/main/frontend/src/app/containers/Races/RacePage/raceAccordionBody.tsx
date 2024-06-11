@@ -2,7 +2,7 @@ import { Accordion } from "react-bootstrap";
 import { EntryDTO, EntryFullDTO } from "../../../../services/openapi";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
-import { getAllRegions } from "../../../hookFunctions/RegionHooks";
+import { getAllRegions } from "../../../globalFunctions/RegionHooks";
 import '../../../styles/masonary.css';
 import "../../../styles/subObjects.css";
 import { RaceFunction } from "./raceFunction";
@@ -18,19 +18,17 @@ interface IRaceAccordionBody {
 
 export function RaceAccordionBody(props: Readonly<IRaceAccordionBody>) {
 
-  const { deleteRace, editRace, saveImageToRace, deleteImageFromRace } = RaceFunction({ raceId: props.race.object?.id });
+  const { saveImageToRace, deleteImageFromRace, addNewDesctiptionToRace, updateRaceDescription, deleteDescriptionFromRace } = RaceFunction();
   const { saveNewSubRaceToRace, saveExistingSubRaceToRace, getAllSubRaces, removeSubRaceFromRaceFunction, saveNewRegionToRace, saveExistingRegionToRace, removeRegionFromRaceFunction } = RaceSubObjectsFunction();
-
 
   return (
     <Accordion.Body>
       <FullEntryAccordionBody categoryName={"Race"} entryFullDTO={props.race}
-        deleteEntry={deleteRace}
-        updateEntry={editRace}
-        saveImageToEntry={saveImageToRace}
-        deleteImageFromEntry={deleteImageFromRace}
-        deleteMainObjectButtonActionText={"Delete this race"}
-        deleteImageButtonActionText={"Delete image"} />
+      saveImageToEntry={saveImageToRace}
+      deleteImageFromEntry={deleteImageFromRace} deleteImageButtonActionText={"Delete image"} 
+      addNewDescriptionToEntry={addNewDesctiptionToRace} 
+      updateDescription={updateRaceDescription} 
+      deleteDescriptionFromEntry={deleteDescriptionFromRace} />
       <SubCategoryBody mainEntryId={props.race.object?.id!}
         subObjects={props.race.subObjects}
         subCategoryTitle={"Sub races"} subCategoryLink={"subRaces"}

@@ -3,11 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { RegionControllerService } from "../../../../../services/openapi";
 import { OneRegionDispatcher } from "./store/dispatcher";
 
-interface IUseOneRegionObjectFunction {
-    regionId?: number
-}
-
-export function UseOneRegionFunction(props: IUseOneRegionObjectFunction) {
+export function UseOneRegionFunction() {
     const { setRegion } = OneRegionDispatcher();
     const navigate = useNavigate();
     const fetchRegion = async (name: string): Promise<boolean> => {

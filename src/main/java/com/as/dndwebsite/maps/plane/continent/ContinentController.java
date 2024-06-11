@@ -95,19 +95,19 @@ public class ContinentController {
     }
 
     @PostMapping(path = "{id}/description")
-    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
-                                                                @RequestBody DescriptionDTO descriptionDTO) {
+    public ResponseEntity<DescriptionDTO> saveDescriptionToContinent(@PathVariable("id") Long id,
+                                                                     @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(continentDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
     @GetMapping(path = "{id}/description")
-    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfContinent(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(continentDescriptionService.getDescriptionsOfEntry(id));
     }
 
     @DeleteMapping(path = "/{continentId}/description/{descriptionId}")
-    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("continentId") Long continentId,
-                                                                @PathVariable("descriptionId") Long imageId) {
+    public ResponseEntity<HttpStatus> deleteDescriptionFromContinent(@PathVariable("continentId") Long continentId,
+                                                                     @PathVariable("descriptionId") Long imageId) {
         continentDescriptionService.deleteDescriptionFromEntry(continentId, imageId);
         return ResponseEntity.ok().build();
     }

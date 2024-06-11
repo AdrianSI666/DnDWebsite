@@ -11,10 +11,10 @@ interface IPlaceDomRegionFunction {
 
 export function PlaceDomRegionFunction(props: IPlaceDomRegionFunction) {
 
-  const setNewRegionToPlace = async (placeId: number, name: string, description: string): Promise<void> => {
+  const setNewRegionToPlace = async (placeId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return RegionPlaceControllerService.addNewRegionPlaceRelation(placeId, entryDTO)
       .then((result) => {
@@ -31,7 +31,7 @@ export function PlaceDomRegionFunction(props: IPlaceDomRegionFunction) {
   const setExistingRegionToPlace = async (placeId: number, regionId: number, regionName: string, regionDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: regionName,
-      description: regionDescription,
+      shortDescription: regionDescription,
       id: regionId
     }
     return RegionPlaceControllerService.addRegionPlaceRelation(regionId, placeId)

@@ -15,10 +15,15 @@ interface IKingdomAccordionBody {
 }
 
 export function KingdomAccordionBody(props: Readonly<IKingdomAccordionBody>) {
-    const { removeKingdom, updateKingdom, addImageToKingdom, removeImageFromKingdom } = KingdomsDispatcher();
-    const { deleteKingdom, editKingdom, saveImageToKingdom, deleteImageFromKingdom } = KingdomFunction({
-        kingdomId: props.kingdom.object?.id,
-        removeKingdom, updateKingdom, addImageToKingdom, removeImageFromKingdom
+    const { addImageToKingdom, removeImageFromKingdom,
+        addNewStateKingdomDescription, updateStateKingdomDescription, removeStateKingdomDescription } = KingdomsDispatcher();
+    const { saveImageToKingdom, deleteImageFromKingdom,
+        addNewDesctiptionToKingdom, updateKingdomDescription, deleteDescriptionFromKingdom
+    } = KingdomFunction({
+        addImageToKingdom, removeImageFromKingdom,
+        addNewDescriptionKingdom: addNewStateKingdomDescription,
+        updateStateKingdomDescription: updateStateKingdomDescription,
+        removeDescriptionFromKingdom: removeStateKingdomDescription
     });
 
     const { addNewRegionToKingdom, removeRegionFromKingdom } = KingdomsDispatcher();
@@ -45,12 +50,12 @@ export function KingdomAccordionBody(props: Readonly<IKingdomAccordionBody>) {
                 deleteButtonActionText={`Unlink this kingdom from continent`}
                 addExistingButtonActionText={`Set existing continent to ${props.kingdom.object?.name}`} />
             <FullEntryAccordionBody categoryName={"Kingdom"} entryFullDTO={props.kingdom}
-                deleteEntry={deleteKingdom}
-                updateEntry={editKingdom}
                 saveImageToEntry={saveImageToKingdom}
                 deleteImageFromEntry={deleteImageFromKingdom}
-                deleteMainObjectButtonActionText={"Delete this kingdom"}
-                deleteImageButtonActionText={"Delete image"} />
+                deleteImageButtonActionText={"Delete image"}
+                addNewDescriptionToEntry={addNewDesctiptionToKingdom}
+                updateDescription={updateKingdomDescription}
+                deleteDescriptionFromEntry={deleteDescriptionFromKingdom} />
             <SubCategoryBody mainEntryId={props.kingdom.object?.id!}
                 subObjects={props.kingdom.subObjects}
                 subCategoryTitle={"Regions"} subCategoryLink={"regions"}

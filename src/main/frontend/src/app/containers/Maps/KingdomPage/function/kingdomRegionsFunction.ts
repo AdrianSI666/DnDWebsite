@@ -15,10 +15,10 @@ export function KingdomRegionsFunction(props: IKingdomRegionsFunction) {
       });
   }
 
-  const saveNewRegionToKingdom = async (kingdomId: number, name: string, description: string): Promise<void> => {
+  const saveNewRegionToKingdom = async (kingdomId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return KingdomRegionControllerService.addNewRegionKingdomRelation(kingdomId, entryDTO)
       .then((result) => {
@@ -35,7 +35,7 @@ export function KingdomRegionsFunction(props: IKingdomRegionsFunction) {
   const saveExistingRegionToKingdom = async (kingdomId: number, regionId: number, regionName: string, regionDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: regionName,
-      description: regionDescription,
+      shortDescription: regionDescription,
       id: regionId
     }
     return KingdomRegionControllerService.addKingdomRegionRelation(kingdomId, regionId)

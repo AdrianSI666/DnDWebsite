@@ -1,11 +1,12 @@
-import { createSelector } from "reselect";
-import { makeSelectWorldPage } from "./store/selector";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { Accordion } from "react-bootstrap";
-import { WorldControllerService, EntryFullDTO } from "../../../../services/openapi";
-import { fillWorldData } from "./store/worldPageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
+import { EntryFullDTO, WorldControllerService } from "../../../../services/openapi";
+import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { makeSelectWorldPage } from "./store/selector";
+import { fillWorldData } from "./store/worldPageSlice";
 import { WorldAccordionBody } from "./worldAccordionBody";
+import { WorldFunction } from "./worldFunction";
 
 const stateWorldPageSelect = createSelector(makeSelectWorldPage, (page) => ({
   page
@@ -22,6 +23,7 @@ export function WorldAccordion() {
   const isLoading = !page || page.data === undefined
   const isEmptyPage = page.data?.length === 0
   const { fillWorldData } = actionDispatch(useAppDispatch());
+  const { deleteWorld, editWorld } = WorldFunction();
   const fetchWorldData = async (name: string) => {
     WorldControllerService.getWorldByName(name)
       .then((response) => {
@@ -34,19 +36,14 @@ export function WorldAccordion() {
 
   if (isEmptyPage) return <div>No worlds created, yet.</div>;
   if (isLoading) return <div>Loading...</div>;
-  
+
   return <div className='lightbox'>
     {page && page.data && page.data.map((world) => (
-      <Accordion key={world.object?.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={'' + world.object?.id!} onClick={(_) => {
-          if (world.images && world.domObjects && world.subObjects) fetchWorldData(world.object?.name!)
-        }} className="borderFix">
-          <Accordion.Header>
-            <h5><b>{world.object?.name}</b></h5>
-          </Accordion.Header>
-          <WorldAccordionBody world={world} />
-        </Accordion.Item>
-      </Accordion>
+      <AccordionHeaderLayout categoryName={"world"} updateEntry={editWorld}
+        deleteEntry={deleteWorld} deleteMainObjectButtonActionText={"Delete"}
+        entryFullDTO={world} fetchFullValue={fetchWorldData} key={world.object?.id}>
+        <WorldAccordionBody world={world} />
+      </AccordionHeaderLayout>
     ))}
   </div>
 }

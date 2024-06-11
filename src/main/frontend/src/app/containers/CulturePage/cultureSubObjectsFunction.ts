@@ -21,10 +21,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 export function CultureSubObjectsFunction() {
   const { addNewRegionToCulture, removeRegionFromCulture } = actionDispatch(useAppDispatch());
-  const saveNewRegionToCulture = async (cultureId: number, name: string, description: string): Promise<void> => {
+  const saveNewRegionToCulture = async (cultureId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return RegionCultureControllerService.addNewRegionCultureRegion(cultureId, entryDTO)
       .then((result) => {
@@ -36,10 +36,10 @@ export function CultureSubObjectsFunction() {
       });
   }
 
-  const saveExistingRegionToCulture = async (cultureId: number, regionId: number, regionName: string, regionDescription: string): Promise<void> => {
+  const saveExistingRegionToCulture = async (cultureId: number, regionId: number, regionName: string, regionShortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: regionName,
-      description: regionDescription,
+      shortDescription: regionShortDescription,
       id: regionId
     }
     return RegionCultureControllerService.addRegionCultureRelation(regionId, cultureId)

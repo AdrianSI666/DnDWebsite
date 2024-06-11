@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ICulturePageState } from "../types";
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../services/openapi";
 import { Page } from "../../../../services/openapi/models/Page";
 
 const initialState: ICulturePageState = {
@@ -14,6 +14,20 @@ const initialState: ICulturePageState = {
 interface IUpdateCulturePayload {
     id: number,
     entryDTO: EntryDTO
+}
+
+interface IAddDescriptionPayload {
+    cultureId: number,
+    descriptionDTO: DescriptionDTO
+}
+interface IUpdateDescriptionPayload {
+    cultureId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
+}
+interface IRemoveDescriptionPayload {
+    cultureId: number,
+    descriptionId: number
 }
 
 interface IAddImagePayload {
@@ -62,6 +76,28 @@ const CulturePageSlice = createSlice({
                 state.page.data!.findIndex((culture) => culture.object?.id === action.payload.id))!
                 .object = action.payload.entryDTO;
         },
+
+        addCultureDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((culture) => culture.object?.id === action.payload.cultureId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updateCultureDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at( state.page.data!.findIndex((culture) => culture.object?.id === action.payload.cultureId))!.descriptions = 
+            state.page.data?.at(
+                state.page.data!.findIndex((culture) => culture.object?.id === action.payload.cultureId))!
+                .descriptions?.map((description) => {
+                    if(description.id === action.payload.descriptionId) {
+                        return action.payload.descriptionDTO;
+                    }
+                    return description;
+                });
+        },
+        removeCultureDescription(state, action: PayloadAction<IRemoveDescriptionPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((culture) => culture.object?.id === action.payload.cultureId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((culture) => culture.object?.id === action.payload.cultureId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.descriptionId);
+        },
+
         addImageToCulture(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data!.findIndex((culture) => culture.object?.id === action.payload.cultureId))!
@@ -84,5 +120,8 @@ const CulturePageSlice = createSlice({
 }
 )
 
-export const { setCulturePage, fillCultureData, addCulture, removeCulture, updateCulture, addImageToCulture, removeImageFromCulture, addNewRegionToCulture, removeRegionFromCulture } = CulturePageSlice.actions;
+export const { setCulturePage, fillCultureData, addCulture, removeCulture, updateCulture, 
+    addCultureDescription, updateCultureDescription, removeCultureDescription,
+    addImageToCulture, removeImageFromCulture, 
+    addNewRegionToCulture, removeRegionFromCulture } = CulturePageSlice.actions;
 export default CulturePageSlice.reducer;

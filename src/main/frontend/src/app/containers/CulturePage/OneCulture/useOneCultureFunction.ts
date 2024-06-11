@@ -1,13 +1,10 @@
 
 import { Dispatch } from "@reduxjs/toolkit"
-import { useNavigate } from "react-router-dom"
-import { ApiError, CultureControllerService, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../services/openapi"
+import { useLocation, useNavigate } from "react-router-dom"
+import { ApiError, CultureControllerService, DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../services/openapi"
 import { useAppDispatch } from "../../../hooks"
-import { addImageToCulture, removeImageFromCulture, setCulture, updateCulture } from "./store/oneCultureSlice"
-
-interface IUseOneCultureFunction {
-    cultureId?: number
-}
+import { addCultureDescription, addImageToCulture, removeCultureDescription, removeImageFromCulture, setCulture, updateCulture, updateCultureDescription } from "./store/oneCultureSlice"
+import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction"
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setCulture: (culture: EntryFullDTO) => {
@@ -16,6 +13,17 @@ const actionDispatch = (dispatch: Dispatch) => ({
     updateCulture: (culture: EntryDTO) => {
         dispatch(updateCulture(culture))
     },
+    
+    addNewStateCultureDescription: (descriptionDTO: DescriptionDTO) => {
+        dispatch(addCultureDescription(descriptionDTO))
+    },
+    updateStateCultureDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updateCultureDescription({descriptionId, descriptionDTO}))
+    },
+    removeStateCultureDescription: (descriptionId: number) => {
+        dispatch(removeCultureDescription(descriptionId))
+    },
+
     addImageToCulture: (imageDTO: ImageDTO) => {
         dispatch(addImageToCulture(imageDTO))
     },
@@ -24,9 +32,11 @@ const actionDispatch = (dispatch: Dispatch) => ({
     },
 })
 
-export function UseOneCultureFunction(props: IUseOneCultureFunction) {
-    const { setCulture, addImageToCulture, removeImageFromCulture, updateCulture } = actionDispatch(useAppDispatch());
+export function UseOneCultureFunction() {
+    const { setCulture, addImageToCulture, removeImageFromCulture, updateCulture, addNewStateCultureDescription, updateStateCultureDescription, removeStateCultureDescription } = actionDispatch(useAppDispatch());
+    const {updateDescription} = GlobalDescriptionFunction({updateOneEntryDescription: updateStateCultureDescription})
     const navigate = useNavigate();
+    const location = useLocation();
     const fetchCulture = async (name: string) :Promise<boolean> => {
         return CultureControllerService.getCultureByName(name)
             .then((response) => {
@@ -49,15 +59,16 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
             });
     }
 
-    const editCulture = async (id: number, name: string, description: string) => {
+    const editCulture = async (id: number, name: string, shortDescription: string) => {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return CultureControllerService.updateCulture(id, entryDTO)
             .then((_) => {
                 updateCulture(entryDTO)
+                if(location.pathname !== "/cultures/"+name) navigate('/cultures/'+name);
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -65,8 +76,39 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
             });
     }
 
-    const saveImageToCulture = async (acceptedFiles: Blob) => {
-        return CultureControllerService.saveImageToCulture(props.cultureId!, { image: acceptedFiles })
+    async function addNewDesctiptionToCulture(id: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            title: title,
+            text: text
+        }
+        return CultureControllerService.saveDescriptionToCulture(id, descriptionDTO)
+            .then((res) => addNewStateCultureDescription(res))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function updateCultureDescription(cultureId: number, descriptionId: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            id: descriptionId,
+            title: title,
+            text: text
+        }
+        return updateDescription(cultureId, descriptionId, descriptionDTO);
+    }
+
+    async function deleteDescriptionFromCulture(cultureId: number, descriptionId: number) {
+        return CultureControllerService.deleteDescriptionFromCulture(cultureId, descriptionId)
+            .then((res) => removeStateCultureDescription(descriptionId))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    const saveImageToCulture = async (acceptedFiles: Blob, id: number) => {
+        return CultureControllerService.saveImageToCulture(id, { image: acceptedFiles })
             .then((res) => addImageToCulture(res))
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
@@ -83,5 +125,5 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
             });
     }
 
-    return { fetchCulture, removeCulture, editCulture, saveImageToCulture, deleteImageFromCulture };
+    return { fetchCulture, removeCulture, editCulture, addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture, saveImageToCulture, deleteImageFromCulture };
 }

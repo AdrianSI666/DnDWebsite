@@ -19,15 +19,15 @@ interface IRegionAccordionBody {
 
 export function RegionAccordionBody(props: Readonly<IRegionAccordionBody>) {
     const { addNewCultureToRegion, removeCultureFromRegion } = RegionsDispatcher();
-    const { removeRegion, addImageToRegion, removeImageFromRegion, updateRegion } = RegionsDispatcher();
+    const { addImageToRegion, removeImageFromRegion, addNewStateRegionDescription, removeStateRegionDescription, updateStateRegionDescription } = RegionsDispatcher();
     const { setKingdomToRegion, removeKingdomFromRegion } = RegionsDispatcher();
     const { addNewPlaceToRegion, removePlaceFromRegion } = RegionsDispatcher();
     const { addNewRaceToRegion, removeRaceFromRegion } = RegionsDispatcher();
     const { addNewSubRaceToRegion, removeSubRaceFromRegion } = RegionsDispatcher();
 
-    const { deleteRegion, editRegion, saveImageToRegion, deleteImageFromRegion } = RegionFunction({
-        regionId: props.region.region?.id,
-        removeRegion, addImageToRegion, removeImageFromRegion, updateRegion
+    const { saveImageToRegion, deleteImageFromRegion, addNewDesctiptionToRegion, deleteDescriptionFromRegion, updateRegionDescription } = RegionFunction({
+        addImageToRegion, removeImageFromRegion,
+        addNewDescriptionRegion: addNewStateRegionDescription, removeDescriptionFromRegion: removeStateRegionDescription, updateStateRegionDescription
     });
     const { saveNewPlaceToRegion, saveExistingPlaceToRegion, removePlaceFromRegionFunction, getAllPlacesWithoutRegion } = RegionPlacesFunction({
         addNewPlaceToRegion,
@@ -67,13 +67,14 @@ export function RegionAccordionBody(props: Readonly<IRegionAccordionBody>) {
                 domObjects: props.region.kingdom,
                 subObjects: props.region.places,
                 images: props.region.images,
+                descriptions: props.region.descriptions
             }}
-                deleteEntry={deleteRegion}
-                updateEntry={editRegion}
                 saveImageToEntry={saveImageToRegion}
                 deleteImageFromEntry={deleteImageFromRegion}
-                deleteMainObjectButtonActionText={"Delete this region"}
-                deleteImageButtonActionText={"Delete image"} />
+                deleteImageButtonActionText={"Delete image"}
+                addNewDescriptionToEntry={addNewDesctiptionToRegion}
+                updateDescription={updateRegionDescription}
+                deleteDescriptionFromEntry={deleteDescriptionFromRegion} />
             <SubCategoryBody mainEntryId={props.region.region?.id!}
                 subObjects={props.region.places}
                 subCategoryTitle={"Places"} subCategoryLink={"places"}

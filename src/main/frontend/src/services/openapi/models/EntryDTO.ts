@@ -5,6 +5,6 @@
 export type EntryDTO = {
     id?: number;
     name?: string;
-    description?: string;
+    shortDescription?: string;
 };
 

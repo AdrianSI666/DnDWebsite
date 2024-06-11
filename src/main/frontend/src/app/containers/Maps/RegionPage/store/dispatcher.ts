@@ -1,7 +1,7 @@
 import { Dispatch } from "@reduxjs/toolkit"
-import { EntryDTO, ImageDTO } from "../../../../../services/openapi"
+import { DescriptionDTO, EntryDTO, ImageDTO } from "../../../../../services/openapi"
 import { useAppDispatch } from "../../../../hooks"
-import { addImageToRegion, addNewCultureToRegion, addNewPlaceToRegion, addNewRaceToRegion, addNewSubRaceToRegion, removeCultureFromRegion, removeImageFromRegion, removeKingdomFromRegion, removePlaceFromRegion, removeRaceFromRegion, removeRegion, removeSubRaceFromRegion, setKingdomToRegion, updateRegion } from "./regionPageSlice"
+import { addImageToRegion, addNewCultureToRegion, addNewPlaceToRegion, addNewRaceToRegion, addNewSubRaceToRegion, addRegionDescription, removeCultureFromRegion, removeImageFromRegion, removeKingdomFromRegion, removePlaceFromRegion, removeRaceFromRegion, removeRegion, removeRegionDescription, removeSubRaceFromRegion, setKingdomToRegion, updateRegion, updateRegionDescription } from "./regionPageSlice"
 
 const actionDispatch = (dispatch: Dispatch) => ({
     removeRegion: (id: number) => {
@@ -20,8 +20,18 @@ const actionDispatch = (dispatch: Dispatch) => ({
     removeImageFromRegion: (imageId: number, regionId: number) => {
         dispatch(removeImageFromRegion({
             regionId,
-            imageId
+            subObjectId: imageId
         }))
+    },
+
+    addNewStateRegionDescription: (id: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(addRegionDescription({ regionId: id, descriptionDTO }))
+    },
+    updateStateRegionDescription: (regionId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updateRegionDescription({ regionId, descriptionId, descriptionDTO }))
+    },
+    removeStateRegionDescription: (regionId: number, descriptionId: number) => {
+        dispatch(removeRegionDescription({ regionId, subObjectId: descriptionId }))
     },
 
     setKingdomToRegion: (regionId: number, kingdomDTO: EntryDTO) => {
@@ -91,12 +101,15 @@ const actionDispatch = (dispatch: Dispatch) => ({
 })
 
 export function RegionsDispatcher() {
-    const { removeRegion, updateRegion, addImageToRegion, removeImageFromRegion,
+    const { removeRegion, updateRegion, 
+        addNewStateRegionDescription, removeStateRegionDescription, updateStateRegionDescription,
+        addImageToRegion, removeImageFromRegion,
         setKingdomToRegion, removeKingdomFromRegion, addNewPlaceToRegion, removePlaceFromRegion,
         addNewCultureToRegion, removeCultureFromRegion,
         addNewRaceToRegion, removeRaceFromRegion, addNewSubRaceToRegion, removeSubRaceFromRegion } = actionDispatch(useAppDispatch());
     return {
         removeRegion, updateRegion, addImageToRegion, removeImageFromRegion,
+        addNewStateRegionDescription, removeStateRegionDescription, updateStateRegionDescription,
         setKingdomToRegion, removeKingdomFromRegion, addNewPlaceToRegion, removePlaceFromRegion,
         addNewCultureToRegion, removeCultureFromRegion,
         addNewRaceToRegion, removeRaceFromRegion, addNewSubRaceToRegion, removeSubRaceFromRegion

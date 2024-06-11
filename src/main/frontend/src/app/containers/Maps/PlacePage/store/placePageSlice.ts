@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IPlacePageState } from "../types";
-import { EntryDTO, EntryFullDTO, ImageDTO, Page } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO, Page } from "../../../../../services/openapi";
 
 const initialState: IPlacePageState = {
     page: {
@@ -15,14 +15,20 @@ interface IUpdatePlacePayload {
     entryDTO: EntryDTO
 }
 
+interface IAddDescriptionPayload {
+    placeId: number,
+    descriptionDTO: DescriptionDTO
+}
+
+interface IUpdateDescriptionPayload {
+    placeId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
+}
+
 interface IAddImagePayload {
     placeId: number,
     imageDTO: ImageDTO
-}
-
-interface IRemoveImagePayload {
-    placeId: number,
-    imageId: number
 }
 
 interface IRemoveSubObjectPayload {
@@ -62,14 +68,35 @@ const placePageSlice = createSlice({
                 .object = action.payload.entryDTO;
         },
 
+        addPlaceDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((place) => place.object?.id === action.payload.placeId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updatePlaceDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at( state.page.data!.findIndex((place) => place.object?.id === action.payload.placeId))!.descriptions = 
+            state.page.data?.at(
+                state.page.data!.findIndex((place) => place.object?.id === action.payload.placeId))!
+                .descriptions?.map((description) => {
+                    if(description.id === action.payload.descriptionId) {
+                        return action.payload.descriptionDTO;
+                    }
+                    return description;
+                });
+        },
+        removePlaceDescription(state, action: PayloadAction<IRemoveSubObjectPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((place) => place.object?.id === action.payload.placeId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((place) => place.object?.id === action.payload.placeId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.subObjectId);
+        },
+
         addImageToPlace(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((place) => place.object?.id === action.payload.placeId))!
                 .images?.push(action.payload.imageDTO);
         },
-        removeImageFromPlace(state, action: PayloadAction<IRemoveImagePayload>) {
+        removeImageFromPlace(state, action: PayloadAction<IRemoveSubObjectPayload>) {
             let images = state.page.data?.at(state.page.data.findIndex((place) => place.object?.id === action.payload.placeId))!.images;
-            state.page.data!.at(state.page.data!.findIndex((place) => place.object?.id === action.payload.placeId))!.images = images?.filter((image) => image.id !== action.payload.imageId);
+            state.page.data!.at(state.page.data!.findIndex((place) => place.object?.id === action.payload.placeId))!.images = images?.filter((image) => image.id !== action.payload.subObjectId);
         },
         
         setRegionToPlace(state, action: PayloadAction<ISetNewDomObjectPayload>) {
@@ -82,5 +109,8 @@ const placePageSlice = createSlice({
 }
 )
 
-export const { setPlacePage, fillPlaceData, addPlace, removePlace, updatePlace, addImageToPlace, removeImageFromPlace,setRegionToPlace, removeRegionFromPlace } = placePageSlice.actions;
+export const { setPlacePage, fillPlaceData, addPlace, removePlace, updatePlace,
+    addPlaceDescription, updatePlaceDescription, removePlaceDescription,
+    addImageToPlace, removeImageFromPlace,
+    setRegionToPlace, removeRegionFromPlace } = placePageSlice.actions;
 export default placePageSlice.reducer;

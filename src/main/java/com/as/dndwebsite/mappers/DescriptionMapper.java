@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class DescriptionMapper implements DomainMapper<Description, DescriptionDTO> {
     @Override
     public DescriptionDTO map(Description source) {
-        return new DescriptionDTO(source.getId(), source.getText());
+        return new DescriptionDTO(source.getId(), source.getTitle(), source.getText());
     }
 }

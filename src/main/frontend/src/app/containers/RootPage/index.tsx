@@ -8,6 +8,9 @@ import { Toaster } from 'react-hot-toast';
 export function Root() {
   return (
     <div className="container">
+      <header>
+        <script src="http://localhost:8097"></script>
+      </header>
       <div className="row">
         <div className="col-xs-10 col-xs-offset-1">
           <Header />

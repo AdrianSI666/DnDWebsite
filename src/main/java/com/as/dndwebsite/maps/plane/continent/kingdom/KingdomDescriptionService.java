@@ -27,7 +27,7 @@ public class KingdomDescriptionService implements IDescriptionEntryService {
 
     @Override
     public List<DescriptionDTO> getDescriptionsOfEntry(long id) {
-        return descriptionRepository.findAllByKingdoms_Id(id);
+        return descriptionRepository.findAllByKingdoms_IdOrderById(id);
     }
 
     @Override

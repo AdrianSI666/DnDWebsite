@@ -15,11 +15,14 @@ interface IPlaceAccordionBody {
 
 export function PlaceAccordionBody(props: Readonly<IPlaceAccordionBody>) {
     const { removePlace, addImageToPlace, removeImageFromPlace, updatePlace } = PlaceDispatcher();
-    const { setRegionToPlace, removeRegionFromPlace } = PlaceDispatcher();
-    const { deletePlace, editPlace, saveImageToPlace, deleteImageFromPlace } = PlaceFunction({
-        placeId: props.place.object?.id,
-        removePlace, addImageToPlace, removeImageFromPlace, updatePlace
-    });
+    const { setRegionToPlace, removeRegionFromPlace, addNewStatePlaceDescription, updateStatePlaceDescription, removeStatePlaceDescription, } = PlaceDispatcher();
+    const {
+        addNewDesctiptionToPlace, deleteDescriptionFromPlace, updatePlaceDescription,
+        saveImageToPlace, deleteImageFromPlace } = PlaceFunction({
+            removePlace, updatePlace,
+            addNewDescriptionPlace: addNewStatePlaceDescription, removeDescriptionFromPlace: removeStatePlaceDescription, updateStatePlaceDescription,
+            addImageToPlace, removeImageFromPlace,
+        });
     const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceDomRegionFunction({
         setRegionToPlace, removeRegionFromPlace
     });
@@ -38,12 +41,12 @@ export function PlaceAccordionBody(props: Readonly<IPlaceAccordionBody>) {
                 deleteButtonActionText={`Unlink this place from region`}
                 addExistingButtonActionText={`Set existing region to ${props.place.object?.name}`} />
             <FullEntryAccordionBody categoryName={"Place"} entryFullDTO={props.place}
-                deleteEntry={deletePlace}
-                updateEntry={editPlace}
                 saveImageToEntry={saveImageToPlace}
                 deleteImageFromEntry={deleteImageFromPlace}
-                deleteMainObjectButtonActionText={"Delete this place"}
-                deleteImageButtonActionText={"Delete image"} />
+                deleteImageButtonActionText={"Delete image"}
+                addNewDescriptionToEntry={addNewDesctiptionToPlace}
+                updateDescription={updatePlaceDescription}
+                deleteDescriptionFromEntry={deleteDescriptionFromPlace} />
         </Accordion.Body>
     )
 }

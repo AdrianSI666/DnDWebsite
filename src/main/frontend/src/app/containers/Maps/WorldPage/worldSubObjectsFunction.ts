@@ -14,7 +14,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
   removePlaneFromWorld: (worldId: number, planeId: number) => {
     dispatch(removePlaneFromWorld({
         worldId,
-        planeId
+        subObjectId: planeId
     }))
   }
 })
@@ -29,10 +29,10 @@ export function WorldSubObjectsFunction() {
       });
   }
 
-  const saveNewPlaneToWorld = async (worldId: number, name: string, description: string): Promise<void> => {
+  const saveNewPlaneToWorld = async (worldId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return WorldPlaneControllerService.addNewPlaneWorldRelation(worldId, entryDTO)
       .then((result) => {
@@ -47,7 +47,7 @@ export function WorldSubObjectsFunction() {
   const saveExistingPlaneToWorld = async (worldId: number, planeId: number, planeName: string, planeDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: planeName,
-      description: planeDescription,
+      shortDescription: planeDescription,
       id: planeId
     }
     return WorldPlaneControllerService.addWorldPlaneRelation(worldId, planeId)

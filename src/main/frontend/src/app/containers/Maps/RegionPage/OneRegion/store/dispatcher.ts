@@ -1,7 +1,7 @@
 import { Dispatch } from "@reduxjs/toolkit"
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi"
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi"
 import { useAppDispatch } from "../../../../../hooks"
-import { addImageToRegion, addNewCultureToRegion, addNewPlaceToRegion, addNewRaceToRegion, addNewSubRaceToRegion, removeCultureFromRegion, removeImageFromRegion, removeKingdomFromRegion, removePlaceFromRegion, removeRaceFromRegion, removeSubRaceFromRegion, setKingdomToRegion, setRegion, updateRegion } from "./oneRegionSlice"
+import { addImageToRegion, addNewCultureToRegion, addNewPlaceToRegion, addNewRaceToRegion, addNewSubRaceToRegion, addRegionDescription, removeCultureFromRegion, removeImageFromRegion, removeKingdomFromRegion, removePlaceFromRegion, removeRaceFromRegion, removeRegionDescription, removeSubRaceFromRegion, setKingdomToRegion, setRegion, updateRegion, updateRegionDescription } from "./oneRegionSlice"
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setRegion: (region: EntryFullDTO) => {
@@ -9,6 +9,16 @@ const actionDispatch = (dispatch: Dispatch) => ({
     },
     updateRegion: (entryDTO: EntryDTO) => {
         dispatch(updateRegion(entryDTO))
+    },
+
+    addNewStateRegionDescription: (descriptionDTO: DescriptionDTO) => {
+        dispatch(addRegionDescription(descriptionDTO))
+    },
+    updateStateRegionDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updateRegionDescription({ descriptionId, descriptionDTO }))
+    },
+    removeStateRegionDescription: (descriptionId: number) => {
+        dispatch(removeRegionDescription(descriptionId))
     },
 
     addImageToRegion: (imageDTO: ImageDTO) => {
@@ -55,12 +65,16 @@ const actionDispatch = (dispatch: Dispatch) => ({
 })
 
 export function OneRegionDispatcher() {
-    const { setRegion, updateRegion, addImageToRegion, removeImageFromRegion,
+    const { setRegion, updateRegion,
+        addNewStateRegionDescription, updateStateRegionDescription, removeStateRegionDescription,
+        addImageToRegion, removeImageFromRegion,
         setKingdomToRegion, removeKingdomFromRegion, addNewPlaceToRegion, removePlaceFromRegion,
         addNewCultureToRegion, removeCultureFromRegion,
         addNewRaceToRegion, removeRaceFromRegion, addNewSubRaceToRegion, removeSubRaceFromRegion } = actionDispatch(useAppDispatch());
     return {
-        setRegion, updateRegion, addImageToRegion, removeImageFromRegion,
+        setRegion, updateRegion,
+        addNewStateRegionDescription, updateStateRegionDescription, removeStateRegionDescription,
+        addImageToRegion, removeImageFromRegion,
         setKingdomToRegion, removeKingdomFromRegion, addNewPlaceToRegion, removePlaceFromRegion,
         addNewCultureToRegion, removeCultureFromRegion,
         addNewRaceToRegion, removeRaceFromRegion, addNewSubRaceToRegion, removeSubRaceFromRegion

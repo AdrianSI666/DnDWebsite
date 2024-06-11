@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../services/openapi";
 import { IOneCultureState } from "../../types";
 
 const initialState: IOneCultureState = {
@@ -7,8 +7,14 @@ const initialState: IOneCultureState = {
         object: {},
         domObjects: {},
         subObjects: new Array<EntryDTO>(),
-        images: new Array<ImageDTO>()
+        images: new Array<ImageDTO>(),
+        descriptions: new Array<DescriptionDTO>()
     }
+}
+
+interface IUpdateDescriptionPayload {
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
 }
 
 const OneCultureSlice = createSlice({
@@ -21,6 +27,20 @@ const OneCultureSlice = createSlice({
         updateCulture(state, action: PayloadAction<EntryDTO>) {
             state.culture.object = action.payload;
         },
+
+        addCultureDescription(state, action: PayloadAction<DescriptionDTO>) {
+            state.culture.descriptions?.push(action.payload);
+        },
+        updateCultureDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.culture.descriptions?.splice(
+                state.culture.descriptions?.findIndex((description) => description.id === action.payload.descriptionId),
+                1,
+                action.payload.descriptionDTO);
+        },
+        removeCultureDescription(state, action: PayloadAction<number>) {
+            state.culture.descriptions = state.culture.descriptions?.filter((description) => description.id !== action.payload);
+        },
+
         addImageToCulture(state, action: PayloadAction<ImageDTO>) {
             state.culture.images?.push(action.payload);
         },
@@ -37,5 +57,8 @@ const OneCultureSlice = createSlice({
 }
 )
 
-export const { setCulture, updateCulture, addImageToCulture, removeImageFromCulture, addNewRegionToCulture, removeRegionFromCulture } = OneCultureSlice.actions;
+export const { setCulture, updateCulture,
+    addCultureDescription, updateCultureDescription, removeCultureDescription,
+    addImageToCulture, removeImageFromCulture,
+    addNewRegionToCulture, removeRegionFromCulture } = OneCultureSlice.actions;
 export default OneCultureSlice.reducer;

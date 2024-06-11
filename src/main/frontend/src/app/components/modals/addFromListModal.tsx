@@ -17,7 +17,7 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
     const [objectsList, setObjectsList] = useState(Array<EntryDTO>)
     return (
         <div className="d-grid gap-2 p-1">
-            <Button variant="success" onClick={() => {
+            <Button variant="success" onClick={(e) => {
                 props.fillTheListWithSubObjects()
                     .then(result => setObjectsList(result!))
                 setModalShow(true);
@@ -41,11 +41,11 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
                         e.preventDefault();
                         let name = objectsList.find(object => object.id === idOfLinkedObject)?.name;
                         toast.promise(
-                        props.addExistingObjectToRelation(props.id!, idOfLinkedObject, name!, objectsList.find(object => object.id === idOfLinkedObject)?.description!).then(() => {
+                        props.addExistingObjectToRelation(props.id!, idOfLinkedObject, name!, objectsList.find(object => object.id === idOfLinkedObject)?.shortDescription!).then(() => {
                             setModalShow(false);
                           }).catch((err: ApiError) => {
                             let errorMessage = err.body.message;
-                            //if(err.status === 409) errorMessage = `Selected ${props.categoryName} is already on this list.`
+                            if(err.status === 409) errorMessage = `Selected ${props.categoryName} is already on this list.`
                             throw(errorMessage)
                           }), {
                             loading: 'Saving...',

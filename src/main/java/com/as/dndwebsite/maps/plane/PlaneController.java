@@ -100,18 +100,18 @@ public class PlaneController {
     }
 
     @PostMapping(path = "{id}/description")
-    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
+    public ResponseEntity<DescriptionDTO> saveDescriptionToPlane(@PathVariable("id") Long id,
                                                                 @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(planeDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
     @GetMapping(path = "{id}/description")
-    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfPlane(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(planeDescriptionService.getDescriptionsOfEntry(id));
     }
 
     @DeleteMapping(path = "/{planeId}/description/{descriptionId}")
-    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("planeId") Long planeId,
+    public ResponseEntity<HttpStatus> deleteDescriptionFromPlane(@PathVariable("planeId") Long planeId,
                                                                 @PathVariable("descriptionId") Long imageId) {
         planeDescriptionService.deleteDescriptionFromEntry(planeId, imageId);
         return ResponseEntity.ok().build();

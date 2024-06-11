@@ -20,7 +20,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     subRace: subRaceDto,
                     images: [],
                     regions: [],
-                    race: {}
+                    race: {},
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -34,7 +35,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             subRace: subRace,
             images: [],
             regions: [],
-            race: {}
+            race: {},
+            descriptions: []
         }
         dispatch(addSubRace(entryFullDTO))
     }
@@ -49,10 +51,10 @@ export function SubRacePage(props: ISubRacePageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setSubRacePage, addSubRace } = actionDispatch(useAppDispatch());
 
-    const saveSubRace = async (name: string, description: string): Promise<void> => {
+    const saveSubRace = async (name: string, shortDescription: string): Promise<void> => {
         return SubRaceControllerService.saveSubRace({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addSubRace(response);

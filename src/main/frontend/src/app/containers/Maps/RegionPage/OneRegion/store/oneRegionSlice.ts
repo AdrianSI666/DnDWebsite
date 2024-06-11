@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi";
 import { IOneRegionState } from "../../types";
 
 const initialState: IOneRegionState = {
@@ -11,7 +11,13 @@ const initialState: IOneRegionState = {
         cultures: new Array<EntryDTO>(),
         races: new Array<EntryDTO>(),
         subRaces: new Array<EntryDTO>(),
+        descriptions: new Array<DescriptionDTO>()
     }
+}
+
+interface IUpdateDescriptionPayload {
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
 }
 
 const OneRegionSlice = createSlice({
@@ -23,6 +29,19 @@ const OneRegionSlice = createSlice({
         },
         updateRegion(state, action: PayloadAction<EntryDTO>) {
             state.region.region = action.payload;
+        },
+
+        addRegionDescription(state, action: PayloadAction<DescriptionDTO>) {
+            state.region.descriptions?.push(action.payload);
+        },
+        updateRegionDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.region.descriptions?.splice(
+                state.region.descriptions?.findIndex((description) => description.id === action.payload.descriptionId),
+                1,
+                action.payload.descriptionDTO);
+        },
+        removeRegionDescription(state, action: PayloadAction<number>) {
+            state.region.descriptions = state.region.descriptions?.filter((description) => description.id !== action.payload);
         },
 
         addImageToRegion(state, action: PayloadAction<ImageDTO>) {
@@ -70,7 +89,9 @@ const OneRegionSlice = createSlice({
 }
 )
 
-export const { setRegion, updateRegion, addImageToRegion, removeImageFromRegion,
+export const { setRegion, updateRegion,
+    addRegionDescription, updateRegionDescription, removeRegionDescription,
+    addImageToRegion, removeImageFromRegion,
     setKingdomToRegion, removeKingdomFromRegion,
     addNewPlaceToRegion, removePlaceFromRegion,
     addNewCultureToRegion, removeCultureFromRegion,

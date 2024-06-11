@@ -19,7 +19,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     object: kingdomDTO,
                     images: [],
                     domObjects: {},
-                    subObjects: []
+                    subObjects: [],
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -33,7 +34,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             object: Kingdom,
             images: [],
             domObjects: {},
-            subObjects: []
+            subObjects: [],
+            descriptions: []
         }
         dispatch(addKingdom(entryFullDTO))
     }
@@ -48,10 +50,10 @@ export function KingdomPage(props: IKingdomPageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setKingdomPage, addKingdom } = actionDispatch(useAppDispatch());
 
-    const saveKingdom = async (name: string, description: string): Promise<void> => {
+    const saveKingdom = async (name: string, shortDescription: string): Promise<void> => {
         return KingdomControllerService.saveKingdom({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addKingdom(response);

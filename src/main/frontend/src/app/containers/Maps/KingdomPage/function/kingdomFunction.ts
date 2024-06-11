@@ -1,8 +1,9 @@
 
-import { ApiError, EntryDTO, ImageDTO, KingdomControllerService } from "../../../../../services/openapi";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ApiError, DescriptionDTO, EntryDTO, ImageDTO, KingdomControllerService } from "../../../../../services/openapi";
+import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction";
 
 interface IKingdomFunction {
-    kingdomId?: number
     removeKingdom?: (id: number) => void
 
     updateKingdom?: (id: number, entryDTO: EntryDTO) => void
@@ -13,9 +14,20 @@ interface IKingdomFunction {
 
     removeImageFromKingdom?: (imageId: number, regionId: number) => void
     removeImageFromOneKingdom?: (imageId: number) => void
+
+    addNewDescriptionKingdom?: (kingdomId: number, descriptionDTO: DescriptionDTO) => void,
+    addNewDescriptionOneKingdom?: (descriptionDTO: DescriptionDTO) => void,
+
+    updateStateKingdomDescription?: (kingdomId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => void
+    updateStateOneKingdomDescription?: (descriptionId: number, descriptionDTO: DescriptionDTO) => void
+
+    removeDescriptionFromKingdom?: (kingdomId: number, descriptionId: number) => void,
+    removeDescriptionFromOneKingdom?: (descriptionId: number) => void,
 }
 
 export function KingdomFunction(props: IKingdomFunction) {
+    const navigate = useNavigate();
+    const location = useLocation();
     async function deleteKingdom(id: number): Promise<void> {
         return KingdomControllerService.deleteKingdom(id)
             .then(() => {
@@ -28,16 +40,19 @@ export function KingdomFunction(props: IKingdomFunction) {
             });
     }
 
-    const editKingdom = async (id: number, name: string, description: string): Promise<void> => {
+    const editKingdom = async (id: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return KingdomControllerService.updateKingdom(id, entryDTO)
             .then(() => {
                 if (props.updateKingdom) props.updateKingdom(id, entryDTO);
-                else if (props.updateOneKingdom) props.updateOneKingdom(entryDTO);
+                else if (props.updateOneKingdom) {
+                    props.updateOneKingdom(entryDTO);
+                    if (location.pathname !== "/kingdoms/" + name) navigate('/kingdoms/' + name);
+                }
                 else throw new Error("Didn't sepcify dispatch action when editing kingdom.");
             })
             .catch((err: ApiError) => {
@@ -46,10 +61,56 @@ export function KingdomFunction(props: IKingdomFunction) {
             });
     }
 
-    async function saveImageToKingdom(acceptedFiles: Blob) {
-        return KingdomControllerService.saveImageToKingdom(props.kingdomId!, { image: acceptedFiles })
+    async function addNewDesctiptionToKingdom(id: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            title: title,
+            text: text
+        }
+        return KingdomControllerService.saveDescriptionToKingdom(id, descriptionDTO)
             .then((res) => {
-                if (props.addImageToKingdom) props.addImageToKingdom(res, props.kingdomId!);
+                if (props.addNewDescriptionKingdom) props.addNewDescriptionKingdom(id, descriptionDTO);
+                else if (props.addNewDescriptionOneKingdom) props.addNewDescriptionOneKingdom(descriptionDTO);
+                else throw new Error("Didn't sepcify dispatch action when adding new Description to Kingdom.");
+            })
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function updateKingdomDescription(kingdomId: number, descriptionId: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            id: descriptionId,
+            title: title,
+            text: text
+        }
+        if(props.updateStateKingdomDescription) {
+            let { updateDescription } = GlobalDescriptionFunction({ updateDescription: props.updateStateKingdomDescription })
+            return updateDescription(kingdomId, descriptionId, descriptionDTO);
+        } else if (props.updateStateOneKingdomDescription) {
+            let { updateDescription } = GlobalDescriptionFunction({ updateOneEntryDescription: props.updateStateOneKingdomDescription })
+            return updateDescription(kingdomId, descriptionId, descriptionDTO);
+        } throw new Error("Didn't sepcify dispatch action when updating Description of Kingdom.");
+        
+    }
+
+    async function deleteDescriptionFromKingdom(kingdomId: number, descriptionId: number) {
+        return KingdomControllerService.deleteDescriptionFromKingdom(kingdomId, descriptionId)
+            .then((_) => {
+                if (props.removeDescriptionFromKingdom) props.removeDescriptionFromKingdom(kingdomId, descriptionId);
+                else if (props.removeDescriptionFromOneKingdom) props.removeDescriptionFromOneKingdom(descriptionId);
+                else throw new Error("Didn't sepcify dispatch action when removing Description from Kingdom.");
+            })
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function saveImageToKingdom(acceptedFiles: Blob, id: number) {
+        return KingdomControllerService.saveImageToKingdom(id, { image: acceptedFiles })
+            .then((res) => {
+                if (props.addImageToKingdom) props.addImageToKingdom(res, id);
                 else if (props.addImageToOneKingdom) props.addImageToOneKingdom(res);
                 else throw new Error("Didn't sepcify dispatch action when saving image to kingdom.");
             })
@@ -72,5 +133,7 @@ export function KingdomFunction(props: IKingdomFunction) {
             });
     }
 
-    return { deleteKingdom, editKingdom, saveImageToKingdom, deleteImageFromKingdom };
+    return { deleteKingdom, editKingdom,
+        addNewDesctiptionToKingdom, deleteDescriptionFromKingdom, updateKingdomDescription,
+        saveImageToKingdom, deleteImageFromKingdom };
 }

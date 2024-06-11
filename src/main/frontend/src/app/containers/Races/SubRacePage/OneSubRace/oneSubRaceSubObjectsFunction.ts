@@ -17,10 +17,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
 export function OneSubRaceSubObjectsFunction() {
   const { addNewRegionToSubRace, removeRegionFromSubRace } = actionDispatch(useAppDispatch());
 
-  const saveNewRegionToSubRace = async (subRaceId: number, name: string, description: string): Promise<void> => {
+  const saveNewRegionToSubRace = async (subRaceId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return RegionSubRaceControllerService.addNewRegionSubRaceRelation(subRaceId, entryDTO)
       .then((result) => {
@@ -35,7 +35,7 @@ export function OneSubRaceSubObjectsFunction() {
   const saveExistingRegionToSubRace = async (subRaceId: number, regionId: number, regionName: string, regionDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: regionName,
-      description: regionDescription,
+      shortDescription: regionDescription,
       id: regionId
     }
     return RegionSubRaceControllerService.addRegionSubRaceRelation(regionId, subRaceId)

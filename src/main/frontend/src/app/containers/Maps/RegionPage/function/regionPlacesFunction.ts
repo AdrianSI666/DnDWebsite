@@ -16,10 +16,10 @@ export function RegionPlacesFunction(props: IRegionPlaceProps) {
             });
     }
 
-    const saveNewPlaceToRegion = async (regionId: number, name: string, description: string): Promise<void> => {
+    const saveNewPlaceToRegion = async (regionId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return RegionPlaceControllerService.addNewPlaceRegionRelation(regionId, entryDTO)
             .then((result) => {
@@ -36,7 +36,7 @@ export function RegionPlacesFunction(props: IRegionPlaceProps) {
     const saveExistingPlaceToRegion = async (regionId: number, placeId: number, placeName: string, placeDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: placeName,
-            description: placeDescription,
+            shortDescription: placeDescription,
             id: placeId
         }
         return RegionPlaceControllerService.addRegionPlaceRelation(regionId, placeId)

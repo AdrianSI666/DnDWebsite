@@ -19,7 +19,7 @@ interface ISubCategoryBody {
     addNewSubEntryToRelation: (id: number, name: string, description: string) => Promise<void>;
     addExistingObjectToRelation: (coreObjectId: number, objectToAddId: number, objectName: string, objectDescription: string) => Promise<void>;
     deleteSubObject: (id: number, secondId: number) => Promise<void>;
-    
+
 }
 
 export function SubCategoryBody(props: Readonly<ISubCategoryBody>) {
@@ -40,9 +40,16 @@ export function SubCategoryBody(props: Readonly<ISubCategoryBody>) {
                                     <DeleteConfirmationModal deleteButtonActionText={props.deleteButtonActionText} deleteObjectsInRelation={props.deleteSubObject} title={subObject.name!} id={props.mainEntryId} secondId={subObject.id} />
                                 }
                             >
-                                <ListItemText primary={subObject.name} secondary={
-                                    <Link className="btn btn-outline-warning" to={`/${props.subCategoryLink}/${subObject.name}`} state={props.mainEntryId}>Go to this {props.subCategoryLinkText}</Link>
-                                } />
+                                <ListItemText
+                                    primary={
+                                        <>
+                                            <div>{subObject.name}</div>
+                                            <div>{subObject.shortDescription}</div>
+                                        </>
+                                    }
+                                    secondary={
+                                        <Link className="btn btn-outline-warning" to={`/${props.subCategoryLink}/${subObject.name}`} state={props.mainEntryId}>Go to this {props.subCategoryLinkText}</Link>
+                                    } />
                             </ListItem>
                         </div>)
                 })}

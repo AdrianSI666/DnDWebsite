@@ -1,13 +1,10 @@
 
 import { Dispatch } from "@reduxjs/toolkit"
-import { useNavigate } from "react-router-dom"
-import { ApiError, EntryDTO, EntryFullDTO, ImageDTO, SubRaceControllerService } from "../../../../../services/openapi"
+import { useLocation, useNavigate } from "react-router-dom"
+import { ApiError, DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO, SubRaceControllerService } from "../../../../../services/openapi"
 import { useAppDispatch } from "../../../../hooks"
-import { addImageToSubRace, removeImageFromSubRace, setSubRace, updateSubRace } from "./store/oneSubRaceSlice"
-
-interface IUseOneSubRaceObjectFunction {
-    subRaceId?: number
-}
+import { addImageToSubRace, addRaceDescription, removeImageFromSubRace, removeRaceDescription, setSubRace, updateRaceDescription, updateSubRace } from "./store/oneSubRaceSlice"
+import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction"
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setSubRace: (subRace: EntryFullDTO) => {
@@ -16,6 +13,17 @@ const actionDispatch = (dispatch: Dispatch) => ({
     updateSubRace: (subRace: EntryDTO) => {
         dispatch(updateSubRace(subRace))
     },
+
+    addNewStateSubRaceDescription: (descriptionDTO: DescriptionDTO) => {
+        dispatch(addRaceDescription(descriptionDTO))
+    },
+    updateStateSubRaceDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updateRaceDescription({ descriptionId, descriptionDTO }))
+    },
+    removeStateSubRaceDescription: (descriptionId: number) => {
+        dispatch(removeRaceDescription(descriptionId))
+    },
+
     addImageToSubRace: (imageDTO: ImageDTO) => {
         dispatch(addImageToSubRace(imageDTO))
     },
@@ -24,9 +32,11 @@ const actionDispatch = (dispatch: Dispatch) => ({
     },
 })
 
-export function UseOneSubRaceObjectFunction(props: IUseOneSubRaceObjectFunction) {
-    const { setSubRace, addImageToSubRace, removeImageFromSubRace, updateSubRace } = actionDispatch(useAppDispatch());
+export function UseOneSubRaceObjectFunction() {
+    const { setSubRace, addImageToSubRace, removeImageFromSubRace, updateSubRace, addNewStateSubRaceDescription, updateStateSubRaceDescription, removeStateSubRaceDescription } = actionDispatch(useAppDispatch());
+    const { updateDescription } = GlobalDescriptionFunction({ updateOneEntryDescription: updateStateSubRaceDescription })
     const navigate = useNavigate();
+    const location = useLocation();
     const fetchSubRace = async (name: string): Promise<boolean> => {
         return SubRaceControllerService.getSubRaceByName(name)
             .then((response) => {
@@ -49,15 +59,16 @@ export function UseOneSubRaceObjectFunction(props: IUseOneSubRaceObjectFunction)
             });
     }
 
-    const editSubRace = async (id: number, name: string, description: string) => {
+    const editSubRace = async (id: number, name: string, shortDescription: string) => {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return SubRaceControllerService.updateSubRace(id, entryDTO)
             .then((_) => {
                 updateSubRace(entryDTO)
+                if (location.pathname !== "/subraces/" + name) navigate('/subraces/' + name);
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -65,8 +76,39 @@ export function UseOneSubRaceObjectFunction(props: IUseOneSubRaceObjectFunction)
             });
     }
 
-    const saveImageToSubRace = async (acceptedFiles: Blob) => {
-        return SubRaceControllerService.saveImageToSubRace(props.subRaceId!, { image: acceptedFiles })
+    async function addNewDesctiptionToSubRace(id: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            title: title,
+            text: text
+        }
+        return SubRaceControllerService.saveDescriptionToSubRace(id, descriptionDTO)
+            .then((res) => addNewStateSubRaceDescription(res))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function updateSubRaceDescription(raceId: number, descriptionId: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            id: descriptionId,
+            title: title,
+            text: text
+        }
+        return updateDescription(raceId, descriptionId, descriptionDTO);
+    }
+
+    async function deleteDescriptionFromSubRace(raceId: number, descriptionId: number) {
+        return SubRaceControllerService.deleteDescriptionFromSubRace(raceId, descriptionId)
+            .then((res) => removeStateSubRaceDescription(descriptionId))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    const saveImageToSubRace = async (acceptedFiles: Blob, id: number) => {
+        return SubRaceControllerService.saveImageToSubRace(id, { image: acceptedFiles })
             .then((res) => addImageToSubRace(res))
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
@@ -83,5 +125,5 @@ export function UseOneSubRaceObjectFunction(props: IUseOneSubRaceObjectFunction)
             });
     }
 
-    return { fetchSubRace, removeSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace };
+    return { fetchSubRace, removeSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace, addNewDesctiptionToSubRace, updateSubRaceDescription, deleteDescriptionFromSubRace };
 }

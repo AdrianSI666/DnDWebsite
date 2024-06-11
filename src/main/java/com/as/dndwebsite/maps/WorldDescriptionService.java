@@ -27,7 +27,7 @@ public class WorldDescriptionService implements IDescriptionEntryService {
 
     @Override
     public List<DescriptionDTO> getDescriptionsOfEntry(long id) {
-        return descriptionRepository.findAllByWorlds_Id(id);
+        return descriptionRepository.findAllByWorlds_IdOrderById(id);
     }
 
     @Override

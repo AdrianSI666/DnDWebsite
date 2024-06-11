@@ -1,13 +1,10 @@
 
 import { Dispatch } from "@reduxjs/toolkit"
-import { useNavigate } from "react-router-dom"
-import { ApiError, EntryDTO, EntryFullDTO, ImageDTO, WorldControllerService } from "../../../../../services/openapi"
+import { useLocation, useNavigate } from "react-router-dom"
+import { ApiError, DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO, WorldControllerService } from "../../../../../services/openapi"
 import { useAppDispatch } from "../../../../hooks"
-import { addImageToWorld, removeImageFromWorld, setWorld, updateWorld } from "./store/oneWorldSlice"
-
-interface IUseOneWorldObjectFunction {
-    worldId?: number
-}
+import { addImageToWorld, addWorldDescription, removeImageFromWorld, removeWorldDescription, setWorld, updateWorldDescription, updateWorld } from "./store/oneWorldSlice"
+import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction"
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setWorld: (world: EntryFullDTO) => {
@@ -16,6 +13,17 @@ const actionDispatch = (dispatch: Dispatch) => ({
     updateWorld: (world: EntryDTO) => {
         dispatch(updateWorld(world))
     },
+
+    addNewStateWorldDescription: (descriptionDTO: DescriptionDTO) => {
+        dispatch(addWorldDescription(descriptionDTO))
+    },
+    updateStateWorldDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updateWorldDescription({ descriptionId, descriptionDTO }))
+    },
+    removeStateWorldDescription: (descriptionId: number) => {
+        dispatch(removeWorldDescription(descriptionId))
+    },
+
     addImageToWorld: (imageDTO: ImageDTO) => {
         dispatch(addImageToWorld(imageDTO))
     },
@@ -24,9 +32,11 @@ const actionDispatch = (dispatch: Dispatch) => ({
     },
 })
 
-export function UseOneWorldObjectFunction(props: IUseOneWorldObjectFunction) {
-    const { setWorld, addImageToWorld, removeImageFromWorld, updateWorld } = actionDispatch(useAppDispatch());
+export function UseOneWorldObjectFunction() {
+    const { setWorld, addImageToWorld, removeImageFromWorld, updateWorld, addNewStateWorldDescription, updateStateWorldDescription, removeStateWorldDescription } = actionDispatch(useAppDispatch());
+    const { updateDescription } = GlobalDescriptionFunction({ updateOneEntryDescription: updateStateWorldDescription })
     const navigate = useNavigate();
+    const location = useLocation();
     const fetchWorld = async (name: string): Promise<boolean> => {
         return WorldControllerService.getWorldByName(name)
             .then((response) => {
@@ -49,15 +59,16 @@ export function UseOneWorldObjectFunction(props: IUseOneWorldObjectFunction) {
             });
     }
 
-    const editWorld = async (id: number, name: string, description: string) => {
+    const editWorld = async (id: number, name: string, shortDescription: string) => {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return WorldControllerService.updateWorld(id, entryDTO)
             .then((_) => {
                 updateWorld(entryDTO)
+                if (location.pathname !== "/worlds/" + name) navigate('/worlds/' + name);
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -65,8 +76,39 @@ export function UseOneWorldObjectFunction(props: IUseOneWorldObjectFunction) {
             });
     }
 
-    const saveImageToWorld = async (acceptedFiles: Blob) => {
-        return WorldControllerService.saveImageToWorld(props.worldId!, { image: acceptedFiles })
+    async function addNewDesctiptionToWorld(id: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            title: title,
+            text: text
+        }
+        return WorldControllerService.saveDescriptionToWorld(id, descriptionDTO)
+            .then((res) => addNewStateWorldDescription(res))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function updateWorldDescription(worldId: number, descriptionId: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            id: descriptionId,
+            title: title,
+            text: text
+        }
+        return updateDescription(worldId, descriptionId, descriptionDTO);
+    }
+
+    async function deleteDescriptionFromWorld(worldId: number, descriptionId: number) {
+        return WorldControllerService.deleteDescriptionFromWorld(worldId, descriptionId)
+            .then((res) => removeStateWorldDescription(descriptionId))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    const saveImageToWorld = async (acceptedFiles: Blob, id: number) => {
+        return WorldControllerService.saveImageToWorld(id, { image: acceptedFiles })
             .then((res) => addImageToWorld(res))
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
@@ -83,5 +125,5 @@ export function UseOneWorldObjectFunction(props: IUseOneWorldObjectFunction) {
             });
     }
 
-    return { fetchWorld, removeWorld, editWorld, saveImageToWorld, deleteImageFromWorld };
+    return { fetchWorld, removeWorld, editWorld, saveImageToWorld, deleteImageFromWorld, addNewDesctiptionToWorld, updateWorldDescription, deleteDescriptionFromWorld };
 }

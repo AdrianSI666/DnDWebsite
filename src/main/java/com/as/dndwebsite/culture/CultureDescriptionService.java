@@ -1,7 +1,6 @@
 package com.as.dndwebsite.culture;
 
 import com.as.dndwebsite.description.DescriptionRepository;
-import com.as.dndwebsite.description.DescriptionService;
 import com.as.dndwebsite.description.IDescriptionEntryService;
 import com.as.dndwebsite.description.IDescriptionService;
 import com.as.dndwebsite.dto.DescriptionDTO;
@@ -28,7 +27,7 @@ public class CultureDescriptionService implements IDescriptionEntryService {
 
     @Override
     public List<DescriptionDTO> getDescriptionsOfEntry(long id) {
-        return descriptionRepository.findAllByCultures_Id(id);
+        return descriptionRepository.findAllByCultures_IdOrderById(id);
     }
 
     @Override

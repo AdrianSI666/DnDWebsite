@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IPlanePageState } from "../types";
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../services/openapi";
 import { Page } from "../../../../../services/openapi/models/Page";
 
 const initialState: IPlanePageState = {
@@ -16,14 +16,20 @@ interface IUpdatePlanePayload {
     entryDTO: EntryDTO
 }
 
+interface IAddDescriptionPayload {
+    planeId: number,
+    descriptionDTO: DescriptionDTO
+}
+
+interface IUpdateDescriptionPayload {
+    planeId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
+}
+
 interface IAddImagePayload {
     planeId: number,
     imageDTO: ImageDTO
-}
-
-interface IRemoveImagePayload {
-    planeId: number,
-    imageId: number
 }
 
 interface IAddNewSubObjectPayload {
@@ -69,14 +75,36 @@ const planePageSlice = createSlice({
                 state.page.data!.findIndex((plane) => plane.object?.id === action.payload.id))!
                 .object = action.payload.entryDTO;
         },
+
+        addPlaneDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((plane) => plane.object?.id === action.payload.planeId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updatePlaneDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at( state.page.data!.findIndex((plane) => plane.object?.id === action.payload.planeId))!.descriptions = 
+            state.page.data?.at(
+                state.page.data!.findIndex((plane) => plane.object?.id === action.payload.planeId))!
+                .descriptions?.map((description) => {
+                    if(description.id === action.payload.descriptionId) {
+                        return action.payload.descriptionDTO;
+                    }
+                    return description;
+                });
+        },
+        removePlaneDescription(state, action: PayloadAction<IRemoveSubObjectPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((plane) => plane.object?.id === action.payload.planeId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((plane) => plane.object?.id === action.payload.planeId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.subObjectId);
+        },
+
         addImageToPlane(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((plane) => plane.object?.id === action.payload.planeId))!
                 .images?.push(action.payload.imageDTO);
         },
-        removeImageFromPlane(state, action: PayloadAction<IRemoveImagePayload>) {
+        removeImageFromPlane(state, action: PayloadAction<IRemoveSubObjectPayload>) {
             let images = state.page.data?.at(state.page.data.findIndex((plane) => plane.object?.id === action.payload.planeId))!.images;
-            state.page.data!.at(state.page.data!.findIndex((plane) => plane.object?.id === action.payload.planeId))!.images = images?.filter((image) => image.id !== action.payload.imageId);
+            state.page.data!.at(state.page.data!.findIndex((plane) => plane.object?.id === action.payload.planeId))!.images = images?.filter((image) => image.id !== action.payload.subObjectId);
         },
         addNewContinentToPlane(state, action: PayloadAction<IAddNewSubObjectPayload>) {
             state.page.data?.at(
@@ -97,5 +125,9 @@ const planePageSlice = createSlice({
 }
 )
 
-export const { setPlanePage, fillPlaneData, addPlane, removePlane, updatePlane, addImageToPlane, removeImageFromPlane, addNewContinentToPlane, removeContinentFromPlane, setWorldToPlane, removeWorldFromPlane } = planePageSlice.actions;
+export const { setPlanePage, fillPlaneData, addPlane, removePlane, updatePlane,
+    addPlaneDescription, updatePlaneDescription, removePlaneDescription,
+    addImageToPlane, removeImageFromPlane,
+    addNewContinentToPlane, removeContinentFromPlane,
+    setWorldToPlane, removeWorldFromPlane } = planePageSlice.actions;
 export default planePageSlice.reducer;

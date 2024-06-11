@@ -16,10 +16,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
 export function OneSubRaceDomObjectsFunction() {
     const { setRaceToSubRace, removeRaceFromSubRace } = actionDispatch(useAppDispatch());
 
-    const setNewRaceToSubRace = async (subRaceId: number, name: string, description: string): Promise<void> => {
+    const setNewRaceToSubRace = async (subRaceId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return RaceSubRaceControllerService.addNewRaceRelation(subRaceId, entryDTO)
             .then((result) => {
@@ -34,7 +34,7 @@ export function OneSubRaceDomObjectsFunction() {
     const setExistingRaceToSubRace = async (subRaceId: number, raceId: number, raceName: string, raceDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: raceName,
-            description: raceDescription,
+            shortDescription: raceDescription,
             id: raceId
         }
         return RaceSubRaceControllerService.addSubRaceRelationRace(raceId, subRaceId)

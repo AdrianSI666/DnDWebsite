@@ -20,7 +20,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     race: raceDto,
                     images: [],
                     regions: [],
-                    subRaces: []
+                    subRaces: [],
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -34,7 +35,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             race: race,
             images: [],
             regions: [],
-            subRaces: []
+            subRaces: [],
+            descriptions: []
         }
         dispatch(addRace(entryFullDTO))
     }
@@ -49,10 +51,10 @@ export function RacePage(props: IRacePageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setRacePage, addRace } = actionDispatch(useAppDispatch());
 
-    const saveRace = async (name: string, description: string): Promise<void> => {
+    const saveRace = async (name: string, shortDescription: string): Promise<void> => {
         return RaceControllerService.saveRace({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addRace(response);

@@ -1,22 +1,10 @@
 
-import { Dispatch } from "@reduxjs/toolkit"
 import { useNavigate } from "react-router-dom"
-import { EntryFullDTO, KingdomControllerService } from "../../../../../services/openapi"
-import { useAppDispatch } from "../../../../hooks"
-import { setKingdom } from "./store/oneKingdomSlice"
+import { KingdomControllerService } from "../../../../../services/openapi"
+import { OneKingdomDispatcher } from "./store/dispatcher"
 
-interface IUseOneKingdomObjectFunction {
-    kingdomId?: number
-}
-
-const actionDispatch = (dispatch: Dispatch) => ({
-    setKingdom: (kingdom: EntryFullDTO) => {
-        dispatch(setKingdom(kingdom))
-    },
-})
-
-export function UseOneKingdomObjectFunction(props: IUseOneKingdomObjectFunction) {
-    const { setKingdom } = actionDispatch(useAppDispatch());
+export function UseOneKingdomObjectFunction() {
+    const { setKingdom } = OneKingdomDispatcher();
     const navigate = useNavigate();
     const fetchKingdom = async (name: string): Promise<boolean> => {
         return KingdomControllerService.getKingdomByName(name)

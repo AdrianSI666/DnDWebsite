@@ -1,13 +1,10 @@
 
 import { Dispatch } from "@reduxjs/toolkit"
-import { useNavigate } from "react-router-dom"
-import { ApiError, EntryDTO, EntryFullDTO, ImageDTO, RaceControllerService } from "../../../../../services/openapi"
+import { useLocation, useNavigate } from "react-router-dom"
+import { ApiError, DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO, RaceControllerService } from "../../../../../services/openapi"
 import { useAppDispatch } from "../../../../hooks"
-import { addImageToRace, removeImageFromRace, setRace, updateRace } from "./store/oneRaceSlice"
-
-interface IUseOneRaceObjectFunction {
-    raceId?: number
-}
+import { addImageToRace, addRaceDescription, removeImageFromRace, removeRaceDescription, setRace, updateRace, updateRaceDescription } from "./store/oneRaceSlice"
+import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction"
 
 const actionDispatch = (dispatch: Dispatch) => ({
     setRace: (race: EntryFullDTO) => {
@@ -16,6 +13,17 @@ const actionDispatch = (dispatch: Dispatch) => ({
     updateRace: (race: EntryDTO) => {
         dispatch(updateRace(race))
     },
+
+    addNewStateRaceDescription: (descriptionDTO: DescriptionDTO) => {
+        dispatch(addRaceDescription(descriptionDTO))
+    },
+    updateStateRaceDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updateRaceDescription({ descriptionId, descriptionDTO }))
+    },
+    removeStateRaceDescription: (descriptionId: number) => {
+        dispatch(removeRaceDescription(descriptionId))
+    },
+
     addImageToRace: (imageDTO: ImageDTO) => {
         dispatch(addImageToRace(imageDTO))
     },
@@ -24,9 +32,11 @@ const actionDispatch = (dispatch: Dispatch) => ({
     },
 })
 
-export function UseOneRaceObjectFunction(props: IUseOneRaceObjectFunction) {
-    const { setRace, addImageToRace, removeImageFromRace, updateRace } = actionDispatch(useAppDispatch());
+export function UseOneRaceObjectFunction() {
+    const { setRace, addImageToRace, removeImageFromRace, updateRace, addNewStateRaceDescription, removeStateRaceDescription, updateStateRaceDescription } = actionDispatch(useAppDispatch());
+    const { updateDescription } = GlobalDescriptionFunction({ updateOneEntryDescription: updateStateRaceDescription })
     const navigate = useNavigate();
+    const location = useLocation();
     const fetchRace = async (name: string): Promise<boolean> => {
         return RaceControllerService.getRaceByName(name)
             .then((response) => {
@@ -49,15 +59,16 @@ export function UseOneRaceObjectFunction(props: IUseOneRaceObjectFunction) {
             });
     }
 
-    const editRace = async (id: number, name: string, description: string) => {
+    const editRace = async (id: number, name: string, shortDescription: string) => {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return RaceControllerService.updateRace(id, entryDTO)
             .then((_) => {
                 updateRace(entryDTO)
+                if (location.pathname !== "/races/" + name) navigate('/races/' + name);
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -65,8 +76,40 @@ export function UseOneRaceObjectFunction(props: IUseOneRaceObjectFunction) {
             });
     }
 
-    const saveImageToRace = async (acceptedFiles: Blob) => {
-        return RaceControllerService.saveImageToRace(props.raceId!, { image: acceptedFiles })
+    async function addNewDesctiptionToRace(id: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            title: title,
+            text: text
+        }
+        return RaceControllerService.saveDescriptionToRace(id, descriptionDTO)
+            .then((res) => addNewStateRaceDescription(res))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function updateRaceDescription(raceId: number, descriptionId: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            id: descriptionId,
+            title: title,
+            text: text
+        }
+        return updateDescription(raceId, descriptionId, descriptionDTO);
+    }
+
+    async function deleteDescriptionFromRace(raceId: number, descriptionId: number) {
+        return RaceControllerService.deleteDescriptionFromRace(raceId, descriptionId)
+            .then((res) => removeStateRaceDescription(descriptionId))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+
+    const saveImageToRace = async (acceptedFiles: Blob, id: number) => {
+        return RaceControllerService.saveImageToRace(id, { image: acceptedFiles })
             .then((res) => addImageToRace(res))
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
@@ -83,5 +126,9 @@ export function UseOneRaceObjectFunction(props: IUseOneRaceObjectFunction) {
             });
     }
 
-    return { fetchRace, removeRace, editRace, saveImageToRace, deleteImageFromRace };
+    return {
+        fetchRace, removeRace, editRace,
+        addNewDesctiptionToRace, updateRaceDescription, deleteDescriptionFromRace,
+        saveImageToRace, deleteImageFromRace
+    };
 }

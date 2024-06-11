@@ -19,7 +19,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     object: placeDTO,
                     images: [],
                     domObjects: {},
-                    subObjects: []
+                    subObjects: [],
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -33,7 +34,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             object: Place,
             images: [],
             domObjects: {},
-            subObjects: []
+            subObjects: [],
+            descriptions: []
         }
         dispatch(addPlace(entryFullDTO))
     }
@@ -48,10 +50,10 @@ export function PlacePage(props: IPlacePageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setPlacePage, addPlace } = actionDispatch(useAppDispatch());
 
-    const savePlace = async (name: string, description: string): Promise<void> => {
+    const savePlace = async (name: string, shortDescription: string): Promise<void> => {
         return PlaceControllerService.savePlace({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addPlace(response);

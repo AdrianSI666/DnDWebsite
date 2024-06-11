@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IContinentPageState } from "../types";
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../services/openapi";
 import { Page } from "../../../../../services/openapi/models/Page";
 
 const initialState: IContinentPageState = {
@@ -16,14 +16,20 @@ interface IUpdateContinentPayload {
     entryDTO: EntryDTO
 }
 
+interface IAddDescriptionPayload {
+    continentId: number,
+    descriptionDTO: DescriptionDTO
+}
+
+interface IUpdateDescriptionPayload {
+    continentId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
+}
+
 interface IAddImagePayload {
     continentId: number,
     imageDTO: ImageDTO
-}
-
-interface IRemoveImagePayload {
-    continentId: number,
-    imageId: number
 }
 
 interface IAddNewSubObjectPayload {
@@ -69,15 +75,38 @@ const continentPageSlice = createSlice({
                 state.page.data!.findIndex((continent) => continent.object?.id === action.payload.id))!
                 .object = action.payload.entryDTO;
         },
+
+        addContinentDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((continent) => continent.object?.id === action.payload.continentId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updateContinentDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at(state.page.data!.findIndex((continent) => continent.object?.id === action.payload.continentId))!.descriptions =
+                state.page.data?.at(
+                    state.page.data!.findIndex((continent) => continent.object?.id === action.payload.continentId))!
+                    .descriptions?.map((description) => {
+                        if (description.id === action.payload.descriptionId) {
+                            return action.payload.descriptionDTO;
+                        }
+                        return description;
+                    });
+        },
+        removeContinentDescription(state, action: PayloadAction<IRemoveSubObjectPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((continent) => continent.object?.id === action.payload.continentId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((continent) => continent.object?.id === action.payload.continentId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.subObjectId);
+        },
+
         addImageToContinent(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((continent) => continent.object?.id === action.payload.continentId))!
                 .images?.push(action.payload.imageDTO);
         },
-        removeImageFromContinent(state, action: PayloadAction<IRemoveImagePayload>) {
+        removeImageFromContinent(state, action: PayloadAction<IRemoveSubObjectPayload>) {
             let images = state.page.data?.at(state.page.data.findIndex((continent) => continent.object?.id === action.payload.continentId))!.images;
-            state.page.data!.at(state.page.data!.findIndex((continent) => continent.object?.id === action.payload.continentId))!.images = images?.filter((image) => image.id !== action.payload.imageId);
+            state.page.data!.at(state.page.data!.findIndex((continent) => continent.object?.id === action.payload.continentId))!.images = images?.filter((image) => image.id !== action.payload.subObjectId);
         },
+
         addNewKingdomToContinent(state, action: PayloadAction<IAddNewSubObjectPayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((continent) => continent.object?.id === action.payload.continentId))!
@@ -87,6 +116,7 @@ const continentPageSlice = createSlice({
             let subContinents = state.page.data!.find((continent) => continent.object?.id === action.payload.continentId)?.subObjects?.filter((kingdom) => kingdom.id !== action.payload.subObjectId);
             state.page.data!.find((continent) => continent.object?.id === action.payload.continentId)!.subObjects = subContinents;
         },
+
         setPlaneToContinent(state, action: PayloadAction<ISetNewDomObjectPayload>) {
             state.page.data!.find((continent) => continent.object?.id === action.payload.continentId)!.domObjects = action.payload.planeDTO;
         },
@@ -97,5 +127,9 @@ const continentPageSlice = createSlice({
 }
 )
 
-export const { setContinentPage, fillContinentData, addContinent, removeContinent, updateContinent, addImageToContinent, removeImageFromContinent, addNewKingdomToContinent, removeKingdomFromContinent, setPlaneToContinent, removePlaneFromContinent } = continentPageSlice.actions;
+export const { setContinentPage, fillContinentData, addContinent, removeContinent, updateContinent,
+    addContinentDescription, updateContinentDescription, removeContinentDescription,
+    addImageToContinent, removeImageFromContinent,
+    addNewKingdomToContinent, removeKingdomFromContinent,
+    setPlaneToContinent, removePlaneFromContinent } = continentPageSlice.actions;
 export default continentPageSlice.reducer;

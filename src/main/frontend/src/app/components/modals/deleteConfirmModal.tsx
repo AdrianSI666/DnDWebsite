@@ -16,8 +16,10 @@ export function DeleteConfirmationModal(props: Readonly<ICultureModals>) {
   const [modalShow, setModalShow] = useState(false);
 
   return (
-    <div className="d-grid gap-2">
-      <Button variant="danger" onClick={() => {
+    <div className="d-grid gap-2" onClick={(e) => {
+      e.stopPropagation();
+    }}>
+      <Button variant="danger" onClick={(e) => {
         setModalShow(true);
       }}>
         {props.deleteButtonActionText}

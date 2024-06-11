@@ -15,10 +15,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
 
 export function OnePlaneSubObjectsFunction() {
     const { addNewContinentToPlane, removeContinentFromPlane } = actionDispatch(useAppDispatch());
-    const saveNewContinentToPlane = async (planeId: number, name: string, description: string): Promise<void> => {
+    const saveNewContinentToPlane = async (planeId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return PlaneContinentControllerService.addNewContinentPlaneRelation(planeId, entryDTO)
             .then((res) => {
@@ -33,7 +33,7 @@ export function OnePlaneSubObjectsFunction() {
     const saveExistingContinentToPlane = async (planeId: number, continentId: number, continentName: string, continentDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: continentName,
-            description: continentDescription,
+            shortDescription: continentDescription,
             id: continentId
         }
         return PlaneContinentControllerService.addPlaneContinentRelation(planeId, continentId)

@@ -3,7 +3,7 @@ import { EntryFullDTO } from "../../../../services/openapi";
 import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
-import { getAllRegions } from "../../../hookFunctions/RegionHooks";
+import { getAllRegions } from "../../../globalFunctions/RegionHooks";
 import '../../../styles/masonary.css';
 import "../../../styles/subObjects.css";
 import { SubRaceFunction } from "./subRaceFunction";
@@ -16,10 +16,9 @@ interface ISubRaceAccordionBody {
 
 
 export function SubRaceAccordionBody(props: Readonly<ISubRaceAccordionBody>) {
-    const { deleteSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace } = SubRaceFunction({ subRaceId: props.subRace.object?.id });
+    const { saveImageToSubRace, deleteImageFromSubRace, addNewDesctiptionToSubRace, deleteDescriptionFromSubRace, updateSubRaceDescription } = SubRaceFunction();
     const { saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = SubRaceSubObjectsFunction();
     const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces } = SubRaceDomObjectsFunction();
-    //console.log(props.subRace)
     return (
         <Accordion.Body>
             <DomCategoryBody categoryName={"SubRace"} mainEntryId={props.subRace.object?.id!}
@@ -34,12 +33,12 @@ export function SubRaceAccordionBody(props: Readonly<ISubRaceAccordionBody>) {
                 deleteButtonActionText={`Unset core race of ${props.subRace.object?.name}`}
                 addExistingButtonActionText={`Set core race for ${props.subRace.object?.name} from list`} />
             <FullEntryAccordionBody categoryName={"SubRace"} entryFullDTO={props.subRace}
-                deleteEntry={deleteSubRace}
-                updateEntry={editSubRace}
                 saveImageToEntry={saveImageToSubRace}
                 deleteImageFromEntry={deleteImageFromSubRace}
-                deleteMainObjectButtonActionText={"Delete this sub race"}
-                deleteImageButtonActionText={"Delete image"} />
+                deleteImageButtonActionText={"Delete image"}
+                addNewDescriptionToEntry={addNewDesctiptionToSubRace}
+                updateDescription={updateSubRaceDescription}
+                deleteDescriptionFromEntry={deleteDescriptionFromSubRace} />
             <SubCategoryBody mainEntryId={props.subRace.object?.id!}
                 subObjects={props.subRace.subObjects}
                 subCategoryTitle={"Region"} subCategoryLink={"regions"}
@@ -49,7 +48,7 @@ export function SubRaceAccordionBody(props: Readonly<ISubRaceAccordionBody>) {
                 addNewSubEntryToRelation={saveNewRegionToSubRace}
                 addButtonActionText={"Add new region in which this sub race is present"}
                 deleteButtonActionText={"Remove region in which this sub race is present"}
-                addExistingButtonActionText={"Add region from the list in which this sub race is present"} 
+                addExistingButtonActionText={"Add region from the list in which this sub race is present"}
                 subCategoryLinkText={"region"} />
         </Accordion.Body>
     )

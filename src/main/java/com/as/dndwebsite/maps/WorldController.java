@@ -37,6 +37,7 @@ public class WorldController {
     private final IWorldPlaneService worldPlaneService;
     @Qualifier("worldDescriptionService")
     private final IDescriptionEntryService worldDescriptionService;
+
     @GetMapping
     public ResponseEntity<PageDTO<EntryDTO>> getWorlds(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(worldService.getWorlds(pageInfo)));
@@ -95,19 +96,19 @@ public class WorldController {
     }
 
     @PostMapping(path = "{id}/description")
-    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
-                                                                @RequestBody DescriptionDTO descriptionDTO) {
+    public ResponseEntity<DescriptionDTO> saveDescriptionToWorld(@PathVariable("id") Long id,
+                                                                 @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(worldDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
     @GetMapping(path = "{id}/description")
-    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfWorld(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(worldDescriptionService.getDescriptionsOfEntry(id));
     }
 
     @DeleteMapping(path = "/{worldId}/description/{descriptionId}")
-    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("worldId") Long worldId,
-                                                                @PathVariable("descriptionId") Long imageId) {
+    public ResponseEntity<HttpStatus> deleteDescriptionFromWorld(@PathVariable("worldId") Long worldId,
+                                                                 @PathVariable("descriptionId") Long imageId) {
         worldDescriptionService.deleteDescriptionFromEntry(worldId, imageId);
         return ResponseEntity.ok().build();
     }

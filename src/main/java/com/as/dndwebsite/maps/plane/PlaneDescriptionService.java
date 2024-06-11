@@ -27,7 +27,7 @@ public class PlaneDescriptionService implements IDescriptionEntryService {
 
     @Override
     public List<DescriptionDTO> getDescriptionsOfEntry(long id) {
-        return descriptionRepository.findAllByPlanes_Id(id);
+        return descriptionRepository.findAllByPlanes_IdOrderById(id);
     }
 
     @Override

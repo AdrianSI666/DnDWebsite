@@ -15,7 +15,7 @@ interface IPlaneAccordionBody {
 
 export function PlaneAccordionBody(props: Readonly<IPlaneAccordionBody>) {
 
-    const { deletePlane, editPlane, saveImageToPlane, deleteImageFromPlane } = PlaneFunction({ planeId: props.plane.object?.id });
+    const { saveImageToPlane, deleteImageFromPlane, addNewDesctiptionToPlane, updatePlaneDescription, deleteDescriptionFromPlane } = PlaneFunction();
     const { saveNewContinentToPlane, saveExistingContinentToPlane, removeContinentFromPlaneFunction, getAllContinentsWithoutPlane } = PlaneSubObjectsFunction();
     const { setNewWorldToPlane, setExistingWorldToPlane, removeWorldFromPlaneFunction, getAllWorlds } = PlaneDomObjectsFunction();
 
@@ -33,12 +33,12 @@ export function PlaneAccordionBody(props: Readonly<IPlaneAccordionBody>) {
                 deleteButtonActionText={`Unlink this plane from world`}
                 addExistingButtonActionText={`Set existing world to ${props.plane.object?.name}`} />
             <FullEntryAccordionBody categoryName={"Plane"} entryFullDTO={props.plane}
-                deleteEntry={deletePlane}
-                updateEntry={editPlane}
-                saveImageToEntry={saveImageToPlane}
-                deleteImageFromEntry={deleteImageFromPlane}
-                deleteMainObjectButtonActionText={"Delete this plane"}
-                deleteImageButtonActionText={"Delete image"} />
+            saveImageToEntry={saveImageToPlane}
+            deleteImageFromEntry={deleteImageFromPlane}
+            deleteImageButtonActionText={"Delete image"}
+            addNewDescriptionToEntry={addNewDesctiptionToPlane}
+            updateDescription={updatePlaneDescription}
+            deleteDescriptionFromEntry={deleteDescriptionFromPlane} />
             <SubCategoryBody mainEntryId={props.plane.object?.id!}
                 subObjects={props.plane.subObjects}
                 subCategoryTitle={"Continents"} subCategoryLink={"continents"}

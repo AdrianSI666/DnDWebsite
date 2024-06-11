@@ -22,7 +22,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     places: [],
                     cultures: [],
                     races: [],
-                    subRaces: []
+                    subRaces: [],
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -39,7 +40,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             places: [],
             cultures: [],
             races: [],
-            subRaces: []
+            subRaces: [],
+            descriptions: []
         }
         dispatch(addRegion(entryFullDTO))
     }
@@ -54,10 +56,10 @@ export function RegionPage(props: IRegionPageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setRegionPage, addRegion } = actionDispatch(useAppDispatch());
 
-    const saveRegion = async (name: string, description: string): Promise<void> => {
+    const saveRegion = async (name: string, shortDescription: string): Promise<void> => {
         return RegionControllerService.saveRegion({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addRegion(response);

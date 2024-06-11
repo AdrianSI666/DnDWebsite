@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IRacePageState } from "../types";
-import { EntryDTO, ImageDTO, RaceDTO } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, ImageDTO, RaceDTO } from "../../../../../services/openapi";
 import { Page } from "../../../../../services/openapi/models/Page";
 
 const initialState: IRacePageState = {
@@ -21,9 +21,15 @@ interface IAddImagePayload {
     imageDTO: ImageDTO
 }
 
-interface IRemoveImagePayload {
+interface IAddDescriptionPayload {
     raceId: number,
-    imageId: number
+    descriptionDTO: DescriptionDTO
+}
+
+interface IUpdateDescriptionPayload {
+    raceId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
 }
 
 interface IAddNewSubObjectPayload {
@@ -64,15 +70,38 @@ const racePageSlice = createSlice({
                 state.page.data!.findIndex((race) => race.race?.id === action.payload.id))!
                 .race = action.payload.entryDTO;
         },
+
+        addRaceDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((race) => race.race?.id === action.payload.raceId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updateRaceDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at( state.page.data!.findIndex((race) => race.race?.id === action.payload.raceId))!.descriptions = 
+            state.page.data?.at(
+                state.page.data!.findIndex((race) => race.race?.id === action.payload.raceId))!
+                .descriptions?.map((description) => {
+                    if(description.id === action.payload.descriptionId) {
+                        return action.payload.descriptionDTO;
+                    }
+                    return description;
+                });
+        },
+        removeRaceDescription(state, action: PayloadAction<IRemoveSubObjectPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((race) => race.race?.id === action.payload.raceId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((race) => race.race?.id === action.payload.raceId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.subObjectId);
+        },
+
         addImageToRace(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((race) => race.race?.id === action.payload.raceId))!
                 .images?.push(action.payload.imageDTO);
         },
-        removeImageFromRace(state, action: PayloadAction<IRemoveImagePayload>) {
+        removeImageFromRace(state, action: PayloadAction<IRemoveSubObjectPayload>) {
             let images = state.page.data?.at(state.page.data.findIndex((race) => race.race?.id === action.payload.raceId))!.images;
-            state.page.data!.at(state.page.data!.findIndex((race) => race.race?.id === action.payload.raceId))!.images = images?.filter((image) => image.id !== action.payload.imageId);
+            state.page.data!.at(state.page.data!.findIndex((race) => race.race?.id === action.payload.raceId))!.images = images?.filter((image) => image.id !== action.payload.subObjectId);
         },
+
         addNewSubRaceToRace(state, action: PayloadAction<IAddNewSubObjectPayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((race) => race.race?.id === action.payload.raceId))!
@@ -82,6 +111,7 @@ const racePageSlice = createSlice({
             let subRaces = state.page.data!.find((race) => race.race?.id === action.payload.raceId)?.subRaces?.filter((subRace) => subRace.id !== action.payload.subObjectId);
             state.page.data!.find((race) => race.race?.id === action.payload.raceId)!.subRaces = subRaces;
         },
+        
         addNewRegionToRace(state, action: PayloadAction<IAddNewSubObjectPayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((race) => race.race?.id === action.payload.raceId))!
@@ -95,5 +125,9 @@ const racePageSlice = createSlice({
 }
 )
 
-export const { setRacePage, fillRaceData, addRace, removeRace, updateRace, addImageToRace, removeImageFromRace, addNewSubRaceToRace, removeSubRaceFromRace, addNewRegionToRace, removeRegionFromRace } = racePageSlice.actions;
+export const { setRacePage, fillRaceData, addRace, removeRace, updateRace,
+    addRaceDescription, updateRaceDescription, removeRaceDescription,
+     addImageToRace, removeImageFromRace,
+    addNewSubRaceToRace, removeSubRaceFromRace,
+     addNewRegionToRace, removeRegionFromRace } = racePageSlice.actions;
 export default racePageSlice.reducer;

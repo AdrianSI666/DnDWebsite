@@ -1,12 +1,9 @@
 
 import { Dispatch } from "@reduxjs/toolkit";
-import { ApiError, ContinentControllerService, EntryDTO, ImageDTO } from "../../../../services/openapi";
+import { ApiError, ContinentControllerService, DescriptionDTO, EntryDTO, ImageDTO } from "../../../../services/openapi";
 import { useAppDispatch } from "../../../hooks";
-import { addImageToContinent, removeContinent, removeImageFromContinent, updateContinent } from "./store/continentPageSlice";
-
-interface IContinentFunction {
-    continentId?: number
-}
+import { addContinentDescription, addImageToContinent, removeContinent, removeContinentDescription, removeImageFromContinent, updateContinent, updateContinentDescription } from "./store/continentPageSlice";
+import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction";
 
 const actionDispatch = (dispatch: Dispatch) => ({
     removeContinent: (id: number) => {
@@ -15,6 +12,17 @@ const actionDispatch = (dispatch: Dispatch) => ({
     updateContinent: (id: number, entryDTO: EntryDTO) => {
         dispatch(updateContinent({ id, entryDTO }))
     },
+
+    addNewStateContinentDescription: (id: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(addContinentDescription({ continentId: id, descriptionDTO }))
+    },
+    updateStateContinentDescription: (continentId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updateContinentDescription({ continentId, descriptionId, descriptionDTO }))
+    },
+    removeStateContinentDescription: (continentId: number, descriptionId: number) => {
+        dispatch(removeContinentDescription({ continentId, subObjectId: descriptionId }))
+    },
+
     addImageToContinent: (imageDTO: ImageDTO, continentId: number) => {
         let payload = {
             continentId,
@@ -25,13 +33,14 @@ const actionDispatch = (dispatch: Dispatch) => ({
     removeImageFromContinent: (imageId: number, continentId: number) => {
         dispatch(removeImageFromContinent({
             continentId,
-            imageId
+            subObjectId: imageId
         }))
     },
 })
 
-export function ContinentFunction(props: IContinentFunction) {
-    const { removeContinent, addImageToContinent, removeImageFromContinent, updateContinent } = actionDispatch(useAppDispatch());
+export function ContinentFunction() {
+    const { removeContinent, addImageToContinent, removeImageFromContinent, updateContinent, addNewStateContinentDescription, updateStateContinentDescription, removeStateContinentDescription } = actionDispatch(useAppDispatch());
+    const { updateDescription } = GlobalDescriptionFunction({ updateDescription: updateStateContinentDescription })
     async function deleteContinent(id: number): Promise<void> {
         return ContinentControllerService.deleteContinent(id)
             .then(() => removeContinent(id))
@@ -41,11 +50,11 @@ export function ContinentFunction(props: IContinentFunction) {
             });
     }
 
-    const editContinent = async (id: number, name: string, description: string): Promise<void> => {
+    const editContinent = async (id: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return ContinentControllerService.updateContinent(id, entryDTO)
             .then(() => {
@@ -57,9 +66,40 @@ export function ContinentFunction(props: IContinentFunction) {
             });
     }
 
-    async function saveImageToContinent(acceptedFiles: Blob) {
-        return ContinentControllerService.saveImageToContinent(props.continentId!, { image: acceptedFiles })
-            .then((res) => addImageToContinent(res, props.continentId!))
+    async function addNewDesctiptionToContinent(id: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            title: title,
+            text: text
+        }
+        return ContinentControllerService.saveDescriptionToContinent(id, descriptionDTO)
+            .then((res) => addNewStateContinentDescription(id, res))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function updateContinentDescription(worldId: number, descriptionId: number, title: string, text: string) {
+        let descriptionDTO: DescriptionDTO = {
+            id: descriptionId,
+            title: title,
+            text: text
+        }
+        return updateDescription(worldId, descriptionId, descriptionDTO);
+    }
+
+    async function deleteDescriptionFromContinent(worldId: number, descriptionId: number) {
+        return ContinentControllerService.deleteDescriptionFromContinent(worldId, descriptionId)
+            .then((_) => removeStateContinentDescription(worldId, descriptionId))
+            .catch((err: ApiError) => {
+                console.log("My Error: ", err);
+                throw err
+            });
+    }
+
+    async function saveImageToContinent(acceptedFiles: Blob, id: number) {
+        return ContinentControllerService.saveImageToContinent(id, { image: acceptedFiles })
+            .then((res) => addImageToContinent(res, id))
             .catch((err: ApiError) => {
                 console.log("My Error: ", err);
                 throw err
@@ -75,5 +115,5 @@ export function ContinentFunction(props: IContinentFunction) {
             });
     }
 
-    return { deleteContinent, editContinent, saveImageToContinent, deleteImageFromContinent };
+    return { deleteContinent, editContinent, saveImageToContinent, deleteImageFromContinent, addNewDesctiptionToContinent, deleteDescriptionFromContinent, updateContinentDescription };
 }

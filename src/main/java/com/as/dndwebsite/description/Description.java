@@ -36,6 +36,7 @@ public class Description {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String title;
     @Column(columnDefinition = "TEXT")
     private String text;
 
@@ -70,7 +71,8 @@ public class Description {
     @JsonBackReference
     private Collection<Region> regions;
 
-    public Description(String text) {
+    public Description(String title, String text) {
+        this.title = title;
         this.text = text;
     }
 }

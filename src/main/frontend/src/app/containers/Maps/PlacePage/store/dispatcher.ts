@@ -1,6 +1,6 @@
 import { Dispatch } from "@reduxjs/toolkit"
-import { EntryDTO, ImageDTO } from "../../../../../services/openapi"
-import { removePlace, updatePlace, addImageToPlace, removeImageFromPlace, removeRegionFromPlace, setRegionToPlace } from "./placePageSlice"
+import { DescriptionDTO, EntryDTO, ImageDTO } from "../../../../../services/openapi"
+import { removePlace, updatePlace, addImageToPlace, removeImageFromPlace, removeRegionFromPlace, setRegionToPlace, addPlaceDescription, updatePlaceDescription, removePlaceDescription } from "./placePageSlice"
 import { useAppDispatch } from "../../../../hooks"
 
 
@@ -11,6 +11,17 @@ const actionDispatch = (dispatch: Dispatch) => ({
     updatePlace: (id: number, entryDTO: EntryDTO) => {
         dispatch(updatePlace({ id, entryDTO }))
     },
+
+    addNewStatePlaceDescription: (id: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(addPlaceDescription({ placeId: id, descriptionDTO }))
+    },
+    updateStatePlaceDescription: (placeId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => {
+        dispatch(updatePlaceDescription({ placeId, descriptionId, descriptionDTO }))
+    },
+    removeStatePlaceDescription: (placeId: number, descriptionId: number) => {
+        dispatch(removePlaceDescription({ placeId, subObjectId: descriptionId }))
+    },
+
     addImageToPlace: (imageDTO: ImageDTO, placeId: number) => {
         let payload = {
             placeId,
@@ -21,9 +32,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
     removeImageFromPlace: (imageId: number, placeId: number) => {
         dispatch(removeImageFromPlace({
             placeId,
-            imageId
+            subObjectId: imageId
         }))
     },
+
     setRegionToPlace: (placeId: number, regionDTO: EntryDTO) => {
         dispatch(setRegionToPlace({
             placeId,
@@ -39,8 +51,14 @@ const actionDispatch = (dispatch: Dispatch) => ({
 })
 
 export function PlaceDispatcher() {
-    const { removeRegionFromPlace, setRegionToPlace, removeImageFromPlace, addImageToPlace, updatePlace, removePlace } = actionDispatch(useAppDispatch());
+    const { removeRegionFromPlace, setRegionToPlace,
+        addNewStatePlaceDescription, updateStatePlaceDescription, removeStatePlaceDescription,
+        removeImageFromPlace, addImageToPlace,
+        updatePlace, removePlace } = actionDispatch(useAppDispatch());
     return {
-        removeRegionFromPlace, setRegionToPlace, removeImageFromPlace, addImageToPlace, updatePlace, removePlace
+        removeRegionFromPlace, setRegionToPlace,
+        addNewStatePlaceDescription, updateStatePlaceDescription, removeStatePlaceDescription,
+        removeImageFromPlace, addImageToPlace,
+        updatePlace, removePlace
     };
 }

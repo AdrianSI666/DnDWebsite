@@ -20,7 +20,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     object: planeDTO,
                     images: [],
                     domObjects: {},
-                    subObjects: []
+                    subObjects: [],
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -34,7 +35,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             object: Plane,
             images: [],
             domObjects: {},
-            subObjects: []
+            subObjects: [],
+            descriptions: []
         }
         dispatch(addPlane(entryFullDTO))
     }
@@ -49,10 +51,10 @@ export function PlanePage(props: IPlanePageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setPlanePage, addPlane } = actionDispatch(useAppDispatch());
 
-    const savePlane = async (name: string, description: string): Promise<void> => {
+    const savePlane = async (name: string, shortDescription: string): Promise<void> => {
         return PlaneControllerService.savePlane({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addPlane(response);

@@ -27,7 +27,7 @@ public class SubRaceDescriptionService implements IDescriptionEntryService {
 
     @Override
     public List<DescriptionDTO> getDescriptionsOfEntry(long id) {
-        return descriptionRepository.findAllBySubRaces_Id(id);
+        return descriptionRepository.findAllBySubRaces_IdOrderById(id);
     }
 
     @Override

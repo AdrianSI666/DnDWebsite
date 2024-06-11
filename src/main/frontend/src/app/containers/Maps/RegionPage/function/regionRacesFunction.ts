@@ -16,10 +16,10 @@ export function RegionRacesFunction(props: IRegionRaceProps) {
             });
     }
 
-    const saveNewRaceToRegion = async (regionId: number, name: string, description: string): Promise<void> => {
+    const saveNewRaceToRegion = async (regionId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return RegionRaceControllerService.addNewRaceRegionRelation(regionId, entryDTO)
             .then((result) => {
@@ -36,7 +36,7 @@ export function RegionRacesFunction(props: IRegionRaceProps) {
     const saveExistingRaceToRegion = async (regionId: number, raceId: number, raceName: string, raceDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: raceName,
-            description: raceDescription,
+            shortDescription: raceDescription,
             id: raceId
         }
         return RegionRaceControllerService.addRegionRaceRelation(regionId, raceId)

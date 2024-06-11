@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ISubRacePageState } from "../types";
-import { EntryDTO, ImageDTO, SubRaceDTO } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, ImageDTO, SubRaceDTO } from "../../../../../services/openapi";
 import { Page } from "../../../../../services/openapi/models/Page";
 
 const initialState: ISubRacePageState = {
@@ -16,14 +16,20 @@ interface IUpdateSubRacePayload {
     entryDTO: EntryDTO
 }
 
+interface IAddDescriptionPayload {
+    subRaceId: number,
+    descriptionDTO: DescriptionDTO
+}
+
+interface IUpdateDescriptionPayload {
+    subRaceId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
+}
+
 interface IAddImagePayload {
     subRaceId: number,
     imageDTO: ImageDTO
-}
-
-interface IRemoveImagePayload {
-    subRaceId: number,
-    imageId: number
 }
 
 interface ISetNewSubObjectPayload {
@@ -64,14 +70,36 @@ const subRacePageSlice = createSlice({
                 state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.id))!
                 .subRace = action.payload.entryDTO;
         },
+
+        addSubRaceDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updateSubRaceDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at(state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!.descriptions =
+                state.page.data?.at(
+                    state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!
+                    .descriptions?.map((description) => {
+                        if (description.id === action.payload.descriptionId) {
+                            return action.payload.descriptionDTO;
+                        }
+                        return description;
+                    });
+        },
+        removeSubRaceDescription(state, action: PayloadAction<IRemoveSubObjectPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.subObjectId);
+        },
+
         addImageToSubRace(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!
                 .images?.push(action.payload.imageDTO);
         },
-        removeImageFromSubRace(state, action: PayloadAction<IRemoveImagePayload>) {
+        removeImageFromSubRace(state, action: PayloadAction<IRemoveSubObjectPayload>) {
             let images = state.page.data?.at(state.page.data.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!.images;
-            state.page.data!.at(state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!.images = images?.filter((image) => image.id !== action.payload.imageId);
+            state.page.data!.at(state.page.data!.findIndex((subRace) => subRace.subRace?.id === action.payload.subRaceId))!.images = images?.filter((image) => image.id !== action.payload.subObjectId);
         },
 
         setRaceToSubRace(state, action: PayloadAction<ISetNewSubObjectPayload>) {
@@ -94,5 +122,9 @@ const subRacePageSlice = createSlice({
 }
 )
 
-export const { setSubRacePage, fillSubRaceData, addSubRace, removeSubRace, updateSubRace, addImageToSubRace, removeImageFromSubRace, removeRaceFromSubRace, removeRegionFromSubRace, setRaceToSubRace, addNewRegionToSubRace } = subRacePageSlice.actions;
+export const { setSubRacePage, fillSubRaceData, addSubRace, removeSubRace, updateSubRace,
+    addSubRaceDescription, removeSubRaceDescription, updateSubRaceDescription,
+    addImageToSubRace, removeImageFromSubRace,
+    removeRaceFromSubRace, setRaceToSubRace,
+    removeRegionFromSubRace, addNewRegionToSubRace } = subRacePageSlice.actions;
 export default subRacePageSlice.reducer;

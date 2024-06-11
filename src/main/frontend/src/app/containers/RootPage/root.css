@@ -91,7 +91,7 @@ code {
 }
 
 .accordion-item.borderFix {
-  border-color:rgb(160, 218, 0);
+  border-color: rgb(160, 218, 0);
 }
 
 .modal-content {
@@ -102,6 +102,7 @@ code {
 
 textarea.form-control {
   background-image: url("../../../../public/scroll.jpg");
+  resize: none;
 }
 
 input.form-control {
@@ -178,4 +179,37 @@ input.form-control:focus {
 
 .subObject {
   background-image: url("../../../../public/sub-scroll.jpg");
+}
+
+.noteBoard {
+  border: 3px solid #000000 !important;
+  border-radius: 1em 1em 1em 1em !important;
+  padding-left: 1em !important;
+  padding-right: 1em !important;
+  background-image: url("../../../../public/board.jpg");
+  background-size: 60em;
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+  min-height:20em !important;
+}
+
+.oneEntryButton {
+  text-align: center !important;
+  width: auto !important;
+  padding-bottom: 2em !important;
+  border-radius: 1em 1em 0 0 !important;
+  padding-left: 1em !important;
+  padding-right: 1em !important;
+}
+
+.oneEntryBody {
+  padding-top: 1em !important;
+  padding-bottom: 2em !important;
+  border-radius: 0 0 1em 1em !important;
+  padding-left: 1em !important;
+  padding-right: 1em !important;
 }

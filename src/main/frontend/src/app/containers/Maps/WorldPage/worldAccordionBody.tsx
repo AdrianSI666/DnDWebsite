@@ -13,19 +13,19 @@ interface IWorldAccordionBody {
 
 export function WorldAccordionBody(props: Readonly<IWorldAccordionBody>) {
 
-  const { deleteWorld, editWorld, saveImageToWorld, deleteImageFromWorld } = WorldFunction({ worldId: props.world.object?.id });
+  const { saveImageToWorld, deleteImageFromWorld, addNewDesctiptionToWorld, updateWorldDescription, deleteDescriptionFromWorld } = WorldFunction();
   const { saveNewPlaneToWorld, saveExistingPlaneToWorld, removePlaneFromWorldFunction, getAllPlanesWithoutWorld } = WorldSubObjectsFunction();
 
 
   return (
     <Accordion.Body>
       <FullEntryAccordionBody categoryName={"World"} entryFullDTO={props.world}
-        deleteEntry={deleteWorld}
-        updateEntry={editWorld}
         saveImageToEntry={saveImageToWorld}
         deleteImageFromEntry={deleteImageFromWorld}
-        deleteMainObjectButtonActionText={"Delete this world"}
-        deleteImageButtonActionText={"Delete image"} />
+        deleteImageButtonActionText={"Delete image"}
+        addNewDescriptionToEntry={addNewDesctiptionToWorld}
+        updateDescription={updateWorldDescription}
+        deleteDescriptionFromEntry={deleteDescriptionFromWorld} />
       <SubCategoryBody mainEntryId={props.world.object?.id!}
         subObjects={props.world.subObjects}
         subCategoryTitle={"Planes"} subCategoryLink={"planes"}

@@ -29,10 +29,10 @@ export function ContinentSubObjectsFunction() {
       });
   }
 
-  const saveNewKingdomToContinent = async (continentId: number, name: string, description: string): Promise<void> => {
+  const saveNewKingdomToContinent = async (continentId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return ContinentKingdomControllerService.addNewKingdomContinentRelation(continentId, entryDTO)
       .then((result) => {
@@ -47,7 +47,7 @@ export function ContinentSubObjectsFunction() {
   const saveExistingKingdomToContinent = async (continentId: number, kingdomId: number, kingdomName: string, kingdomDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: kingdomName,
-      description: kingdomDescription,
+      shortDescription: kingdomDescription,
       id: kingdomId
     }
     return ContinentKingdomControllerService.addContinentKingdomRelation(continentId, kingdomId)

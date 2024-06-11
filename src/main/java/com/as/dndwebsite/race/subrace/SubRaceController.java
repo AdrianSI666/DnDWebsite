@@ -99,19 +99,19 @@ public class SubRaceController {
     }
 
     @PostMapping(path = "{id}/description")
-    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
-                                                                @RequestBody DescriptionDTO descriptionDTO) {
+    public ResponseEntity<DescriptionDTO> saveDescriptionToSubRace(@PathVariable("id") Long id,
+                                                                   @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(subRaceDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
     @GetMapping(path = "{id}/description")
-    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfSubRace(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(subRaceDescriptionService.getDescriptionsOfEntry(id));
     }
 
     @DeleteMapping(path = "/{subRaceId}/description/{descriptionId}")
-    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("subRaceId") Long raceId,
-                                                                @PathVariable("descriptionId") Long imageId) {
+    public ResponseEntity<HttpStatus> deleteDescriptionFromSubRace(@PathVariable("subRaceId") Long raceId,
+                                                                   @PathVariable("descriptionId") Long imageId) {
         subRaceDescriptionService.deleteDescriptionFromEntry(raceId, imageId);
         return ResponseEntity.ok().build();
     }

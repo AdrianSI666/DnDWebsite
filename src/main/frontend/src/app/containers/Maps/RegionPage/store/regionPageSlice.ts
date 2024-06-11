@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IRegionPageState } from "../types";
-import { EntryDTO, ImageDTO, RegionDTO, Page } from "../../../../../services/openapi";
+import { EntryDTO, ImageDTO, RegionDTO, Page, DescriptionDTO } from "../../../../../services/openapi";
 
 const initialState: IRegionPageState = {
     page: {
@@ -15,14 +15,20 @@ interface IUpdateRegionPayload {
     entryDTO: EntryDTO
 }
 
+interface IAddDescriptionPayload {
+    regionId: number,
+    descriptionDTO: DescriptionDTO
+}
+
+interface IUpdateDescriptionPayload {
+    regionId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
+}
+
 interface IAddImagePayload {
     regionId: number,
     imageDTO: ImageDTO
-}
-
-interface IRemoveImagePayload {
-    regionId: number,
-    imageId: number
 }
 
 interface IAddNewSubObjectPayload {
@@ -67,14 +73,35 @@ const regionPageSlice = createSlice({
                 .region = action.payload.entryDTO;
         },
 
+        addRegionDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((region) => region.region?.id === action.payload.regionId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updateRegionDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at( state.page.data!.findIndex((region) => region.region?.id === action.payload.regionId))!.descriptions = 
+            state.page.data?.at(
+                state.page.data!.findIndex((region) => region.region?.id === action.payload.regionId))!
+                .descriptions?.map((description) => {
+                    if(description.id === action.payload.descriptionId) {
+                        return action.payload.descriptionDTO;
+                    }
+                    return description;
+                });
+        },
+        removeRegionDescription(state, action: PayloadAction<IRemoveSubObjectPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((region) => region.region?.id === action.payload.regionId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((region) => region.region?.id === action.payload.regionId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.subObjectId);
+        },
+
         addImageToRegion(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((region) => region.region?.id === action.payload.regionId))!
                 .images?.push(action.payload.imageDTO);
         },
-        removeImageFromRegion(state, action: PayloadAction<IRemoveImagePayload>) {
+        removeImageFromRegion(state, action: PayloadAction<IRemoveSubObjectPayload>) {
             let images = state.page.data?.at(state.page.data.findIndex((region) => region.region?.id === action.payload.regionId))!.images;
-            state.page.data!.at(state.page.data!.findIndex((region) => region.region?.id === action.payload.regionId))!.images = images?.filter((image) => image.id !== action.payload.imageId);
+            state.page.data!.at(state.page.data!.findIndex((region) => region.region?.id === action.payload.regionId))!.images = images?.filter((image) => image.id !== action.payload.subObjectId);
         },
 
         addNewPlaceToRegion(state, action: PayloadAction<IAddNewSubObjectPayload>) {
@@ -127,5 +154,12 @@ const regionPageSlice = createSlice({
 }
 )
 
-export const { setRegionPage, fillRegionData, addRegion, removeRegion, updateRegion, addImageToRegion, removeImageFromRegion, addNewPlaceToRegion, removePlaceFromRegion, setKingdomToRegion, removeKingdomFromRegion, addNewCultureToRegion, addNewRaceToRegion, addNewSubRaceToRegion, removeCultureFromRegion, removeRaceFromRegion, removeSubRaceFromRegion } = regionPageSlice.actions;
+export const { setRegionPage, fillRegionData, addRegion, removeRegion, updateRegion,
+    addRegionDescription, removeRegionDescription, updateRegionDescription,
+    addImageToRegion, removeImageFromRegion,
+    addNewPlaceToRegion, removePlaceFromRegion,
+    setKingdomToRegion, removeKingdomFromRegion,
+    addNewCultureToRegion, addNewRaceToRegion,
+    addNewSubRaceToRegion, removeCultureFromRegion,
+    removeRaceFromRegion, removeSubRaceFromRegion } = regionPageSlice.actions;
 export default regionPageSlice.reducer;

@@ -1,11 +1,12 @@
-import { createSelector } from "reselect";
-import { makeSelectContinentPage } from "./store/selector";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { Accordion } from "react-bootstrap";
-import { ContinentControllerService, EntryFullDTO } from "../../../../services/openapi";
-import { fillContinentData } from "./store/continentPageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
+import { ContinentControllerService, EntryFullDTO } from "../../../../services/openapi";
+import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { ContinentAccordionBody } from "./continentAccordionBody";
+import { ContinentFunction } from "./continentFunction";
+import { fillContinentData } from "./store/continentPageSlice";
+import { makeSelectContinentPage } from "./store/selector";
 
 const stateContinentPageSelect = createSelector(makeSelectContinentPage, (page) => ({
   page
@@ -31,22 +32,17 @@ export function ContinentAccordion() {
         console.log("My Error: ", err);
       });
   }
-
+  const { deleteContinent, editContinent } = ContinentFunction();
   if (isEmptyPage) return <div>No continents created, yet.</div>;
   if (isLoading) return <div>Loading...</div>;
-  
+
   return <div className='lightbox'>
     {page && page.data && page.data.map((continent) => (
-      <Accordion key={continent.object?.id} defaultActiveKey={['0']}>
-        <Accordion.Item eventKey={'' + continent.object?.id!} onClick={(_) => {
-          if (continent.images && continent.domObjects && continent.subObjects) fetchContinentData(continent.object?.name!)
-        }} className="borderFix">
-          <Accordion.Header>
-            <h5><b>{continent.object?.name}</b></h5>
-          </Accordion.Header>
-          <ContinentAccordionBody continent={continent} />
-        </Accordion.Item>
-      </Accordion>
+      <AccordionHeaderLayout categoryName={"continent"} updateEntry={editContinent}
+        deleteEntry={deleteContinent} deleteMainObjectButtonActionText={"Delete"}
+        entryFullDTO={continent} fetchFullValue={fetchContinentData} key={continent.object?.id}>
+        <ContinentAccordionBody continent={continent} />
+      </AccordionHeaderLayout>
     ))}
   </div>
 }

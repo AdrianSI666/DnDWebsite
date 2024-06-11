@@ -90,7 +90,7 @@ export class PlaneContinentControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns Page<EntryDTO> OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getContinentsWithRelationToPlane(

@@ -35,10 +35,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
 export function RaceSubObjectsFunction() {
     const { addNewSubRaceToRace, removeSubRaceFromRace, addNewRegionToRace, removeRegionFromRace } = actionDispatch(useAppDispatch());
 
-    const saveNewSubRaceToRace = async (raceId: number, name: string, description: string): Promise<void> => {
+    const saveNewSubRaceToRace = async (raceId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
           name: name,
-          description: description
+          shortDescription: shortDescription
         }
         return RaceSubRaceControllerService.addNewSubRaceRelation(raceId, entryDTO)
           .then((result) => {
@@ -53,7 +53,7 @@ export function RaceSubObjectsFunction() {
       const saveExistingSubRaceToRace = async (raceId: number, subRaceId: number, subRaceName: string, subRaceDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
           name: subRaceName,
-          description: subRaceDescription,
+          shortDescription: subRaceDescription,
           id: subRaceId
         }
         return RaceSubRaceControllerService.addSubRaceRelationRace(raceId, subRaceId)
@@ -86,10 +86,10 @@ export function RaceSubObjectsFunction() {
     
     
     
-      const saveNewRegionToRace = async (raceId: number, name: string, description: string): Promise<void> => {
+      const saveNewRegionToRace = async (raceId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
           name: name,
-          description: description
+          shortDescription: shortDescription
         }
         return RegionRaceControllerService.addNewRegionRaceRelation(raceId, entryDTO)
           .then((result) => {
@@ -104,7 +104,7 @@ export function RaceSubObjectsFunction() {
       const saveExistingRegionToRace = async (raceId: number, regionId: number, subRaceName: string, subRaceDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
           name: subRaceName,
-          description: subRaceDescription,
+          shortDescription: subRaceDescription,
           id: regionId
         }
         return RegionRaceControllerService.addRegionRaceRelation(regionId, raceId)

@@ -20,7 +20,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     object: worldDTO,
                     images: [],
                     domObjects: {},
-                    subObjects: []
+                    subObjects: [],
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -34,7 +35,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             object: World,
             images: [],
             domObjects: {},
-            subObjects: []
+            subObjects: [],
+            descriptions: []
         }
         dispatch(addWorld(entryFullDTO))
     }
@@ -49,10 +51,10 @@ export function WorldPage(props: IWorldPageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setWorldPage, addWorld } = actionDispatch(useAppDispatch());
 
-    const saveWorld = async (name: string, description: string): Promise<void> => {
+    const saveWorld = async (name: string, shortDescription: string): Promise<void> => {
         return WorldControllerService.saveWorld({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addWorld(response);

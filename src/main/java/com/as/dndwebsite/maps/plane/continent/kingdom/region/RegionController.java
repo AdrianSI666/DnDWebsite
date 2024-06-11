@@ -103,19 +103,19 @@ public class RegionController {
     }
 
     @PostMapping(path = "{id}/description")
-    public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
-                                                                @RequestBody DescriptionDTO descriptionDTO) {
+    public ResponseEntity<DescriptionDTO> saveDescriptionToRegion(@PathVariable("id") Long id,
+                                                                  @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(regionDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
     @GetMapping(path = "{id}/description")
-    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
+    public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRegion(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(regionDescriptionService.getDescriptionsOfEntry(id));
     }
 
     @DeleteMapping(path = "/{regionId}/description/{descriptionId}")
-    public ResponseEntity<HttpStatus> deleteDescriptionFromRace(@PathVariable("regionId") Long regionId,
-                                                                @PathVariable("descriptionId") Long imageId) {
+    public ResponseEntity<HttpStatus> deleteDescriptionFromRegion(@PathVariable("regionId") Long regionId,
+                                                                  @PathVariable("descriptionId") Long imageId) {
         regionDescriptionService.deleteDescriptionFromEntry(regionId, imageId);
         return ResponseEntity.ok().build();
     }

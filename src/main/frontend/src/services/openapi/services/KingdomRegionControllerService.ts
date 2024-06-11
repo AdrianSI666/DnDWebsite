@@ -29,8 +29,8 @@ export class KingdomRegionControllerService {
         });
     }
     /**
-     * @param regionId
      * @param kingdomId
+     * @param regionId
      * @returns string OK
      * @throws ApiError
      */

@@ -27,7 +27,7 @@ public class PlaceDescriptionService implements IDescriptionEntryService {
 
     @Override
     public List<DescriptionDTO> getDescriptionsOfEntry(long id) {
-        return descriptionRepository.findAllByPlaces_Id(id);
+        return descriptionRepository.findAllByPlaces_IdOrderById(id);
     }
 
     @Override

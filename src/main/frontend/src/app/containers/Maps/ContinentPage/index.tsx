@@ -20,7 +20,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
                     object: continentDTO,
                     images: [],
                     domObjects: {},
-                    subObjects: []
+                    subObjects: [],
+                    descriptions: []
                 }
                 return entryFullDTO
             }),
@@ -34,7 +35,8 @@ const actionDispatch = (dispatch: Dispatch) => ({
             object: Continent,
             images: [],
             domObjects: {},
-            subObjects: []
+            subObjects: [],
+            descriptions: []
         }
         dispatch(addContinent(entryFullDTO))
     }
@@ -49,10 +51,10 @@ export function ContinentPage(props: IContinentPageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setContinentPage, addContinent } = actionDispatch(useAppDispatch());
 
-    const saveContinent = async (name: string, description: string): Promise<void> => {
+    const saveContinent = async (name: string, shortDescription: string): Promise<void> => {
         return ContinentControllerService.saveContinent({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addContinent(response);

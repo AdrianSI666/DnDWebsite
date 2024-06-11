@@ -18,10 +18,10 @@ export function RegionCulturesFunction(props: IRegionCultureProps) {
             });
     }
 
-    const saveNewCultureToRegion = async (regionId: number, name: string, description: string): Promise<void> => {
+    const saveNewCultureToRegion = async (regionId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return RegionCultureControllerService.addNewCultureRegionRelation(regionId, entryDTO)
             .then((result) => {
@@ -38,7 +38,7 @@ export function RegionCulturesFunction(props: IRegionCultureProps) {
     const saveExistingCultureToRegion = async (regionId: number, cultureId: number, cultureName: string, cultureDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: cultureName,
-            description: cultureDescription,
+            shortDescription: cultureDescription,
             id: cultureId
         }
         return RegionCultureControllerService.addRegionCultureRelation(regionId, cultureId)

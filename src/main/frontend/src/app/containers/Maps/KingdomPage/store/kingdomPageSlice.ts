@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IKingdomPageState } from "../types";
-import { EntryDTO, EntryFullDTO, ImageDTO, Page } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO, Page } from "../../../../../services/openapi";
 
 const initialState: IKingdomPageState = {
     page: {
@@ -13,6 +13,17 @@ const initialState: IKingdomPageState = {
 interface IUpdateKingdomPayload {
     id: number,
     entryDTO: EntryDTO
+}
+
+interface IAddDescriptionPayload {
+    kingdomId: number,
+    descriptionDTO: DescriptionDTO
+}
+
+interface IUpdateDescriptionPayload {
+    kingdomId: number,
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
 }
 
 interface IAddImagePayload {
@@ -68,6 +79,28 @@ const kingdomPageSlice = createSlice({
                 state.page.data!.findIndex((kingdom) => kingdom.object?.id === action.payload.id))!
                 .object = action.payload.entryDTO;
         },
+
+        addKingdomDescription(state, action: PayloadAction<IAddDescriptionPayload>) {
+            state.page.data?.at(
+                state.page.data!.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!
+                .descriptions?.push(action.payload.descriptionDTO);
+        },
+        updateKingdomDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.page.data!.at( state.page.data!.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!.descriptions = 
+            state.page.data?.at(
+                state.page.data!.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!
+                .descriptions?.map((description) => {
+                    if(description.id === action.payload.descriptionId) {
+                        return action.payload.descriptionDTO;
+                    }
+                    return description;
+                });
+        },
+        removeKingdomDescription(state, action: PayloadAction<IRemoveSubObjectPayload>) {
+            let descriptions = state.page.data?.at(state.page.data!.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!.descriptions;
+            state.page.data!.at(state.page.data!.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!.descriptions = descriptions?.filter((description) => description.id !== action.payload.subObjectId);
+        },
+
         addImageToKingdom(state, action: PayloadAction<IAddImagePayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!
@@ -77,6 +110,7 @@ const kingdomPageSlice = createSlice({
             let images = state.page.data?.at(state.page.data.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!.images;
             state.page.data!.at(state.page.data!.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!.images = images?.filter((image) => image.id !== action.payload.imageId);
         },
+
         addNewRegionToKingdom(state, action: PayloadAction<IAddNewSubObjectPayload>) {
             state.page.data?.at(
                 state.page.data.findIndex((kingdom) => kingdom.object?.id === action.payload.kingdomId))!
@@ -86,6 +120,7 @@ const kingdomPageSlice = createSlice({
             let subKingdoms = state.page.data!.find((kingdom) => kingdom.object?.id === action.payload.kingdomId)?.subObjects?.filter((region) => region.id !== action.payload.subObjectId);
             state.page.data!.find((kingdom) => kingdom.object?.id === action.payload.kingdomId)!.subObjects = subKingdoms;
         },
+
         setContinentToKingdom(state, action: PayloadAction<ISetNewDomObjectPayload>) {
             state.page.data!.find((kingdom) => kingdom.object?.id === action.payload.kingdomId)!.domObjects = action.payload.continentDTO;
         },
@@ -96,5 +131,9 @@ const kingdomPageSlice = createSlice({
 }
 )
 
-export const { setKingdomPage, fillKingdomData, addKingdom, removeKingdom, updateKingdom, addImageToKingdom, removeImageFromKingdom, addNewRegionToKingdom, removeRegionFromKingdom, setContinentToKingdom, removeContinentFromKingdom } = kingdomPageSlice.actions;
+export const { setKingdomPage, fillKingdomData,addKingdom, removeKingdom, updateKingdom,
+    addKingdomDescription, updateKingdomDescription, removeKingdomDescription,
+    addImageToKingdom, removeImageFromKingdom,
+    addNewRegionToKingdom, removeRegionFromKingdom,
+    setContinentToKingdom, removeContinentFromKingdom } = kingdomPageSlice.actions;
 export default kingdomPageSlice.reducer;

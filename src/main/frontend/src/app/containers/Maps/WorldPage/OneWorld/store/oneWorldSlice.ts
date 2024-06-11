@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi";
+import { DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO } from "../../../../../../services/openapi";
 import { IOneWorldState } from "../../types";
 
 const initialState: IOneWorldState = {
@@ -7,8 +7,14 @@ const initialState: IOneWorldState = {
         object: {},
         domObjects: {},
         subObjects: new Array<EntryDTO>(),
-        images: new Array<ImageDTO>()
+        images: new Array<ImageDTO>(),
+        descriptions: new Array<DescriptionDTO>()
     }
+}
+
+interface IUpdateDescriptionPayload {
+    descriptionId: number,
+    descriptionDTO: DescriptionDTO
 }
 
 const OneWorldSlice = createSlice({
@@ -21,6 +27,20 @@ const OneWorldSlice = createSlice({
         updateWorld(state, action: PayloadAction<EntryDTO>) {
             state.world.object = action.payload;
         },
+
+        addWorldDescription(state, action: PayloadAction<DescriptionDTO>) {
+            state.world.descriptions?.push(action.payload);
+        },
+        updateWorldDescription(state, action: PayloadAction<IUpdateDescriptionPayload>) {
+            state.world.descriptions?.splice(
+                state.world.descriptions?.findIndex((description) => description.id === action.payload.descriptionId),
+                1,
+                action.payload.descriptionDTO);
+        },
+        removeWorldDescription(state, action: PayloadAction<number>) {
+            state.world.descriptions = state.world.descriptions?.filter((description) => description.id !== action.payload);
+        },
+
         addImageToWorld(state, action: PayloadAction<ImageDTO>) {
             state.world.images?.push(action.payload);
         },
@@ -37,5 +57,8 @@ const OneWorldSlice = createSlice({
 }
 )
 
-export const { setWorld, updateWorld, addImageToWorld, removeImageFromWorld, addNewPlaneToWorld, removePlaneFromWorld  } = OneWorldSlice.actions;
+export const { setWorld, updateWorld,
+    addWorldDescription, updateWorldDescription, removeWorldDescription,
+    addImageToWorld, removeImageFromWorld,
+    addNewPlaneToWorld, removePlaneFromWorld  } = OneWorldSlice.actions;
 export default OneWorldSlice.reducer;

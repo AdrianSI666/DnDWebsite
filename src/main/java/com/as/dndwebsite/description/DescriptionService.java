@@ -20,7 +20,7 @@ public class DescriptionService implements IDescriptionService {
             "Description with id %s not found";
     @Override
     public DescriptionDTO saveDescriptionToEntry(DescriptionDTO descriptionDTO, Entry entry) {
-        Description description = new Description(descriptionDTO.text());
+        Description description = new Description(descriptionDTO.title(), descriptionDTO.text());
         entry.getDescriptions().add(description);
         return domainMapper.map(descriptionRepository.save(description));
     }
@@ -28,6 +28,7 @@ public class DescriptionService implements IDescriptionService {
     @Override
     public DescriptionDTO updateDescription(DescriptionDTO descriptionDTO, Long descriptionId) {
         Description oldDescription = descriptionRepository.findById(descriptionId).orElseThrow(() -> new NotFoundException(DESCRIPTION_NOT_FOUND_MSG.formatted(descriptionId)));
+        oldDescription.setTitle(descriptionDTO.title());
         oldDescription.setText(descriptionDTO.text());
         return domainMapper.map(oldDescription);
     }

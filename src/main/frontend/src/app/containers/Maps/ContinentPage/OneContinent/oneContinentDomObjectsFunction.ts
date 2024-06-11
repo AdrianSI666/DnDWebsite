@@ -15,10 +15,10 @@ const actionDispatch = (dispatch: Dispatch) => ({
 export function OneContinentDomObjectsFunction() {
     const { setPlaneToContinent, removePlaneFromContinent } = actionDispatch(useAppDispatch());
 
-    const setNewPlaneToContinent = async (continentId: number, name: string, description: string): Promise<void> => {
+    const setNewPlaneToContinent = async (continentId: number, name: string, shortDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: name,
-            description: description
+            shortDescription: shortDescription
         }
         return PlaneContinentControllerService.addNewPlaneContinentRelation(continentId, entryDTO)
             .then((result) => {
@@ -33,7 +33,7 @@ export function OneContinentDomObjectsFunction() {
     const setExistingPlaneToContinent = async (continentId: number, planeId: number, planeName: string, planeDescription: string): Promise<void> => {
         let entryDTO: EntryDTO = {
             name: planeName,
-            description: planeDescription,
+            shortDescription: planeDescription,
             id: planeId
         }
         return PlaneContinentControllerService.addPlaneContinentRelation(planeId, continentId)

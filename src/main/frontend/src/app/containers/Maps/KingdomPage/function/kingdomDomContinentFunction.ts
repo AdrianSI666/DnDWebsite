@@ -9,10 +9,10 @@ interface IKingdomDomContinentFunction {
 }
 
 export function KingdomDomContinentFunction(props: IKingdomDomContinentFunction) {
-  const setNewContinentToKingdom = async (kingdomId: number, name: string, description: string): Promise<void> => {
+  const setNewContinentToKingdom = async (kingdomId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return ContinentKingdomControllerService.addNewContinentKingdomRelation(kingdomId, entryDTO)
       .then((result) => {
@@ -29,7 +29,7 @@ export function KingdomDomContinentFunction(props: IKingdomDomContinentFunction)
   const setExistingContinentToKingdom = async (kingdomId: number, continentId: number, continentName: string, continentDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: continentName,
-      description: continentDescription,
+      shortDescription: continentDescription,
       id: continentId
     }
     console.log(kingdomId)

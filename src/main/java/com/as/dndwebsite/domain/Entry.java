@@ -33,7 +33,7 @@ public abstract class Entry {
     private String name;
     private String shortDescription;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<Description> descriptions;
+    private Collection<Description> descriptions = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<Image> images = new ArrayList<>();
 

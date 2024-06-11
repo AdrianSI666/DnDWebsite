@@ -1,22 +1,10 @@
 
-import { Dispatch } from "@reduxjs/toolkit"
 import { useNavigate } from "react-router-dom"
-import { EntryFullDTO, PlaceControllerService } from "../../../../../services/openapi"
-import { useAppDispatch } from "../../../../hooks"
-import { setPlace } from "./store/onePlaceSlice"
+import { PlaceControllerService } from "../../../../../services/openapi"
+import { OnePlaceDispatcher } from "./store/dispatcher"
 
-interface IUseOnePlaceObjectFunction {
-    placeId?: number
-}
-
-const actionDispatch = (dispatch: Dispatch) => ({
-    setPlace: (place: EntryFullDTO) => {
-        dispatch(setPlace(place))
-    }
-})
-
-export function UseOnePlaceObjectFunction(props: IUseOnePlaceObjectFunction) {
-    const { setPlace } = actionDispatch(useAppDispatch());
+export function UseOnePlaceObjectFunction() {
+    const { setPlace } = OnePlaceDispatcher();
     const navigate = useNavigate();
     const fetchPlace = async (name: string): Promise<boolean> => {
         return PlaceControllerService.getPlaceByName(name)

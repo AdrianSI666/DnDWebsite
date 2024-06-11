@@ -19,6 +19,7 @@ const actionDispatch = (dispatch: Dispatch) => ({
                 let entryFullDTO: EntryFullDTO = {
                     object: CultureDTO,
                     images: [],
+                    descriptions: [],
                     domObjects: {},
                     subObjects: []
                 }
@@ -49,10 +50,10 @@ export function CulturePage(props: ICulturePageProps) {
     const { page } = useAppSelector(stateSelect);
     const { setCulturePage, addCulture } = actionDispatch(useAppDispatch());
 
-    const saveCulture = async (name: string, description: string): Promise<void> => {
+    const saveCulture = async (name: string, shortDescription: string): Promise<void> => {
         return CultureControllerService.saveCulture({
             name,
-            description
+            shortDescription
         })
             .then((response) => {
                 addCulture(response);

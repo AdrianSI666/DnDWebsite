@@ -9,10 +9,10 @@ interface IRegionKingdomProps {
 
 export function RegionKingdomFunction(props: IRegionKingdomProps) {
 
-  const setNewKingdomToRegion = async (regionId: number, name: string, description: string): Promise<void> => {
+  const setNewKingdomToRegion = async (regionId: number, name: string, shortDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: name,
-      description: description
+      shortDescription: shortDescription
     }
     return KingdomRegionControllerService.addNewKingdomRegionRelation(regionId, entryDTO)
       .then((result) => {
@@ -29,7 +29,7 @@ export function RegionKingdomFunction(props: IRegionKingdomProps) {
   const setExistingKingdomToRegion = async (regionId: number, kingdomId: number, kingdomName: string, kingdomDescription: string): Promise<void> => {
     let entryDTO: EntryDTO = {
       name: kingdomName,
-      description: kingdomDescription,
+      shortDescription: kingdomDescription,
       id: kingdomId
     }
     return KingdomRegionControllerService.addKingdomRegionRelation(kingdomId, regionId)
