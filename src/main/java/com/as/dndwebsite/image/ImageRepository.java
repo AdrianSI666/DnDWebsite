@@ -15,4 +15,7 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     List<ImageDTO> findAllByKingdoms_Id(Long id);
     List<ImageDTO> findAllByRegions_Id(Long id);
     List<ImageDTO> findAllByPlaces_Id(Long id);
+
+    //Adding beasts
+    List<ImageDTO> findAllByBeasts_Id(Long id);
 }

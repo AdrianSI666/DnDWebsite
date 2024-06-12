@@ -6,9 +6,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/dnd
+    url: jdbc:postgresql://localhost:9966/dnddb
     username: postgres
-    password: projektanto
+    password: postgres
     driverClassName: org.postgresql.Driver
   jpa:
     hibernate:

@@ -1,5 +1,6 @@
 package com.as.dndwebsite.image;
 
+import com.as.dndwebsite.bestiary.Beast;
 import com.as.dndwebsite.culture.Culture;
 import com.as.dndwebsite.maps.World;
 import com.as.dndwebsite.maps.plane.Plane;
@@ -42,33 +43,47 @@ public class Image {
         @JdbcTypeCode(Types.LONGVARBINARY)
         private byte[] content;
         private String name;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Race> races;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<SubRace> subRaces;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Culture> cultures;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<World> worlds;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Plane> planes;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Continent> continents;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Kingdom> kingdoms;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Place> places;
+
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Region> regions;
+
+        //beasts
+        @ManyToMany(mappedBy = "images")
+        @JsonBackReference
+        private Collection<Beast> beasts;
 
         public Image(byte[] content, String name) {
                 this.content = content;

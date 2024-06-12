@@ -28,7 +28,10 @@ public class RaceService implements IRaceService {
     @Override
     public Page<EntryDTO> getRaces(PageInfo page) {
         log.info("Getting races");
-        Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
+        Pageable paging = PageRequest.of(
+                page.number() - 1,
+                page.size(),
+                Sort.by(Sort.Direction.DESC, "id"));
         Page<Race> racePage = raceRepository.findAll(paging);
         return racePage.map(mapper::map);
     }
@@ -37,7 +40,8 @@ public class RaceService implements IRaceService {
     public EntryDTO getRace(String name) {
         log.info("Getting race");
         return raceRepository.findByName(name).orElseThrow(
-                () -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, name)));
+                () -> new NotFoundException(
+                        String.format(RACE_NOT_FOUND_MSG, name)));
     }
 
     @Override
@@ -67,6 +71,7 @@ public class RaceService implements IRaceService {
 
     @Override
     public List<EntryDTO> getAllRaces() {
+
         return raceRepository.findAll().stream().map(mapper::map).toList();
     }
 }

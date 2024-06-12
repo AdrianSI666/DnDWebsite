@@ -8,6 +8,7 @@ import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.mappers.IPageMapper;
 import com.as.dndwebsite.maps.plane.continent.kingdom.kingdomregion.IKingdomRegionService;
+import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionbeast.IRegionBeastService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionculture.IRegionCultureService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionplace.IRegionPlaceService;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionrace.IRegionRaceService;
@@ -42,6 +43,9 @@ public class RegionController {
     private final IRegionCultureService regionCultureService;
     private final IRegionRaceService regionRaceService;
     private final IRegionSubRaceService regionSubRaceService;
+    //beasts
+    private final IRegionBeastService regionBeastService;
+
     private final IPageMapper pageMapper;
     @Qualifier("regionDescriptionService")
     private final IDescriptionEntryService regionDescriptionService;
@@ -66,7 +70,8 @@ public class RegionController {
         List<EntryDTO> cultures = regionCultureService.getCulturesRelatedToRegion(region.id());
         List<EntryDTO> races = regionRaceService.getRacesRelatedToRegion(region.id());
         List<EntryDTO> subRaces = regionSubRaceService.getSubRacesRelatedToRegion(region.id());
-        return ResponseEntity.ok().body(new RegionDTO(region, kingdom, places, descriptions, imageDTOS, cultures, races, subRaces));
+        List<EntryDTO> beasts = regionBeastService.getBeastsRelatedToRegion(region.id());
+        return ResponseEntity.ok().body(new RegionDTO(region, kingdom, places, descriptions, imageDTOS, cultures, races, subRaces,beasts));
     }
 
     @PostMapping

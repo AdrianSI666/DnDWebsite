@@ -1,5 +1,6 @@
 package com.as.dndwebsite.maps.plane.continent.kingdom.region;
 
+import com.as.dndwebsite.bestiary.Beast;
 import com.as.dndwebsite.culture.Culture;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
@@ -41,6 +42,10 @@ public class Region extends Entry {
     @ManyToMany
     private Set<SubRace> subRaces = new HashSet<>();
 
+    //New entry about beasts (test addon)
+    @ManyToMany
+    private Set<Beast> beasts = new HashSet<>();
+
     public Region(String name, String description) {
         super(name, description);
     }
@@ -69,6 +74,11 @@ public class Region extends Entry {
         this.subRaces.add(subRace);
     }
 
+    //Beasts
+    public Region(String name, String description, Beast beast) {
+        super(name, description);
+        this.beasts.add(beast);
+    }
     @PreRemove
     private void removeMembers() {
         this.cultures.forEach(culture -> culture.getRegions().removeIf(region -> region == this));
@@ -77,5 +87,8 @@ public class Region extends Entry {
         this.races.clear();
         this.subRaces.forEach(subRace -> subRace.getRegions().removeIf(region -> region == this));
         this.subRaces.clear();
+        //beasts
+        this.beasts.forEach(beast -> beast.getRegions().removeIf(region -> region ==this));
+        this.beasts.clear();
     }
 }

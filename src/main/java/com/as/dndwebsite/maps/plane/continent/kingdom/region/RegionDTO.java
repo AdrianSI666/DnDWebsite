@@ -15,6 +15,7 @@ public record RegionDTO(
         List<ImageDTO> images,
         List<EntryDTO> cultures,
         List<EntryDTO> races,
-        List<EntryDTO> subRaces
+        List<EntryDTO> subRaces,
+        List<EntryDTO> beasts
 ) {
 }

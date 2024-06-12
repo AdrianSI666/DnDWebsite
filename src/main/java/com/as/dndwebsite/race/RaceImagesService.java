@@ -25,18 +25,24 @@ public class RaceImagesService implements IRaceImagesService {
 
     @Override
     public List<ImageDTO> getImagesOfRace(long id) {
+
         return imageRepository.findAllByRaces_Id(id);
     }
 
     @Override
     public ImageDTO saveImageToRace(MultipartFile file, Long id) {
-        Race race = raceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, id)));
+        Race race = raceRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(
+                        String.format(RACE_NOT_FOUND_MSG, id)));
         return imageService.saveImageToEntry(file, race);
     }
 
     @Override
     public void deleteImageFromRace(Long raceId, Long imageId) {
-        Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
+        Race race =
+                raceRepository.findById(raceId).orElseThrow(
+                        () -> new NotFoundException(
+                                String.format(RACE_NOT_FOUND_MSG, raceId)));
         imageService.deleteImageFromEntry(race, imageId);
     }
 }

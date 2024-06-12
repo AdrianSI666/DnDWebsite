@@ -30,4 +30,7 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
     Optional<EntryDTO> findAllByPlaces_Name(String name);
 
     List<EntryDTO> findAllByKingdomIdIsNull();
+
+    //Adding beasts
+    List<EntryDTO> findAllByBeasts_Id(Long id);
 }

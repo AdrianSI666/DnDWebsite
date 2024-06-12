@@ -34,7 +34,11 @@ public class RegionRaceService implements IRegionRaceService {
     private final DomainMapper<Entry, EntryDTO> mapper;
     @Override
     public Page<EntryDTO> getRacesRelatedToRegion(String name, PageInfo page) {
-        Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
+        Pageable paging =
+                PageRequest.of(
+                        page.number() - 1,
+                        page.size(),
+                        Sort.by(Sort.Direction.DESC, "id"));
         return raceRepository.findAllByRegions_Name(name, paging);
     }
 
@@ -46,9 +50,16 @@ public class RegionRaceService implements IRegionRaceService {
 
     @Override
     public void addRaceToRegion(Long raceId, Long regionId) {
-        Race race = raceRepository.findById(raceId).orElseThrow(() -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
-        Region region = regionRepository.findById(regionId).orElseThrow(() -> new NotFoundException(String.format(RegionService.REGION_NOT_FOUND_MSG, regionId)));
-        if(!region.getRaces().add(race)) throw new BadRequestException("Region %s and Race %s are already linked".formatted(region.getName(), race.getName()));
+        Race race = raceRepository.findById(raceId).orElseThrow(
+                () -> new NotFoundException(String.format(RACE_NOT_FOUND_MSG, raceId)));
+        Region region = regionRepository.findById(regionId).orElseThrow(
+                () -> new NotFoundException(
+                        String.format(RegionService.REGION_NOT_FOUND_MSG,
+                                regionId)));
+        if(!region.getRaces().add(race))
+            throw new BadRequestException(
+                    "Region %s and Race %s are already linked".formatted(region.getName(),
+                            race.getName()));
         race.getRegions().add(region);
     }
 
@@ -70,6 +81,7 @@ public class RegionRaceService implements IRegionRaceService {
 
     @Override
     public List<EntryDTO> getRegionsRelatedToRace(Long id) {
+
         return regionRepository.findAllByRaces_Id(id);
     }
 

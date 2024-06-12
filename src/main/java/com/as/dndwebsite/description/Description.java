@@ -1,5 +1,6 @@
 package com.as.dndwebsite.description;
 
+import com.as.dndwebsite.bestiary.Beast;
 import com.as.dndwebsite.culture.Culture;
 import com.as.dndwebsite.maps.World;
 import com.as.dndwebsite.maps.plane.Plane;
@@ -70,6 +71,10 @@ public class Description {
     @ManyToMany(mappedBy = "descriptions")
     @JsonBackReference
     private Collection<Region> regions;
+
+    @ManyToMany(mappedBy = "descriptions")
+    @JsonBackReference
+    private Collection<Beast> beasts;
 
     public Description(String title, String text) {
         this.title = title;
