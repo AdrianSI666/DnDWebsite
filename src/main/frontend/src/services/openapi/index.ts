@@ -15,9 +15,13 @@ export type { ImageDTO } from './models/ImageDTO';
 export type { Page } from './models/Page';
 export type { PageDTOEntryDTO } from './models/PageDTOEntryDTO';
 export type { PageInfo } from './models/PageInfo';
+
 export type { RaceDTO } from './models/RaceDTO';
+
 export type { RegionDTO } from './models/RegionDTO';
+
 export type { SubRaceDTO } from './models/SubRaceDTO';
+
 
 export { BeastControllerService } from './services/BeastControllerService';
 export { ContinentControllerService } from './services/ContinentControllerService';
@@ -29,14 +33,18 @@ export { KingdomRegionControllerService } from './services/KingdomRegionControll
 export { PlaceControllerService } from './services/PlaceControllerService';
 export { PlaneContinentControllerService } from './services/PlaneContinentControllerService';
 export { PlaneControllerService } from './services/PlaneControllerService';
+
 export { RaceControllerService } from './services/RaceControllerService';
 export { RaceSubRaceControllerService } from './services/RaceSubRaceControllerService';
+
 export { RegionBeastControllerService } from './services/RegionBeastControllerService';
 export { RegionControllerService } from './services/RegionControllerService';
 export { RegionCultureControllerService } from './services/RegionCultureControllerService';
 export { RegionPlaceControllerService } from './services/RegionPlaceControllerService';
+
 export { RegionRaceControllerService } from './services/RegionRaceControllerService';
 export { RegionSubRaceControllerService } from './services/RegionSubRaceControllerService';
 export { SubRaceControllerService } from './services/SubRaceControllerService';
+
 export { WorldControllerService } from './services/WorldControllerService';
 export { WorldPlaneControllerService } from './services/WorldPlaneControllerService';

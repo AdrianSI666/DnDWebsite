@@ -18,6 +18,8 @@ import regionPageSlice from './containers/Maps/RegionPage/store/regionPageSlice'
 import oneRegionSlice from './containers/Maps/RegionPage/OneRegion/store/oneRegionSlice';
 import placePageSlice from './containers/Maps/PlacePage/store/placePageSlice';
 import onePlaceSlice from './containers/Maps/PlacePage/OnePlace/store/onePlaceSlice';
+import beastPageReducer from "./containers/Beasts/store/beastPageSlice";
+import oneBeastSlice from "./containers/Beasts/OneBeast/store/oneBeastSlice";
 
 export const store = configureStore({
   reducer: {
@@ -38,7 +40,10 @@ export const store = configureStore({
     regionPage: regionPageSlice,
     oneRegion: oneRegionSlice,
     placePage: placePageSlice,
-    onePlace: onePlaceSlice
+    onePlace: onePlaceSlice,
+
+    beastPage: beastPageReducer,
+    oneBeast: oneBeastSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()

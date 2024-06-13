@@ -7,6 +7,7 @@ import { IOneRegionState, IRegionPageState } from "./containers/Maps/RegionPage/
 import { IOneWorldState, IWorldPageState } from "./containers/Maps/WorldPage/types";
 import { IOneRaceState, IRacePageState } from "./containers/Races/RacePage/types";
 import { IOneSubRaceState, ISubRacePageState } from "./containers/Races/SubRacePage/types";
+import { IOneBeastState,IBeastPageState } from "./containers/Beasts/types";
 
 export interface IRootState {
     culturePage: ICulturePageState,
@@ -26,5 +27,7 @@ export interface IRootState {
     regionPage: IRegionPageState,
     oneRegion: IOneRegionState,
     placePage: IPlacePageState,
-    onePlace: IOnePlaceState
+    onePlace: IOnePlaceState,
+    beastPage: IBeastPageState;
+    oneBeast: IOneBeastState;
 }

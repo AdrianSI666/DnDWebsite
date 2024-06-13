@@ -12,5 +12,5 @@ public interface BeastRepository extends JpaRepository<Beast,Long> {
     Optional<EntryDTO> findByName(String name);
     List<EntryDTO> findAllByRegions_Id(Long id);
     Page<EntryDTO> findAllByRegions_Name(String name, Pageable paging);
-//    Page<EntryDTO> findAllByBeast_Name(String name,Pageable paging);
+    //Page<EntryDTO> findAllByBeast_Name(String name,Pageable paging);
 }
