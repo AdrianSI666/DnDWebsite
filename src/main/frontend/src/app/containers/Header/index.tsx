@@ -42,6 +42,9 @@ export function Header() {
                                 <HeaderLink name="places" />
                             </NavDropdown>
                         </li>
+                        <li className="nav-item">
+                            <HeaderLink name="beasts" />
+                        </li>
                     </ul>
                 </div>
             </div>

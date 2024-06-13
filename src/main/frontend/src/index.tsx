@@ -29,7 +29,7 @@ import { KingdomPage } from './app/containers/Maps/KingdomPage';
 import { OneKingdom } from './app/containers/Maps/KingdomPage/OneKingdom';
 import { PlacePage } from './app/containers/Maps/PlacePage';
 import { OnePlace } from './app/containers/Maps/PlacePage/OnePlace';
-
+import { BeastPage } from './app/containers/Beasts';
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
@@ -59,6 +59,7 @@ root.render(
             <Route path={"regions/:name"} element={<OneRegion />} />
             <Route path={"places"} element={<PlacePage />} />
             <Route path={"places/:name"} element={<OnePlace />} />
+            <Route path={"beasts"} element={<BeastPage />} />
           </Route>
         </Routes>
       </Router>

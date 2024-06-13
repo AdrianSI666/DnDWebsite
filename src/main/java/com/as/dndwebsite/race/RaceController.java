@@ -82,7 +82,7 @@ public class RaceController {
         return ResponseEntity.ok().body(raceImagesService.getImagesOfRace(id));
     }
 
-    @PostMapping(path = "{raceId}/image",
+    @PostMapping(path = "/{raceId}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImageDTO> saveImageToRace(@PathVariable("raceId") Long raceId,
@@ -97,13 +97,13 @@ public class RaceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(path = "{id}/description")
+    @PostMapping(path = "/{id}/description")
     public ResponseEntity<DescriptionDTO> saveDescriptionToRace(@PathVariable("id") Long id,
                                                                 @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(raceDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
-    @GetMapping(path = "{id}/description")
+    @GetMapping(path = "/{id}/description")
     public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfRace(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(raceDescriptionService.getDescriptionsOfEntry(id));
     }

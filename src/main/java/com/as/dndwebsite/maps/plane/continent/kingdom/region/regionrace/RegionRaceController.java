@@ -27,7 +27,11 @@ public class RegionRaceController {
     public ResponseEntity<PageDTO<EntryDTO>> getRacesRelatedToRegion(@PathVariable("name") String name,
                                                                      PageInfo pageInfo) {
 
-        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionRaceService.getRacesRelatedToRegion(name, pageInfo)));
+        return ResponseEntity
+                .ok()
+                .body(
+                        pageMapper.mapPageDataToPageDTO(
+                                regionRaceService.getRacesRelatedToRegion(name, pageInfo)));
     }
 
     @GetMapping("/race/{name}")

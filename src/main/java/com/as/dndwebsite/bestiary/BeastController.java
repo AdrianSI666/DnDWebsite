@@ -69,7 +69,7 @@ public class BeastController {
         return ResponseEntity.ok().body(beastImageService.getImagesOfBeast(id));
     }
 
-    @PostMapping(path = "{beastId}/image",
+    @PostMapping(path = "/{beastId}/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ImageDTO> saveImageToBeast(@PathVariable("beastId") Long beastId,
@@ -83,13 +83,13 @@ public class BeastController {
         beastImageService.deleteImageFromBeast(beastId, imageId);
         return ResponseEntity.ok().build();
     }
-    @PostMapping(path = "{id}/description")
+    @PostMapping(path = "/{id}/description")
     public ResponseEntity<DescriptionDTO> saveDescriptionToBest(@PathVariable("id") Long id,
                                                                 @RequestBody DescriptionDTO descriptionDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(beastDescriptionService.saveDescriptionToEntry(descriptionDTO, id));
     }
 
-    @GetMapping(path = "{id}/description")
+    @GetMapping(path = "/{id}/description")
     public ResponseEntity<List<DescriptionDTO>> getDescriptionsOfBeast(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(beastDescriptionService.getDescriptionsOfEntry(id));
     }
