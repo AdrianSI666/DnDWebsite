@@ -1,50 +1,67 @@
-import { Dispatch } from "@reduxjs/toolkit";
-import { createSelector } from "reselect";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { Accordion } from "react-bootstrap";
 import { CultureControllerService, EntryFullDTO } from "../../../services/openapi";
 import { AccordionHeaderLayout } from "../../components/accordions/accordionHeaderLayout";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { CultureAccordionBody } from "./cultureAccordionBody";
+import { FullEntryAccordionBody } from "../../components/accordions/fullEntryAccordionBody";
+import { SubCategoryBody } from "../../components/accordions/subCategoryBody";
+import { getAllRegions } from "../../globalFunctions/RegionHooks";
+import '../../styles/masonary.css';
+import "../../styles/subObjects.css";
 import { CultureFunction } from "./cultureFunction";
-import { fillCultureData } from "./store/culturePageSlice";
-import { makeSelectCulturePage } from "./store/selector";
+import { CultureFunctionArray } from "./cultureFunctionArrays";
+import { CultureFunctionSubObjects } from "./cultureFunctionSubObjects";
 
-const stateCulturePageSelect = createSelector(makeSelectCulturePage, (page) => ({
-  page
-}))
+interface ICultureAccordion {
+  culture: EntryFullDTO,
+  pageNumber: number,
+  pageSize: number,
+  status: string
+}
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  fillCultureData: (data: EntryFullDTO) => {
-    dispatch(fillCultureData(data))
+export function CultureAccordion(props: Readonly<ICultureAccordion>) {
+  const { editCulture, deleteCulture } = CultureFunction({ pageNumber: props.pageNumber, pageSize: props.pageSize })
+  const { saveImageToCulture, deleteImageFromCulture, addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture } = CultureFunctionArray({ name: props.culture.object!.name! });
+  const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = CultureFunctionSubObjects({ name: props.culture.object!.name! });
+  const [name, setName] = useState<string | undefined>();
+
+  const { status, data } = useQuery({
+    queryKey: ["culture", name],
+    queryFn: async () => CultureControllerService.getCultureByName(name!),
+    enabled: !!name,
+  })
+
+  const getFullCultureDTO = async (name: string) => {
+    setName(name);
   }
-})
 
-export function CultureAccordion() {
-  const { page } = useAppSelector(stateCulturePageSelect);
-  const isLoading = !page || page.data === undefined
-  const isEmptyPage = page.data?.length === 0
-  const { fillCultureData } = actionDispatch(useAppDispatch());
-  const fetchCultureData = async (name: string) => {
-    CultureControllerService.getCultureByName(name)
-      .then((response) => {
-        fillCultureData(response);
-      })
-      .catch((err) => {
-        console.log("My Error: ", err);
-      });
-  }
-  
-  const { editCulture, deleteCulture } = CultureFunction();
+  if (props.status === "pending") return <div>Loading...</div>;
 
-  if (isEmptyPage) return <div>No culture created, yet.</div>;
-  if (isLoading) return <div>Loading...</div>;
+  return (<AccordionHeaderLayout categoryName={"culture"} updateEntry={editCulture}
+    deleteEntry={deleteCulture} deleteMainObjectButtonActionText={"Delete"}
+    entryFullDTO={props.culture} fetchFullValue={getFullCultureDTO} key={props.culture.object?.id}>
+    {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
+    {data && <Accordion.Body>
+      <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={data!}
+        saveImageToEntry={saveImageToCulture}
+        deleteImageFromEntry={deleteImageFromCulture}
+        deleteImageButtonActionText={"Delete image"}
+        addNewDescriptionToEntry={addNewDesctiptionToCulture}
+        updateDescription={updateCultureDescription}
+        deleteDescriptionFromEntry={deleteDescriptionFromCulture} />
+      <SubCategoryBody mainEntryId={data!.object?.id!}
+        subObjects={data!.subObjects}
+        subCategoryTitle={"Regions"} subCategoryLink={"regions"}
+        fillTheListWithAllSubObjects={getAllRegions}
+        addExistingObjectToRelation={saveExistingRegionToCulture}
+        deleteSubObject={removeRegionFromCultureFunction}
+        addNewSubEntryToRelation={saveNewRegionToCulture}
+        addButtonActionText={"Add new region that use this culture"}
+        addExistingButtonActionText={"Link existing region from list to this culture"}
+        deleteButtonActionText={`Unlink this region from ${data!.object?.name}`}
+        subCategoryLinkText={"region"} />
+    </Accordion.Body>}
 
-  return <div className='lightbox'>
-    {page && page.data && page.data.map((culture) => (
-      <AccordionHeaderLayout categoryName={"culture"} updateEntry={editCulture}
-      deleteEntry={deleteCulture} deleteMainObjectButtonActionText={"Delete"}
-      entryFullDTO={culture} fetchFullValue={fetchCultureData} key={culture.object?.id}>
-        <CultureAccordionBody culture={culture} />
-      </AccordionHeaderLayout>
-    ))}
-  </div>
+  </AccordionHeaderLayout>
+  )
 }

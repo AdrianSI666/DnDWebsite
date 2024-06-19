@@ -1,4 +1,3 @@
-import { ICulturePageState, IOneCultureState } from "./containers/CulturePage/types";
 import { IContinentPageState, IOneContinentState } from "./containers/Maps/ContinentPage/types";
 import { IKingdomPageState, IOneKingdomState } from "./containers/Maps/KingdomPage/types";
 import { IOnePlaceState, IPlacePageState } from "./containers/Maps/PlacePage/types";
@@ -9,8 +8,6 @@ import { IOneRaceState, IRacePageState } from "./containers/Races/RacePage/types
 import { IOneSubRaceState, ISubRacePageState } from "./containers/Races/SubRacePage/types";
 
 export interface IRootState {
-    culturePage: ICulturePageState,
-    oneCulture: IOneCultureState,
     racePage: IRacePageState,
     oneRace: IOneRaceState,
     subRacePage: ISubRacePageState,
