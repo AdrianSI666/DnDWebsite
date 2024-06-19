@@ -12,17 +12,9 @@ import oneRegionSlice from './containers/Maps/RegionPage/OneRegion/store/oneRegi
 import regionPageSlice from './containers/Maps/RegionPage/store/regionPageSlice';
 import oneWorldSlice from './containers/Maps/WorldPage/OneWorld/store/oneWorldSlice';
 import worldPageSlice from './containers/Maps/WorldPage/store/worldPageSlice';
-import oneRaceSlice from './containers/Races/RacePage/OneRace/store/oneRaceSlice';
-import racePageSlice from './containers/Races/RacePage/store/racePageSlice';
-import oneSubRaceSlice from './containers/Races/SubRacePage/OneSubRace/store/oneSubRaceSlice';
-import subRacePageSlice from './containers/Races/SubRacePage/store/subRacePageSlice';
 
 export const store = configureStore({
   reducer: {
-    racePage: racePageSlice,
-    oneRace: oneRaceSlice,
-    subRacePage: subRacePageSlice,
-    oneSubRace: oneSubRaceSlice,
     worldPage: worldPageSlice,
     oneWorld: oneWorldSlice,
     planePage: planePageSlice,

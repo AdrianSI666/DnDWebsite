@@ -1,40 +1,32 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
 import { getAllRegions } from "../../../../globalFunctions/RegionHooks";
-import { useAppSelector } from "../../../../hooks";
 
-import { makeSelectOneSubRace } from "./store/selector";
-import { UseOneSubRaceObjectFunction } from "./useOneSubRaceFunction";
+import { useQuery } from "@tanstack/react-query";
+import { SubRaceControllerService } from "../../../../../services/openapi";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
-import { OneSubRaceSubObjectsFunction } from "./oneSubRaceSubObjectsFunction";
-import { OneSubRaceDomObjectsFunction } from "./oneSubRaceDomObjectsFunction";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
+import { SubRaceFunctionArray } from "../subRaceFunctionArrays";
+import { SubRaceFunctionDomObjects } from "../subRaceFunctionDomObjects";
+import { SubRaceFunctionSubObjects } from "../subRaceFunctionSubObjects";
+import { UseOneSubRaceObjectFunction } from "./useOneSubRaceFunction";
 
-interface IOneSubRaceProps {
-}
-
-const oneSubRaceSelect = createSelector(makeSelectOneSubRace, (subRaceDTO) => ({
-    subRaceDTO
-}))
-
-export function OneSubRace(props: IOneSubRaceProps) {
+export function OneSubRace() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { subRaceDTO } = useAppSelector(oneSubRaceSelect);
-    const { fetchSubRace, removeSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace, addNewDesctiptionToSubRace, updateSubRaceDescription, deleteDescriptionFromSubRace } = UseOneSubRaceObjectFunction();
-    const { saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = OneSubRaceSubObjectsFunction();
-    const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces } = OneSubRaceDomObjectsFunction();
+    const { status, data: subRaceDTO, error } = useQuery({
+        queryKey: ["subRace", name],
+        queryFn: async () => SubRaceControllerService.getSubRaceByName(name!)
+    })
 
-    useEffect(() => {
-        fetchSubRace(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const { removeSubRace, editSubRace } = UseOneSubRaceObjectFunction({ name: name! });
+    const {saveImageToSubRace, deleteImageFromSubRace, addNewDesctiptionToSubRace, updateSubRaceDescription, deleteDescriptionFromSubRace} = SubRaceFunctionArray({ name: name! })
+    const { saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = SubRaceFunctionSubObjects({ name: name! });
+    const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces } = SubRaceFunctionDomObjects({ name: name! });
 
-    if (!exist) return <div>
-        <h1>SubRace named {name} doesn't exist.</h1>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
+        <h1>Sub race named {name} doesn't exist.</h1>
     </div>;
 
     return <OneEntryHeaderLayout

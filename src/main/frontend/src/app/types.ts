@@ -4,14 +4,8 @@ import { IOnePlaceState, IPlacePageState } from "./containers/Maps/PlacePage/typ
 import { IOnePlaneState, IPlanePageState } from "./containers/Maps/PlanePage/types";
 import { IOneRegionState, IRegionPageState } from "./containers/Maps/RegionPage/types";
 import { IOneWorldState, IWorldPageState } from "./containers/Maps/WorldPage/types";
-import { IOneRaceState, IRacePageState } from "./containers/Races/RacePage/types";
-import { IOneSubRaceState, ISubRacePageState } from "./containers/Races/SubRacePage/types";
 
 export interface IRootState {
-    racePage: IRacePageState,
-    oneRace: IOneRaceState,
-    subRacePage: ISubRacePageState,
-    oneSubRace: IOneSubRaceState,
     worldPage: IWorldPageState,
     oneWorld: IOneWorldState,
     planePage: IPlanePageState,

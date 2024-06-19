@@ -9,7 +9,8 @@ interface IUpdateCultureData {
 
 interface ICultureFunction {
     pageNumber: number,
-    pageSize: number
+    pageSize: number,
+    resetFullEntryDTO?: (name: string) => Promise<void>
 }
 
 export function CultureFunction(props: ICultureFunction) {
@@ -38,31 +39,7 @@ export function CultureFunction(props: ICultureFunction) {
     }
 
     const editCultureMutation = useMutation({
-        mutationFn: (updateCultureData: IUpdateCultureData) => CultureControllerService.updateCulture(updateCultureData.id, updateCultureData.cultureDTO),
-        async onMutate(updateCultureValues) {
-            await queryClient.cancelQueries({ queryKey: ["culturePage", props.pageNumber, props.pageSize] })
-
-            const previousCulture = queryClient.getQueryData(["culturePage", props.pageNumber, props.pageSize])
-
-            queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize],
-                (oldData: Page<EntryFullDTO>) => {
-                    let newData = oldData
-                    newData.data = newData?.data?.map(culture => {
-                        if (culture.object?.id === updateCultureValues.id) {
-                            culture.object = updateCultureValues.cultureDTO
-                        }
-                        return culture
-                    });
-                    return newData
-                })
-            return { previousCulture, updateCultureValues }
-        },
-        onError: (err, updateCultureValues, context) => {
-            queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize], context!.previousCulture)
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["culturePage", props.pageNumber, props.pageSize] })
-        },
+        mutationFn: (updateCultureData: IUpdateCultureData) => CultureControllerService.updateCulture(updateCultureData.id, updateCultureData.cultureDTO)
     })
 
     async function editCulture(id: number, name: string, shortDescription: string): Promise<void> {
@@ -71,7 +48,20 @@ export function CultureFunction(props: ICultureFunction) {
             name: name,
             shortDescription: shortDescription
         }
-        return editCultureMutation.mutateAsync({ cultureDTO: entryDTO, id: id }).then()
+        return editCultureMutation.mutateAsync({ cultureDTO: entryDTO, id: id }).then(_ => {
+            queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize],
+                (oldData: Page<EntryFullDTO>) => {
+                    if (props.resetFullEntryDTO) props.resetFullEntryDTO(entryDTO.name!)
+                    let newData = oldData
+                    newData.data = newData?.data?.map(culture => {
+                        if (culture.object?.id === entryDTO.id) {
+                            culture.object = entryDTO
+                        }
+                        return culture
+                    });
+                    return newData
+                })
+        })
     }
 
     const deleteCultureMutation = useMutation({

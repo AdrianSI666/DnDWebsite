@@ -1,7 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { CultureControllerService, EntryDTO } from "../../../../services/openapi"
+import { CultureControllerService, EntryDTO, EntryFullDTO } from "../../../../services/openapi"
 
 interface IUpdateCultureData {
     id: number,
@@ -43,6 +43,12 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
             if (location.pathname !== "/cultures/" + name) {
                 navigate('/cultures/' + name);
                 queryClient.removeQueries({ queryKey: ["culture", location.pathname] })
+            } else {
+                queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
+                    let newData = oldData
+                    newData.object = entryDTO
+                    return newData
+                })
             }
         })
     }

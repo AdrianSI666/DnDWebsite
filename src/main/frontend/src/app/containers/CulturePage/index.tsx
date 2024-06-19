@@ -46,7 +46,7 @@ export function CulturePage() {
     if (status === "pending") return <div>Loading...</div>
     if (error) {
         console.log(error.message)
-        return <div>Error trying to get data from server. Please try again later.</div> //Should be a redirect to error page maybe?
+        return <div>Error trying to get data from server. Please try again later.</div>
     }
     return <div>
         <div className="d-grid gap-2">

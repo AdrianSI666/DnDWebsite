@@ -41,6 +41,8 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
             grindNotes(props.entryFullDTO.descriptions!).then(res => {
                 setGrid(res)
             })
+        } else {
+            setGrid(init)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.entryFullDTO.descriptions?.length, props.entryFullDTO.descriptions])

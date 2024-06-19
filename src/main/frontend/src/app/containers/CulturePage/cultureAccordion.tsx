@@ -20,9 +20,6 @@ interface ICultureAccordion {
 }
 
 export function CultureAccordion(props: Readonly<ICultureAccordion>) {
-  const { editCulture, deleteCulture } = CultureFunction({ pageNumber: props.pageNumber, pageSize: props.pageSize })
-  const { saveImageToCulture, deleteImageFromCulture, addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture } = CultureFunctionArray({ name: props.culture.object!.name! });
-  const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = CultureFunctionSubObjects({ name: props.culture.object!.name! });
   const [name, setName] = useState<string | undefined>();
 
   const { status, data } = useQuery({
@@ -34,6 +31,10 @@ export function CultureAccordion(props: Readonly<ICultureAccordion>) {
   const getFullCultureDTO = async (name: string) => {
     setName(name);
   }
+
+  const { editCulture, deleteCulture } = CultureFunction({ pageNumber: props.pageNumber, pageSize: props.pageSize, resetFullEntryDTO: getFullCultureDTO })
+  const { saveImageToCulture, deleteImageFromCulture, addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture } = CultureFunctionArray({ name: props.culture.object!.name! });
+  const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = CultureFunctionSubObjects({ name: props.culture.object!.name! });
 
   if (props.status === "pending") return <div>Loading...</div>;
 

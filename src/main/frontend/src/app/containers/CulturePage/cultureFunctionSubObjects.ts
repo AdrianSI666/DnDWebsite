@@ -19,7 +19,7 @@ interface ICultureSubObjectsFunction {
 export function CultureFunctionSubObjects(props: ICultureSubObjectsFunction) {
   const queryClient = useQueryClient()
   const saveNewRegionToCultureMutation = useMutation({
-    mutationFn: (saveDescriptionToCulture: IAddRegionPayload) => RegionCultureControllerService.addNewRegionCultureRegion(saveDescriptionToCulture.cultureId, saveDescriptionToCulture.regionDTO),
+    mutationFn: (saveDescriptionToCulture: IAddRegionPayload) => RegionCultureControllerService.addNewRegionCultureRelation(saveDescriptionToCulture.cultureId, saveDescriptionToCulture.regionDTO),
   })
 
   const saveNewRegionToCulture = async (cultureId: number, name: string, shortDescription: string): Promise<void> => {

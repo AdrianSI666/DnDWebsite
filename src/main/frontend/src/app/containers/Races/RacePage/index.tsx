@@ -1,102 +1,67 @@
-import { Dispatch, createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
-import { ApiError, EntryDTO, PageInfo, RaceControllerService, RaceDTO } from "../../../../services/openapi";
-import { Page } from "../../../../services/openapi/models/Page";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { RaceFunction } from "./raceFunction";
+import { Accordion } from "react-bootstrap";
+import { ApiError, RaceControllerService, RaceDTO } from "../../../../services/openapi";
 import { AddNewEntryModal } from "../../../components/modals/addNewEntryModal";
 import { CustomPagination } from "../../../components/pagination/pagination";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { RaceAccordion } from "./raceAccordion";
-import { addRace, setRacePage } from "./store/racePageSlice";
-import { makeSelectRacePage } from "./store/selector";
 
-interface IRacePageProps {
-}
+export function RacePage() {
+    const [pageSize, setPageSize] = useState(10);
+    const [pageNumber, setPageNumber] = useState(1)
+    const { saveRace } = RaceFunction({ pageSize, pageNumber })
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    setRacePage: (page: Page<EntryDTO>) => {
-        let fullPage: Page<RaceDTO> = {
-            data: page.data?.map((raceDto) => {
-                let entryFullDTO: RaceDTO = {
-                    race: raceDto,
-                    images: [],
-                    regions: [],
-                    subRaces: [],
-                    descriptions: []
+    const { status, data: racePage, error } = useQuery({
+        queryKey: ["racePage", pageNumber, pageSize],
+        queryFn: async () => RaceControllerService.getRaces({ number: pageNumber, size: pageSize })
+            .then(res => {
+                return {
+                    data: res.data?.map((raceDto) => {
+                        let raceDTO: RaceDTO = {
+                            race: raceDto,
+                            images: [],
+                            regions: [],
+                            subRaces: [],
+                            descriptions: []
+                        }
+                        return raceDTO
+                    }),
+                    currentPage: res.currentPage,
+                    totalPages: res.totalPages
                 }
-                return entryFullDTO
-            }),
-            currentPage: page.currentPage,
-            totalPages: page.totalPages
-        }
-        dispatch(setRacePage(fullPage))
-    },
-    addRace: (race: EntryDTO) => {
-        let entryFullDTO: RaceDTO = {
-            race: race,
-            images: [],
-            regions: [],
-            subRaces: [],
-            descriptions: []
-        }
-        dispatch(addRace(entryFullDTO))
-    }
-})
-
-const stateSelect = createSelector(makeSelectRacePage, (page) => ({
-    page
-}))
-
-export function RacePage(props: IRacePageProps) {
-    const [pageSize, setPageSize] = useState(0);
-    const { page } = useAppSelector(stateSelect);
-    const { setRacePage, addRace } = actionDispatch(useAppDispatch());
-
-    const saveRace = async (name: string, shortDescription: string): Promise<void> => {
-        return RaceControllerService.saveRace({
-            name,
-            shortDescription
-        })
-            .then((response) => {
-                addRace(response);
-            })
-            .catch((err: ApiError) => {
+            }).catch((err: ApiError) => {
                 console.log("My Error: ", err);
                 throw err
-            });
-    }
+            }),
+        placeholderData: keepPreviousData,
+    })
 
     const changeRacePage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
-        let sendSize = pageSize
         if (size && size !== pageSize) {
-            sendSize = size
             setPageSize(size);
         }
-        const pageInfo: PageInfo = {
-            number: value,
-            size: sendSize
-        };
-        if (value !== page.currentPage || sendSize !== pageSize) {
-            RaceControllerService.getRaces(pageInfo)
-                .then((response) => {
-                    setRacePage(response);
-                })
-                .catch((err) => {
-                    console.log("My Error: ", err);
-                });
+        if (value && value !== pageNumber) {
+            setPageNumber(value!);
         }
     }
 
-    useEffect(() => {
-        changeRacePage(undefined, 1, 10);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
+    if (status === "pending") return <div>Loading...</div>
+    if (error) {
+        console.log(error.message)
+        return <div>Error trying to get data from server. Please try again later.</div>
+    }
     return <div>
         <div className="d-grid gap-2">
             <h1>Races</h1>
-            <AddNewEntryModal addNewEntry={saveRace} addButtonActionText={"Add new race"} />
-            <CustomPagination pageSize={pageSize} changePage={changeRacePage} page={page} />
-            <RaceAccordion />
+            <AddNewEntryModal addNewEntry={saveRace} addButtonActionText={"Create new race"} />
+            <CustomPagination pageSize={pageSize} changePage={changeRacePage} page={racePage!} />
+            {racePage.data?.length === 0 && <div>No race created, yet.</div>}
+            <Accordion>
+                {racePage?.data && racePage.data?.map((race) =>
+                    (<RaceAccordion race={race} pageNumber={pageNumber} pageSize={pageSize} status={status} key={race.race?.id}/>)
+                )}
+            </Accordion>
         </div>
     </div>
 }

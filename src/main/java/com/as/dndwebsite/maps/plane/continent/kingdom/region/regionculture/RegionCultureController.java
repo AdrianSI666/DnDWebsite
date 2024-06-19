@@ -42,7 +42,7 @@ public class RegionCultureController {
     }
 
     @PostMapping(path = "/culture/{cultureId}")
-    public ResponseEntity<EntryDTO> addNewRegionCultureRegion(@PathVariable("cultureId") Long cultureId,
+    public ResponseEntity<EntryDTO> addNewRegionCultureRelation(@PathVariable("cultureId") Long cultureId,
                                                               @RequestBody EntryDTO region) {
         EntryDTO newRegion = regionCultureService.addNewRegionToCultureRelation(region, cultureId);
         return ResponseEntity.ok().body(newRegion);
