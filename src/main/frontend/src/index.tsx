@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
 import {
   Route,
   BrowserRouter as Router,
@@ -27,7 +26,6 @@ import { OneRace } from './app/containers/Races/RacePage/OneRace';
 import { SubRacePage } from './app/containers/Races/SubRacePage';
 import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
 import { Root } from './app/containers/RootPage';
-import { store } from './app/store';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -39,7 +37,8 @@ const root = createRoot(container);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 10,
+      staleTime: 1000 * 60,
+      retry: 1
     },
   }
 })
@@ -47,34 +46,32 @@ const queryClient = new QueryClient({
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <Router>
-          <Routes>
-            <Route path={"/"} element={<Root />}>
-              <Route index element={<Home />} />
-              <Route path={"home"} element={<Home />} />
-              <Route path={"cultures"} element={<CulturePage />} />
-              <Route path={"cultures/:name"} element={<OneCulture />} />
-              <Route path={"races"} element={<RacePage />} />
-              <Route path={"races/:name"} element={<OneRace />} />
-              <Route path={"subraces"} element={<SubRacePage />} />
-              <Route path={"subraces/:name"} element={<OneSubRace />} />
-              <Route path={"worlds"} element={<WorldPage />} />
-              <Route path={"worlds/:name"} element={<OneWorld />} />
-              <Route path={"planes"} element={<PlanePage />} />
-              <Route path={"planes/:name"} element={<OnePlane />} />
-              <Route path={"continents"} element={<ContinentPage />} />
-              <Route path={"continents/:name"} element={<OneContinent />} />
-              <Route path={"kingdoms"} element={<KingdomPage />} />
-              <Route path={"kingdoms/:name"} element={<OneKingdom />} />
-              <Route path={"regions"} element={<RegionPage />} />
-              <Route path={"regions/:name"} element={<OneRegion />} />
-              <Route path={"places"} element={<PlacePage />} />
-              <Route path={"places/:name"} element={<OnePlace />} />
-            </Route>
-          </Routes>
-        </Router>
-      </Provider>
+      <Router>
+        <Routes>
+          <Route path={"/"} element={<Root />}>
+            <Route index element={<Home />} />
+            <Route path={"home"} element={<Home />} />
+            <Route path={"cultures"} element={<CulturePage />} />
+            <Route path={"cultures/:name"} element={<OneCulture />} />
+            <Route path={"races"} element={<RacePage />} />
+            <Route path={"races/:name"} element={<OneRace />} />
+            <Route path={"subraces"} element={<SubRacePage />} />
+            <Route path={"subraces/:name"} element={<OneSubRace />} />
+            <Route path={"worlds"} element={<WorldPage />} />
+            <Route path={"worlds/:name"} element={<OneWorld />} />
+            <Route path={"planes"} element={<PlanePage />} />
+            <Route path={"planes/:name"} element={<OnePlane />} />
+            <Route path={"continents"} element={<ContinentPage />} />
+            <Route path={"continents/:name"} element={<OneContinent />} />
+            <Route path={"kingdoms"} element={<KingdomPage />} />
+            <Route path={"kingdoms/:name"} element={<OneKingdom />} />
+            <Route path={"regions"} element={<RegionPage />} />
+            <Route path={"regions/:name"} element={<OneRegion />} />
+            <Route path={"places"} element={<PlacePage />} />
+            <Route path={"places/:name"} element={<OnePlace />} />
+          </Route>
+        </Routes>
+      </Router>
       <ReactQueryDevtools initialIsOpen />
     </QueryClientProvider>
   </React.StrictMode>

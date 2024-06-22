@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { EntryDTO, RaceDTO, RaceSubRaceControllerService, RegionRaceControllerService } from "../../../../services/openapi"
+import { addExistingObjectToRelation } from "../../../components/types"
 
 interface IAddSubObjectPayload {
   raceId: number,
@@ -48,13 +49,13 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
     mutationFn: (saveDescriptionToRace: IRaceSubObjectIdsPayload) => RaceSubRaceControllerService.addSubRaceRelationRace(saveDescriptionToRace.raceId, saveDescriptionToRace.subObjectId),
   })
 
-  const saveExistingSubRaceToRace = async (raceId: number, subRaceId: number, subRaceName: string, subRaceDescription: string): Promise<void> => {
+  const saveExistingSubRaceToRace = async (args: addExistingObjectToRelation): Promise<void> => {
     let entryDTO: EntryDTO = {
-      name: subRaceName,
-      shortDescription: subRaceDescription,
-      id: subRaceId
+      name: args.objectName,
+      shortDescription: args.objectDescription,
+      id: args.objectToAddId
     }
-    return saveSubRaceToRaceMutation.mutateAsync({ raceId, subObjectId: subRaceId }).then(_ => {
+    return saveSubRaceToRaceMutation.mutateAsync({ raceId: args.coreObjectId, subObjectId: args.objectToAddId }).then(_ => {
       queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
         const newData = oldData;
         newData.subRaces?.push(entryDTO)
@@ -102,13 +103,13 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
     mutationFn: (saveDescriptionToRace: IRaceSubObjectIdsPayload) => RegionRaceControllerService.addRegionRaceRelation(saveDescriptionToRace.subObjectId, saveDescriptionToRace.raceId),
   })
 
-  const saveExistingRegionToRace = async (raceId: number, regionId: number, regionName: string, regionShortDescription: string): Promise<void> => {
+  const saveExistingRegionToRace = async (args: addExistingObjectToRelation): Promise<void> => {
     let entryDTO: EntryDTO = {
-      name: regionName,
-      shortDescription: regionShortDescription,
-      id: regionId
+      name: args.objectName,
+      shortDescription: args.objectDescription,
+      id: args.objectToAddId
     }
-    return saveRegionToRaceMutation.mutateAsync({ raceId, subObjectId: regionId }).then(_ => {
+    return saveRegionToRaceMutation.mutateAsync({ raceId: args.coreObjectId, subObjectId: args.objectToAddId }).then(_ => {
       queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
         const newData = oldData;
         newData.regions?.push(entryDTO)

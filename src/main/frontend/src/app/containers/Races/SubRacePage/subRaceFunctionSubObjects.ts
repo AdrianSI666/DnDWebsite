@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { EntryDTO, SubRaceDTO, RegionSubRaceControllerService } from "../../../../services/openapi"
+import { addExistingObjectToRelation } from "../../../components/types"
 
 interface IAddSubObjectPayload {
   subRaceId: number,
@@ -43,13 +44,13 @@ export function SubRaceFunctionSubObjects(props: ISubRaceSubObjectsFunction) {
       RegionSubRaceControllerService.addRegionSubRaceRelation(saveDescriptionToSubRace.subObjectId, saveDescriptionToSubRace.subRaceId),
   })
 
-  const saveExistingRegionToSubRace = async (subRaceId: number, regionId: number, regionName: string, regionShortDescription: string): Promise<void> => {
+  const saveExistingRegionToSubRace = async (args: addExistingObjectToRelation): Promise<void> => {
     let entryDTO: EntryDTO = {
-      name: regionName,
-      shortDescription: regionShortDescription,
-      id: regionId
+      name: args.objectName,
+      shortDescription: args.objectDescription,
+      id: args.objectToAddId
     }
-    return saveRegionToSubRaceMutation.mutateAsync({ subRaceId, subObjectId: regionId }).then(_ => {
+    return saveRegionToSubRaceMutation.mutateAsync({ subRaceId: args.coreObjectId, subObjectId: args.objectToAddId }).then(_ => {
       queryClient.setQueryData(["subRace", props.name], (oldData: SubRaceDTO) => {
         const newData = oldData;
         newData.regions?.push(entryDTO)

@@ -48,22 +48,22 @@ export function SubRaceAccordion(props: Readonly<ISubRaceAccordionBody>) {
         descriptions: [],
         images: []
     }
-    return (<AccordionHeaderLayout categoryName={"subRace"} updateEntry={editSubRace}
+    return (<AccordionHeaderLayout categoryName={"Subrace"} updateEntry={editSubRace}
         deleteEntry={deleteSubRace} deleteMainObjectButtonActionText={"Delete"}
         entryFullDTO={entryFullDTO} fetchFullValue={getFullSubRaceDTO} key={props.subRace.subRace?.id}>
         {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
         {data && <Accordion.Body>
-            <DomCategoryBody categoryName={"SubRace"} mainEntryId={props.subRace.subRace?.id!}
-                descriptionOfConnectionString={"Sub race of"} descriptionOfNullConnectionString={"This sub race doesn't have main race."}
+            <DomCategoryBody categoryName={"Subrace"} mainEntryId={props.subRace.subRace?.id!}
+                descriptionOfConnectionString={"Subrace of"} descriptionOfNullConnectionString={"This subrace doesn't have main race."}
                 domObject={props.subRace.race}
                 domCategoryName={"Race"} domCategoryLink={"races"}
                 fillTheListWithAllSubObjects={getAllRaces}
                 setNewDomEntryToRelation={setNewRaceToSubRace}
                 addExistingObjectToRelation={setExistingRaceToSubRace}
                 deleteSubObject={removeRaceFromSubRaceFunction}
-                addButtonActionText={`Set new core race of ${props.subRace.subRace?.name}`}
-                deleteButtonActionText={`Unset core race of ${props.subRace.subRace?.name}`}
-                addExistingButtonActionText={`Set core race for ${props.subRace.subRace?.name} from list`} />
+                addButtonActionText={`Set new core race of ${data.subRace?.name}`}
+                deleteButtonActionText={`Unset core race of ${data.subRace?.name}`}
+                addExistingButtonActionText={`Set core race for ${data.subRace?.name} from list`} />
             <FullEntryAccordionBody categoryName={"SubRace"}
                 entryFullDTO={{
                     object: data?.subRace,
@@ -85,9 +85,9 @@ export function SubRaceAccordion(props: Readonly<ISubRaceAccordionBody>) {
                 addExistingObjectToRelation={saveExistingRegionToSubRace}
                 deleteSubObject={removeRegionFromSubRaceFunction}
                 addNewSubEntryToRelation={saveNewRegionToSubRace}
-                addButtonActionText={"Add new region in which this sub race is present"}
-                deleteButtonActionText={"Remove region in which this sub race is present"}
-                addExistingButtonActionText={"Add region from the list in which this sub race is present"}
+                addButtonActionText={"Add new region in which this subrace is present"}
+                deleteButtonActionText={"Remove region in which this subrace is present"}
+                addExistingButtonActionText={"Add region from the list in which this subrace is present"}
                 subCategoryLinkText={"region"} />
         </Accordion.Body>}
     </AccordionHeaderLayout>

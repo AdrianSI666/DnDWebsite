@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { EntryDTO, RaceControllerService, RaceSubRaceControllerService, SubRaceDTO } from "../../../../services/openapi"
+import { addExistingObjectToRelation } from "../../../components/types"
 
 interface IAddDomObjectPayload {
     subRaceId: number,
@@ -49,13 +50,13 @@ export function SubRaceFunctionDomObjects(props: ISubRaceFunctionDomObjects) {
         mutationFn: (payload: ISubRaceSubObjectIdsPayload) => RaceSubRaceControllerService.addSubRaceRelationRace(payload.subObjectId, payload.subRaceId),
     })
 
-    const setExistingRaceToSubRace = async (raceId: number, subRaceId: number, subRaceName: string, subRaceDescription: string): Promise<void> => {
+    const setExistingRaceToSubRace = async (args: addExistingObjectToRelation): Promise<void> => {
         let entryDTO: EntryDTO = {
-            name: subRaceName,
-            shortDescription: subRaceDescription,
-            id: subRaceId
+            name: args.objectName,
+            shortDescription: args.objectDescription,
+            id: args.objectToAddId
         }
-        return setRaceToSubRaceMutation.mutateAsync({ subRaceId, subObjectId: raceId }).then(_ => {
+        return setRaceToSubRaceMutation.mutateAsync({ subRaceId: args.coreObjectId, subObjectId: args.objectToAddId }).then(_ => {
             queryClient.setQueryData(["subRace", props.name], (oldData: SubRaceDTO) => {
                 const newData = oldData;
                 newData.race = entryDTO

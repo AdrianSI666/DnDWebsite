@@ -1,53 +1,68 @@
-import { createSelector } from "reselect";
-import { makeSelectPlacePage } from "./store/selector";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { PlaceControllerService, EntryFullDTO } from "../../../../services/openapi";
-import { fillPlaceData } from "./store/placePageSlice";
-import { Dispatch } from "@reduxjs/toolkit";
-import { PlaceAccordionBody } from "./placeAccordionBody";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { Accordion } from "react-bootstrap";
+import { EntryFullDTO, PlaceControllerService } from "../../../../services/openapi";
+import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
+import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
+import '../../../styles/masonary.css';
+import "../../../styles/subObjects.css";
 import { PlaceFunction } from "./function/placeFunction";
+import { PlaceFunctionArray } from "./function/placeFunctionArrays";
+import { PlaceFunctionDomObjects } from "./function/placeFunctionDomObjects";
 import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
-import { PlaceDispatcher } from "./store/dispatcher";
 
-const statePlacePageSelect = createSelector(makeSelectPlacePage, (page) => ({
-  page
-}))
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  fillPlaceData: (data: EntryFullDTO) => {
-    dispatch(fillPlaceData(data))
-  }
-})
+interface IPlaceAccordion {
+    place: EntryFullDTO,
+    pageNumber: number,
+    pageSize: number,
+    status: string
+}
 
-export function PlaceAccordion() {
-  const { page } = useAppSelector(statePlacePageSelect);
-  const isLoading = !page || page.data === undefined
-  const isEmptyPage = page.data?.length === 0
-  const { fillPlaceData } = actionDispatch(useAppDispatch());
-  const { removePlace, updatePlace } = PlaceDispatcher();
-  const { deletePlace, editPlace } = PlaceFunction({
-    removePlace, updatePlace
-  });
-  const fetchPlaceData = async (name: string) => {
-    PlaceControllerService.getPlaceByName(name)
-      .then((response) => {
-        fillPlaceData(response);
-      })
-      .catch((err) => {
-        console.log("My Error: ", err);
-      });
-  }
-  
-  if (isEmptyPage) return <div>No places created, yet.</div>;
-  if (isLoading) return <div>Loading...</div>;
+export function PlaceAccordion(props: Readonly<IPlaceAccordion>) {
+    const [name, setName] = useState<string | undefined>();
 
-  return <div className='lightbox'>
-    {page && page.data && page.data.map((place) => (
-      <AccordionHeaderLayout categoryName={"place"} updateEntry={editPlace}
+    const { status, data } = useQuery({
+        queryKey: ["place", name],
+        queryFn: async () => PlaceControllerService.getPlaceByName(name!),
+        enabled: !!name,
+    })
+
+    const getFullPlaceDTO = async (name: string) => {
+        setName(name);
+    }
+
+    const { editPlace, deletePlace } = PlaceFunction({ pageNumber: props.pageNumber, pageSize: props.pageSize, resetFullPlaceDTO: getFullPlaceDTO })
+    const { saveImageToPlace, deleteImageFromPlace, addNewDesctiptionToPlace, updatePlaceDescription, deleteDescriptionFromPlace } = PlaceFunctionArray({ name: props.place!.object!.name! });
+    const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceFunctionDomObjects({ name: props.place!.object!.name! });
+
+    if (props.status === "pending") return <div>Loading...</div>;
+    return (<AccordionHeaderLayout categoryName={"place"} updateEntry={editPlace}
         deleteEntry={deletePlace} deleteMainObjectButtonActionText={"Delete"}
-        entryFullDTO={place} fetchFullValue={fetchPlaceData} key={place.object?.id}>
-        <PlaceAccordionBody place={place} />
-      </AccordionHeaderLayout>
-    ))}
-  </div>
+        entryFullDTO={props.place} fetchFullValue={getFullPlaceDTO} key={props.place.object?.id}>
+        {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
+        {data &&
+            <Accordion.Body>
+                <DomCategoryBody categoryName={"Place"} mainEntryId={data.object?.id!}
+                    descriptionOfConnectionString={"Region of"} descriptionOfNullConnectionString={"This place isn't linked to any region."}
+                    domObject={data.domObjects}
+                    domCategoryName={"Region"} domCategoryLink={"regions"}
+                    fillTheListWithAllSubObjects={getAllRegions}
+                    setNewDomEntryToRelation={setNewRegionToPlace}
+                    addExistingObjectToRelation={setExistingRegionToPlace}
+                    deleteSubObject={removeRegionFromPlaceFunction}
+                    addButtonActionText={`Set new region to ${data.object?.name}`}
+                    deleteButtonActionText={`Unlink this place from region`}
+                    addExistingButtonActionText={`Set existing region to ${data.object?.name}`} />
+                <FullEntryAccordionBody categoryName={"Place"} entryFullDTO={data}
+                    saveImageToEntry={saveImageToPlace}
+                    deleteImageFromEntry={deleteImageFromPlace}
+                    deleteImageButtonActionText={"Delete image"}
+                    addNewDescriptionToEntry={addNewDesctiptionToPlace}
+                    updateDescription={updatePlaceDescription}
+                    deleteDescriptionFromEntry={deleteDescriptionFromPlace} />
+            </Accordion.Body>
+        }
+    </AccordionHeaderLayout>
+    )
 }

@@ -7,7 +7,7 @@ import { SubCategoryBody } from "../../../../components/accordions/subCategoryBo
 import { getAllRegions } from "../../../../globalFunctions/RegionHooks";
 import { RaceFunctionArray } from "../raceFunctionArrays";
 import { RaceFunctionSubObjects } from "../raceFunctionSubObjects";
-import { UseOneRaceObjectFunction } from "./useOneRaceObjectFunction";
+import { UseOneRaceFunction } from "./useOneRaceFunction";
 
 export function OneRace() {
     let { name } = useParams();
@@ -16,7 +16,7 @@ export function OneRace() {
         queryFn: async () => RaceControllerService.getRaceByName(name!)
     })
 
-    const { removeRace, editRace } = UseOneRaceObjectFunction({ name: name! });
+    const { removeRace, editRace } = UseOneRaceFunction({ name: name! });
     const { saveImageToRace, deleteImageFromRace,
         addNewDesctiptionToRace, updateRaceDescription, deleteDescriptionFromRace } = RaceFunctionArray({ name: name! })
     const { getAllSubRaces, removeSubRaceFromRaceFunction, saveNewSubRaceToRace, saveExistingSubRaceToRace,
@@ -30,7 +30,7 @@ export function OneRace() {
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this race"}
         deleteEntry={removeRace}
-        updateEntry={editRace} categoryName={"race"} entryFullDTO={{
+        updateEntry={editRace} categoryName={"Race"} entryFullDTO={{
             object: raceDTO.race,
             images: raceDTO.images,
             domObjects: {},
@@ -57,10 +57,10 @@ export function OneRace() {
             addNewSubEntryToRelation={saveNewSubRaceToRace}
             addExistingObjectToRelation={saveExistingSubRaceToRace}
             deleteSubObject={removeSubRaceFromRaceFunction}
-            addButtonActionText={"Add new sub race that originated from this race"}
-            addExistingButtonActionText={"Link existing sub race to this main race"}
-            deleteButtonActionText={`Unlink this sub race from ${raceDTO.race?.name}`}
-            subCategoryLinkText={"sub race"} />
+            addButtonActionText={"Add new subrace that originated from this race"}
+            addExistingButtonActionText={"Link existing subrace to this main race"}
+            deleteButtonActionText={`Unlink this subrace from ${raceDTO.race?.name}`}
+            subCategoryLinkText={"subrace"} />
         <SubCategoryBody mainEntryId={raceDTO.race?.id!}
             subObjects={raceDTO.regions}
             subCategoryTitle={"Regions"} subCategoryLink={"regions"}

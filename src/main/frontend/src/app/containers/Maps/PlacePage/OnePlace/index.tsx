@@ -1,59 +1,35 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
-import { useAppSelector } from "../../../../hooks";
-
+import { PlaceControllerService } from "../../../../../services/openapi";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
+import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
-import { PlaceDomRegionFunction } from "../function/placeDomRegionFunction";
-import { PlaceFunction } from "../function/placeFunction";
-import { OnePlaceDispatcher } from "./store/dispatcher";
-import { makeSelectOnePlace } from "./store/selector";
-import { UseOnePlaceObjectFunction } from "./useOnePlaceFunction";
+import { PlaceFunctionArray } from "../function/placeFunctionArrays";
+import { PlaceFunctionDomObjects } from "../function/placeFunctionDomObjects";
+import { UseOnePlaceFunction } from "./useOnePlaceFunction";
+import { useQuery } from "@tanstack/react-query";
 
-interface IOnePlaceProps {
-}
 
-const onePlaceSelect = createSelector(makeSelectOnePlace, (placeDTO) => ({
-    placeDTO
-}))
-
-export function OnePlace(props: IOnePlaceProps) {
+export function OnePlace() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { placeDTO } = useAppSelector(onePlaceSelect);
-    const { addImageToPlace, removeImageFromPlace, updatePlace, addNewStatePlaceDescription, updateStatePlaceDescription, removeStatePlaceDescription } = OnePlaceDispatcher();
-    const { fetchPlace, removePlace } = UseOnePlaceObjectFunction();
-
-    const { editPlace, saveImageToPlace, deleteImageFromPlace, addNewDesctiptionToPlace, updatePlaceDescription, deleteDescriptionFromPlace } = PlaceFunction({
-        addImageToOnePlace: addImageToPlace,
-        removeImageFromOnePlace: removeImageFromPlace,
-        updateOnePlace: updatePlace,
-        addNewDescriptionOnePlace: addNewStatePlaceDescription,
-        updateStateOnePlaceDescription: updateStatePlaceDescription,
-        removeDescriptionFromOnePlace: removeStatePlaceDescription
+    const { status, data: placeDTO, error } = useQuery({
+        queryKey: ["place", name],
+        queryFn: async () => PlaceControllerService.getPlaceByName(name!)
     })
 
-    const { setRegionToPlace, removeRegionFromPlace } = OnePlaceDispatcher();
-    const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceDomRegionFunction({
-        setRegionToOnePlace: setRegionToPlace,
-        removeRegionFromOnePlace: removeRegionFromPlace
-    });
+    const { removePlace, editPlace } = UseOnePlaceFunction({ name: name! });
+    const { saveImageToPlace, deleteImageFromPlace,
+        addNewDesctiptionToPlace, updatePlaceDescription, deleteDescriptionFromPlace } = PlaceFunctionArray({ name: name! })
+    const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceFunctionDomObjects({ name: name! });
 
-    useEffect(() => {
-        fetchPlace(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    if (!exist) return <div>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
         <h1>Place named {name} doesn't exist.</h1>
     </div>;
 
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this place"}
         deleteEntry={removePlace}
-        updateEntry={editPlace} categoryName={"place"}
+        updateEntry={editPlace} categoryName={"Place"}
         entryFullDTO={placeDTO}>
         <DomCategoryBody categoryName={"Region"} mainEntryId={placeDTO.object?.id!}
             descriptionOfConnectionString={"Region of"} descriptionOfNullConnectionString={"This place isn't linked to any region."}

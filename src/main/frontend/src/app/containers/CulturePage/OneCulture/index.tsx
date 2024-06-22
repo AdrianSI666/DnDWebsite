@@ -29,7 +29,7 @@ export function OneCulture() {
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this culture"}
         deleteEntry={removeCulture}
-        updateEntry={editCulture} categoryName={"culture"} entryFullDTO={culture}>
+        updateEntry={editCulture} categoryName={"Culture"} entryFullDTO={culture}>
         <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={culture}
             saveImageToEntry={saveImageToCulture}
             deleteImageFromEntry={deleteImageFromCulture}

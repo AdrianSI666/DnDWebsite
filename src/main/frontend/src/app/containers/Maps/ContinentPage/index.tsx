@@ -1,102 +1,67 @@
-import { Dispatch, createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
-import { ApiError, ContinentControllerService, EntryDTO, EntryFullDTO, PageInfo } from "../../../../services/openapi";
-import { Page } from "../../../../services/openapi/models/Page";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { ContinentFunction } from "./continentFunction";
+import { Accordion } from "react-bootstrap";
+import { ApiError, EntryFullDTO, ContinentControllerService } from "../../../../services/openapi";
 import { AddNewEntryModal } from "../../../components/modals/addNewEntryModal";
 import { CustomPagination } from "../../../components/pagination/pagination";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { ContinentAccordion } from "./continentAccordion";
-import { addContinent, setContinentPage } from "./store/continentPageSlice";
-import { makeSelectContinentPage } from "./store/selector";
 
-interface IContinentPageProps {
-}
+export function ContinentPage() {
+    const [pageSize, setPageSize] = useState(10);
+    const [pageNumber, setPageNumber] = useState(1)
+    const { saveContinent } = ContinentFunction({ pageSize, pageNumber })
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    setContinentPage: (page: Page<EntryDTO>) => {
-        let fullPage: Page<EntryFullDTO> = {
-            data: page.data?.map((continentDTO) => {
-                let entryFullDTO: EntryFullDTO = {
-                    object: continentDTO,
-                    images: [],
-                    domObjects: {},
-                    subObjects: [],
-                    descriptions: []
+    const { status, data: continentPage, error } = useQuery({
+        queryKey: ["continentPage", pageNumber, pageSize],
+        queryFn: async () => ContinentControllerService.getContinents({ number: pageNumber, size: pageSize })
+            .then(res => {
+                return {
+                    data: res.data?.map((continentDto) => {
+                        let continentDTO: EntryFullDTO = {
+                            object: continentDto,
+                            images: [],
+                            subObjects: [],
+                            descriptions: [],
+                            domObjects: {}
+                        }
+                        return continentDTO
+                    }),
+                    currentPage: res.currentPage,
+                    totalPages: res.totalPages
                 }
-                return entryFullDTO
-            }),
-            currentPage: page.currentPage,
-            totalPages: page.totalPages
-        }
-        dispatch(setContinentPage(fullPage))
-    },
-    addContinent: (Continent: EntryDTO) => {
-        let entryFullDTO: EntryFullDTO = {
-            object: Continent,
-            images: [],
-            domObjects: {},
-            subObjects: [],
-            descriptions: []
-        }
-        dispatch(addContinent(entryFullDTO))
-    }
-})
-
-const stateSelect = createSelector(makeSelectContinentPage, (page) => ({
-    page
-}))
-
-export function ContinentPage(props: IContinentPageProps) {
-    const [pageSize, setPageSize] = useState(0);
-    const { page } = useAppSelector(stateSelect);
-    const { setContinentPage, addContinent } = actionDispatch(useAppDispatch());
-
-    const saveContinent = async (name: string, shortDescription: string): Promise<void> => {
-        return ContinentControllerService.saveContinent({
-            name,
-            shortDescription
-        })
-            .then((response) => {
-                addContinent(response);
-            })
-            .catch((err: ApiError) => {
+            }).catch((err: ApiError) => {
                 console.log("My Error: ", err);
                 throw err
-            });
-    }
+            }),
+        placeholderData: keepPreviousData,
+    })
 
     const changeContinentPage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
-        let sendSize = pageSize
         if (size && size !== pageSize) {
-            sendSize = size
             setPageSize(size);
         }
-        const pageInfo: PageInfo = {
-            number: value,
-            size: sendSize
-        };
-        if (value !== page.currentPage || sendSize !== pageSize) {
-            ContinentControllerService.getContinents(pageInfo)
-                .then((response) => {
-                    setContinentPage(response);
-                })
-                .catch((err) => {
-                    console.log("My Error: ", err);
-                });
+        if (value && value !== pageNumber) {
+            setPageNumber(value!);
         }
     }
 
-    useEffect(() => {
-        changeContinentPage(undefined, 1, 10);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
+    if (status === "pending") return <div>Loading...</div>
+    if (error) {
+        console.log(error.message)
+        return <div>Error trying to get data from server. Please try again later.</div>
+    }
     return <div>
         <div className="d-grid gap-2">
             <h1>Continents</h1>
-            <AddNewEntryModal addNewEntry={saveContinent} addButtonActionText={"Create new Continent"} />
-            <CustomPagination pageSize={pageSize} changePage={changeContinentPage} page={page} />
-            <ContinentAccordion />
+            <AddNewEntryModal addNewEntry={saveContinent} addButtonActionText={"Create new continent"} />
+            <CustomPagination pageSize={pageSize} changePage={changeContinentPage} page={continentPage!} />
+            {continentPage.data?.length === 0 && <div>No continents created, yet.</div>}
+            <Accordion>
+                {continentPage?.data && continentPage.data?.map((continent) =>
+                    (<ContinentAccordion continent={continent} pageNumber={pageNumber} pageSize={pageSize} status={status} key={continent.object?.id}/>)
+                )}
+            </Accordion>
         </div>
     </div>
 }

@@ -1,57 +1,26 @@
-
-import { Dispatch } from "@reduxjs/toolkit"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { ApiError, DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO, PlaneControllerService } from "../../../../../services/openapi"
-import { useAppDispatch } from "../../../../hooks"
-import { addImageToPlane, addPlaneDescription, removeImageFromPlane, removePlaneDescription, setPlane, updatePlane, updatePlaneDescription } from "./store/onePlaneSlice"
-import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction"
+import { EntryDTO, EntryFullDTO, PlaneControllerService } from "../../../../../services/openapi"
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    setPlane: (plane: EntryFullDTO) => {
-        dispatch(setPlane(plane))
-    },
-    updatePlane: (plane: EntryDTO) => {
-        dispatch(updatePlane(plane))
-    },
+interface IUpdatePlaneData {
+    id: number,
+    entryFullDTO: EntryDTO
+}
 
-    addNewStatePlaneDescription: (descriptionDTO: DescriptionDTO) => {
-        dispatch(addPlaneDescription(descriptionDTO))
-    },
-    updateStatePlaneDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(updatePlaneDescription({ descriptionId, descriptionDTO }))
-    },
-    removeStatePlaneDescription: (descriptionId: number) => {
-        dispatch(removePlaneDescription(descriptionId))
-    },
+interface IUseOnePlaneFunction {
+    name: string
+}
 
-    addImageToPlane: (imageDTO: ImageDTO) => {
-        dispatch(addImageToPlane(imageDTO))
-    },
-    removeImageFromPlane: (imageId: number) => {
-        dispatch(removeImageFromPlane(imageId))
-    },
-})
-
-export function UseOnePlaneObjectFunction() {
-    const { setPlane, addImageToPlane, removeImageFromPlane, updatePlane, addNewStatePlaneDescription, updateStatePlaneDescription, removeStatePlaneDescription } = actionDispatch(useAppDispatch());
-    const { updateDescription } = GlobalDescriptionFunction({ updateOneEntryDescription: updateStatePlaneDescription })
+export function UseOnePlaneFunction(props: IUseOnePlaneFunction) {
+    const queryClient = useQueryClient()
     const navigate = useNavigate();
     const location = useLocation();
-    const fetchPlane = async (name: string): Promise<boolean> => {
-        return PlaneControllerService.getPlaneByName(name)
-            .then((response) => {
-                setPlane(response)
-                return true
-            })
-            .catch((_) => {
-                return false
-            })
-    }
 
     const removePlane = async (id: number) => {
         return PlaneControllerService.deletePlane(id)
             .then((_) => {
-                navigate("/Planes")
+                navigate("/planes")
+                queryClient.removeQueries({ queryKey: ["plane", props.name] })
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -59,73 +28,29 @@ export function UseOnePlaneObjectFunction() {
             });
     }
 
-    const editPlane = async (id: number, name: string, shortDescription: string) => {
+    const editPlaneMutation = useMutation({
+        mutationFn: (updatePlaneData: IUpdatePlaneData) => PlaneControllerService.updatePlane(updatePlaneData.id, updatePlaneData.entryFullDTO)
+    })
+
+    async function editPlane(id: number, name: string, shortDescription: string): Promise<void> {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
             shortDescription: shortDescription
         }
-        return PlaneControllerService.updatePlane(id, entryDTO)
-            .then((_) => {
-                updatePlane(entryDTO)
-                if (location.pathname !== "/planes/" + name) navigate('/planes/' + name);
-            })
-            .catch((err) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+        return editPlaneMutation.mutateAsync({ entryFullDTO: entryDTO, id: id }).then(_ => {
+            if (location.pathname !== "/planes/" + name) {
+                navigate('/planes/' + name);
+                queryClient.removeQueries({ queryKey: ["plane", location.pathname] })
+            } else {
+                queryClient.setQueryData(["plane", props.name], (oldData: EntryFullDTO) => {
+                    let newData = oldData
+                    newData.object = entryDTO
+                    return newData
+                })
+            }
+        })
     }
 
-    async function addNewDesctiptionToPlane(id: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            title: title,
-            text: text
-        }
-        return PlaneControllerService.saveDescriptionToPlane(id, descriptionDTO)
-            .then((res) => addNewStatePlaneDescription(res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function updatePlaneDescription(worldId: number, descriptionId: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            id: descriptionId,
-            title: title,
-            text: text
-        }
-        return updateDescription(worldId, descriptionId, descriptionDTO);
-    }
-
-    async function deleteDescriptionFromPlane(worldId: number, descriptionId: number) {
-        return PlaneControllerService.deleteDescriptionFromPlane(worldId, descriptionId)
-            .then((res) => removeStatePlaneDescription(descriptionId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const saveImageToPlane = async (acceptedFiles: Blob, id: number) => {
-        return PlaneControllerService.saveImageToPlane(id, { image: acceptedFiles })
-            .then((res) => addImageToPlane(res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const deleteImageFromPlane = async (planeId: number, imageId: number) => {
-        return PlaneControllerService.deleteImageFromPlane(planeId, imageId)
-            .then(() => removeImageFromPlane(imageId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    return { fetchPlane, removePlane, editPlane,
-        addNewDesctiptionToPlane, deleteDescriptionFromPlane, updatePlaneDescription,
-        saveImageToPlane, deleteImageFromPlane };
+    return { removePlane, editPlane };
 }

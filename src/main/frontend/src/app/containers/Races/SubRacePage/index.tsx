@@ -53,10 +53,10 @@ export function SubRacePage() {
     }
     return <div>
         <div className="d-grid gap-2">
-            <h1>SubRaces</h1>
+            <h1>Subraces</h1>
             <AddNewEntryModal addNewEntry={saveSubRace} addButtonActionText={"Create new subrace"} />
             <CustomPagination pageSize={pageSize} changePage={changeSubRacePage} page={subRacePage!} />
-            {subRacePage.data?.length === 0 && <div>No subrace created, yet.</div>}
+            {subRacePage.data?.length === 0 && <div>No subraces created, yet.</div>}
             <Accordion>
                 {subRacePage?.data && subRacePage.data?.map((subRace) =>
                     (<SubRaceAccordion subRace={subRace} pageNumber={pageNumber} pageSize={pageSize} status={status} key={subRace.subRace?.id}/>)

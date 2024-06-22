@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { EntryDTO, EntryFullDTO, RegionCultureControllerService } from "../../../services/openapi";
+import { addExistingObjectToRelation } from "../../components/types";
 
 interface IAddRegionPayload {
   cultureId: number,
@@ -40,13 +41,13 @@ export function CultureFunctionSubObjects(props: ICultureSubObjectsFunction) {
     mutationFn: (saveDescriptionToCulture: IRemoveRegionPayload) => RegionCultureControllerService.addRegionCultureRelation(saveDescriptionToCulture.regionId, saveDescriptionToCulture.cultureId),
   })
 
-  const saveExistingRegionToCulture = async (cultureId: number, regionId: number, regionName: string, regionShortDescription: string): Promise<void> => {
+  const saveExistingRegionToCulture = async (args: addExistingObjectToRelation): Promise<void> => {
     let entryDTO: EntryDTO = {
-      name: regionName,
-      shortDescription: regionShortDescription,
-      id: regionId
+      name: args.objectName,
+      shortDescription: args.objectDescription,
+      id: args.objectToAddId
     }
-    return saveRegionToCultureMutation.mutateAsync({ cultureId, regionId }).then(_ => {
+    return saveRegionToCultureMutation.mutateAsync({ cultureId: args.coreObjectId, regionId: args.objectToAddId }).then(_ => {
       queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
         const newData = oldData;
         newData.subObjects?.push(entryDTO)

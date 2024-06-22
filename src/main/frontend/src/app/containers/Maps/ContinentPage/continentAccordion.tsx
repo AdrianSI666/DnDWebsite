@@ -1,48 +1,82 @@
-import { Dispatch } from "@reduxjs/toolkit";
-import { createSelector } from "reselect";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { Accordion } from "react-bootstrap";
 import { ContinentControllerService, EntryFullDTO } from "../../../../services/openapi";
 import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { ContinentAccordionBody } from "./continentAccordionBody";
+import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
+import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
+import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
+import '../../../styles/masonary.css';
+import "../../../styles/subObjects.css";
 import { ContinentFunction } from "./continentFunction";
-import { fillContinentData } from "./store/continentPageSlice";
-import { makeSelectContinentPage } from "./store/selector";
+import { ContinentFunctionArray } from "./continentFunctionArrays";
+import { ContinentFunctionSubObjects } from "./continentFunctionSubObjects";
+import { ContinentFunctionDomObjects } from "./continentFunctionDomObjects";
 
-const stateContinentPageSelect = createSelector(makeSelectContinentPage, (page) => ({
-  page
-}))
+interface IContinentAccordionBody {
+    continent: EntryFullDTO,
+    pageNumber: number,
+    pageSize: number,
+    status: string
+}
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  fillContinentData: (data: EntryFullDTO) => {
-    dispatch(fillContinentData(data))
-  }
-})
+export function ContinentAccordion(props: Readonly<IContinentAccordionBody>) {
+    const [name, setName] = useState<string | undefined>();
 
-export function ContinentAccordion() {
-  const { page } = useAppSelector(stateContinentPageSelect);
-  const isLoading = !page || page.data === undefined
-  const isEmptyPage = page.data?.length === 0
-  const { fillContinentData } = actionDispatch(useAppDispatch());
-  const fetchContinentData = async (name: string) => {
-    ContinentControllerService.getContinentByName(name)
-      .then((response) => {
-        fillContinentData(response);
-      })
-      .catch((err) => {
-        console.log("My Error: ", err);
-      });
-  }
-  const { deleteContinent, editContinent } = ContinentFunction();
-  if (isEmptyPage) return <div>No continents created, yet.</div>;
-  if (isLoading) return <div>Loading...</div>;
+    const { status, data } = useQuery({
+        queryKey: ["continent", name],
+        queryFn: async () => ContinentControllerService.getContinentByName(name!),
+        enabled: !!name,
+    })
 
-  return <div className='lightbox'>
-    {page && page.data && page.data.map((continent) => (
-      <AccordionHeaderLayout categoryName={"continent"} updateEntry={editContinent}
+    const getFullContinentDTO = async (name: string) => {
+        setName(name);
+    }
+
+    const { editContinent, deleteContinent } = ContinentFunction({ pageNumber: props.pageNumber, pageSize: props.pageSize, resetFullContinentDTO: getFullContinentDTO })
+    const { saveImageToContinent, deleteImageFromContinent, addNewDesctiptionToContinent, updateContinentDescription, deleteDescriptionFromContinent } = ContinentFunctionArray({ name: props.continent!.object!.name! });
+    const { getAllKingdomsWithoutContinent,
+        saveExistingKingdomToContinent, removeKingdomFromContinentFunction, saveNewKingdomToContinent } = ContinentFunctionSubObjects({ name: props.continent!.object!.name! });
+    const { setNewPlaneToContinent, setExistingPlaneToContinent, removePlaneFromContinentFunction, getAllPlanes } = ContinentFunctionDomObjects({ name: props.continent!.object!.name! });
+
+
+    if (props.status === "pending") return <div>Loading...</div>;
+    return (<AccordionHeaderLayout categoryName={"continent"} updateEntry={editContinent}
         deleteEntry={deleteContinent} deleteMainObjectButtonActionText={"Delete"}
-        entryFullDTO={continent} fetchFullValue={fetchContinentData} key={continent.object?.id}>
-        <ContinentAccordionBody continent={continent} />
-      </AccordionHeaderLayout>
-    ))}
-  </div>
+        entryFullDTO={props.continent} fetchFullValue={getFullContinentDTO} key={props.continent.object?.id}>
+        {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
+        {data && <Accordion.Body>
+            <DomCategoryBody categoryName={"Continent"} mainEntryId={data.object?.id!}
+                descriptionOfConnectionString={"Plane of"} descriptionOfNullConnectionString={"This continent isn't linked to any plane."}
+                domObject={data.domObjects}
+                domCategoryName={"Plane"} domCategoryLink={"planes"}
+                fillTheListWithAllSubObjects={getAllPlanes}
+                setNewDomEntryToRelation={setNewPlaneToContinent}
+                addExistingObjectToRelation={setExistingPlaneToContinent}
+                deleteSubObject={removePlaneFromContinentFunction}
+                addButtonActionText={`Set new plane to ${data.object?.name}`}
+                deleteButtonActionText={`Unlink this continent from plane`}
+                addExistingButtonActionText={`Set existing plane to ${data.object?.name}`} />
+            <FullEntryAccordionBody categoryName={"Continent"} entryFullDTO={data}
+                saveImageToEntry={saveImageToContinent}
+                deleteImageFromEntry={deleteImageFromContinent}
+                deleteImageButtonActionText={"Delete image"}
+                addNewDescriptionToEntry={addNewDesctiptionToContinent}
+                updateDescription={updateContinentDescription}
+                deleteDescriptionFromEntry={deleteDescriptionFromContinent} />
+            <SubCategoryBody mainEntryId={data.object?.id!}
+                subObjects={data.subObjects}
+                subCategoryTitle={"Kingdoms"} subCategoryLink={"kingdoms"}
+                fillTheListWithAllSubObjects={getAllKingdomsWithoutContinent}
+                addExistingObjectToRelation={saveExistingKingdomToContinent}
+                deleteSubObject={removeKingdomFromContinentFunction}
+                addNewSubEntryToRelation={saveNewKingdomToContinent}
+                addButtonActionText={`Add new kingdom to ${data.object?.name}`}
+                addExistingButtonActionText={"Link existing kingdom to this continent"}
+                deleteButtonActionText={`Unlink this kingdom from ${data.object?.name}`}
+                subCategoryLinkText={"kingdom"} />
+        </Accordion.Body>
+        }
+    </AccordionHeaderLayout>
+    )
 }

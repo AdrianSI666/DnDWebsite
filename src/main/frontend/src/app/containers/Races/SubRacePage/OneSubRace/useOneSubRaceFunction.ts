@@ -11,7 +11,7 @@ interface IUseOneSubRaceFunction {
     name: string
 }
 
-export function UseOneSubRaceObjectFunction(props: IUseOneSubRaceFunction) {
+export function UseOneSubRaceFunction(props: IUseOneSubRaceFunction) {
     const queryClient = useQueryClient()
     const navigate = useNavigate();
     const location = useLocation();

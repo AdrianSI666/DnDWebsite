@@ -53,7 +53,7 @@ export function CulturePage() {
             <h1>Cultures</h1>
             <AddNewEntryModal addNewEntry={saveCulture} addButtonActionText={"Create new culture"} />
             <CustomPagination pageSize={pageSize} changePage={changeCulturePage} page={culturePage!} />
-            {culturePage.data?.length === 0 && <div>No culture created, yet.</div>}
+            {culturePage.data?.length === 0 && <div>No cultures created, yet.</div>}
             <Accordion>
                 {culturePage?.data && culturePage.data?.map((culture) =>
                     (<CultureAccordion culture={culture} pageNumber={pageNumber} pageSize={pageSize} status={status} key={culture.object.id}/>)

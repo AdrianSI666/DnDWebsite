@@ -10,7 +10,7 @@ import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntry
 import { SubRaceFunctionArray } from "../subRaceFunctionArrays";
 import { SubRaceFunctionDomObjects } from "../subRaceFunctionDomObjects";
 import { SubRaceFunctionSubObjects } from "../subRaceFunctionSubObjects";
-import { UseOneSubRaceObjectFunction } from "./useOneSubRaceFunction";
+import { UseOneSubRaceFunction } from "./useOneSubRaceFunction";
 
 export function OneSubRace() {
     let { name } = useParams();
@@ -19,7 +19,7 @@ export function OneSubRace() {
         queryFn: async () => SubRaceControllerService.getSubRaceByName(name!)
     })
 
-    const { removeSubRace, editSubRace } = UseOneSubRaceObjectFunction({ name: name! });
+    const { removeSubRace, editSubRace } = UseOneSubRaceFunction({ name: name! });
     const {saveImageToSubRace, deleteImageFromSubRace, addNewDesctiptionToSubRace, updateSubRaceDescription, deleteDescriptionFromSubRace} = SubRaceFunctionArray({ name: name! })
     const { saveNewRegionToSubRace, saveExistingRegionToSubRace, removeRegionFromSubRaceFunction } = SubRaceFunctionSubObjects({ name: name! });
     const { setNewRaceToSubRace, setExistingRaceToSubRace, removeRaceFromSubRaceFunction, getAllRaces } = SubRaceFunctionDomObjects({ name: name! });
@@ -30,17 +30,17 @@ export function OneSubRace() {
     </div>;
 
     return <OneEntryHeaderLayout
-        deleteMainObjectButtonActionText={"Delete this sub race"}
+        deleteMainObjectButtonActionText={"Delete this subrace"}
         deleteEntry={removeSubRace}
-        updateEntry={editSubRace} categoryName={"race"} entryFullDTO={{
+        updateEntry={editSubRace} categoryName={"Subrace"} entryFullDTO={{
             object: subRaceDTO.race,
             images: subRaceDTO.images,
             domObjects: subRaceDTO.race,
             subObjects: [],
             descriptions: subRaceDTO.descriptions
         }}>
-        <DomCategoryBody categoryName={"Race"} mainEntryId={subRaceDTO.subRace?.id!}
-            descriptionOfConnectionString={"Sub race of"} descriptionOfNullConnectionString={"This sub race doesn't have main race."}
+        <DomCategoryBody categoryName={"Subrace"} mainEntryId={subRaceDTO.subRace?.id!}
+            descriptionOfConnectionString={"Subrace of"} descriptionOfNullConnectionString={"This subrace doesn't have main race."}
             domObject={subRaceDTO.race}
             domCategoryName={"Race"} domCategoryLink={"races"}
             fillTheListWithAllSubObjects={getAllRaces}
@@ -54,7 +54,8 @@ export function OneSubRace() {
             object: subRaceDTO.subRace,
             images: subRaceDTO.images,
             domObjects: {},
-            subObjects: subRaceDTO.regions
+            subObjects: subRaceDTO.regions,
+            descriptions: subRaceDTO.descriptions
         }}
             saveImageToEntry={saveImageToSubRace}
             deleteImageFromEntry={deleteImageFromSubRace}
@@ -69,8 +70,8 @@ export function OneSubRace() {
             addExistingObjectToRelation={saveExistingRegionToSubRace}
             deleteSubObject={removeRegionFromSubRaceFunction}
             addNewSubEntryToRelation={saveNewRegionToSubRace}
-            addButtonActionText={"Add new region in which this sub race exist"}
-            addExistingButtonActionText={"Link existing region to places where this sub race occures"}
+            addButtonActionText={"Add new region in which this subrace exist"}
+            addExistingButtonActionText={"Link existing region to places where this subrace occures"}
             deleteButtonActionText={`Unlink this region from ${subRaceDTO.subRace?.name}`}
             subCategoryLinkText={"region"} />
     </OneEntryHeaderLayout>

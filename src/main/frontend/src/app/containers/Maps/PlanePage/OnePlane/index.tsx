@@ -1,45 +1,37 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
-import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
-import { useAppSelector } from "../../../../hooks";
-
-import { makeSelectOnePlane } from "./store/selector";
-import { UseOnePlaneObjectFunction } from "./useOnePlaneFunction";
+import { PlaneControllerService } from "../../../../../services/openapi";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
-import { OnePlaneSubObjectsFunction } from "./onePlaneSubObjectsFunction";
-import { OnePlaneDomObjectsFunction } from "./onePlaneDomObjectsFunction";
+import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
+import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
+import { PlaneFunctionArray } from "../planeFunctionArrays";
+import { PlaneFunctionDomObjects } from "../planeFunctionDomObjects";
+import { PlaneFunctionSubObjects } from "../planeFunctionSubObjects";
+import { UseOnePlaneFunction } from "./useOnePlaneFunction";
 
-interface IOnePlaneProps {
-}
-
-const onePlaneSelect = createSelector(makeSelectOnePlane, (planeDTO) => ({
-    planeDTO
-}))
-
-export function OnePlane(props: IOnePlaneProps) {
+export function OnePlane() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { planeDTO } = useAppSelector(onePlaneSelect);
-    const { fetchPlane, removePlane, editPlane, saveImageToPlane, deleteImageFromPlane, addNewDesctiptionToPlane, updatePlaneDescription, deleteDescriptionFromPlane } = UseOnePlaneObjectFunction();
-    const { saveNewContinentToPlane, saveExistingContinentToPlane, removeContinentFromPlaneFunction, getAllContinentsWithoutPlane } = OnePlaneSubObjectsFunction();
-    const { setNewWorldToPlane, setExistingWorldToPlane, removeWorldFromPlaneFunction, getAllWorlds } = OnePlaneDomObjectsFunction();
+    const { status, data: planeDTO, error } = useQuery({
+        queryKey: ["plane", name],
+        queryFn: async () => PlaneControllerService.getPlaneByName(name!)
+    })
 
-    useEffect(() => {
-        fetchPlane(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const { removePlane, editPlane } = UseOnePlaneFunction({ name: name! });
+    const { saveImageToPlane, deleteImageFromPlane,
+        addNewDesctiptionToPlane, updatePlaneDescription, deleteDescriptionFromPlane } = PlaneFunctionArray({ name: name! })
+    const { getAllContinentsWithoutPlane, saveNewContinentToPlane, saveExistingContinentToPlane, removeContinentFromPlaneFunction } = PlaneFunctionSubObjects({ name: name! })
+    const { setNewWorldToPlane, setExistingWorldToPlane, removeWorldFromPlaneFunction, getAllWorlds } = PlaneFunctionDomObjects({ name: name! });
 
-    if (!exist) return <div>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
         <h1>Plane named {name} doesn't exist.</h1>
     </div>;
 
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this plane"}
         deleteEntry={removePlane}
-        updateEntry={editPlane} categoryName={"plane"} entryFullDTO={planeDTO}>
+        updateEntry={editPlane} categoryName={"Plane"} entryFullDTO={planeDTO}>
         <DomCategoryBody categoryName={"World"} mainEntryId={planeDTO.object?.id!}
             descriptionOfConnectionString={"World of"} descriptionOfNullConnectionString={"This plane isn't linked to any world."}
             domObject={planeDTO.domObjects}

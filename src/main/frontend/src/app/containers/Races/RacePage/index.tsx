@@ -56,7 +56,7 @@ export function RacePage() {
             <h1>Races</h1>
             <AddNewEntryModal addNewEntry={saveRace} addButtonActionText={"Create new race"} />
             <CustomPagination pageSize={pageSize} changePage={changeRacePage} page={racePage!} />
-            {racePage.data?.length === 0 && <div>No race created, yet.</div>}
+            {racePage.data?.length === 0 && <div>No races created, yet.</div>}
             <Accordion>
                 {racePage?.data && racePage.data?.map((race) =>
                     (<RaceAccordion race={race} pageNumber={pageNumber} pageSize={pageSize} status={status} key={race.race?.id}/>)
