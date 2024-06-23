@@ -46,6 +46,7 @@ public class RaceController {
 
     @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
     public ResponseEntity<List<EntryDTO>> getAllRaces() {
+
         return ResponseEntity.ok().body(raceService.getAllRaces());
     }
 
