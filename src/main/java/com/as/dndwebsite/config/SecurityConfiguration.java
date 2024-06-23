@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                         AbstractAuthenticationFilterConfigurer::permitAll
                     //formLogin -> formLogin.loginPage("/login").permitAll()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

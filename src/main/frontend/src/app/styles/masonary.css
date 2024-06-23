@@ -1,0 +1,26 @@
+.my-masonry-grid {
+  display: -webkit-box;
+  /* Not needed if autoprefixing */
+  display: -ms-flexbox;
+  /* Not needed if autoprefixing */
+  display: flex;
+  width: auto;
+}
+
+.my-masonry-grid_column {
+  margin-left: 1em;
+  /* gutter size */
+  background-clip: margin-box;
+  padding: 0%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* Style your items */
+.my-masonry-grid_column>div {
+  /* change div to reference your elements you put in <Masonry> */
+  background: rgba(121, 116, 108, 0.918);
+  /* width: auto !important;  */
+  padding-right: calc(var(--bs-gutter-x) * .5);
+  padding-left: calc(var(--bs-gutter-x) * .5);
+}
