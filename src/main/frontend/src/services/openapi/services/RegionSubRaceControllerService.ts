@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { EntryDTO } from '../models/EntryDTO';
+import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-import {Page} from "../models/Page";
 export class RegionSubRaceControllerService {
     /**
      * @param regionId
@@ -90,13 +90,13 @@ export class RegionSubRaceControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns Page<EntryDTO> OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getSubRacesRelatedToRegion(
         name: string,
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/regions/{name}/subrace',
@@ -104,21 +104,20 @@ export class RegionSubRaceControllerService {
                 'name': name,
             },
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }
     /**
      * @param name
      * @param pageInfo
-     * @returns Page<EntryDTO> OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getRegionsRelatedToSubRace(
         name: string,
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/regions/subrace/{name}',
@@ -126,8 +125,7 @@ export class RegionSubRaceControllerService {
                 'name': name,
             },
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }

@@ -20,7 +20,7 @@ interface ICultureSubObjectsFunction {
 export function CultureFunctionSubObjects(props: ICultureSubObjectsFunction) {
   const queryClient = useQueryClient()
   const saveNewRegionToCultureMutation = useMutation({
-    mutationFn: (saveDescriptionToCulture: IAddRegionPayload) => RegionCultureControllerService.addNewRegionCultureRelation(saveDescriptionToCulture.cultureId, saveDescriptionToCulture.regionDTO),
+    mutationFn: (saveDescriptionToCulture: IAddRegionPayload) => RegionCultureControllerService.addRegionCultureRelation(saveDescriptionToCulture.cultureId, saveDescriptionToCulture.cultureId),
   })
 
   const saveNewRegionToCulture = async (cultureId: number, name: string, shortDescription: string): Promise<void> => {
@@ -28,10 +28,10 @@ export function CultureFunctionSubObjects(props: ICultureSubObjectsFunction) {
       name: name,
       shortDescription: shortDescription
     }
-    return saveNewRegionToCultureMutation.mutateAsync({ cultureId, regionDTO: entryDTO }).then(res => {
+    return saveNewRegionToCultureMutation.mutateAsync({ cultureId, regionDTO: entryDTO }).then(_ => {
       queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
         const newData = oldData;
-        newData.subObjects?.push(res)
+        newData.subObjects?.push(entryDTO)
         return newData
       })
     })

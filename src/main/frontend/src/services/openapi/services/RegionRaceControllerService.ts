@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { EntryDTO } from '../models/EntryDTO';
+import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-import {Page} from "../models/Page";
 export class RegionRaceControllerService {
     /**
      * @param regionId
@@ -90,13 +90,13 @@ export class RegionRaceControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns Page<EntryDTO> OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getRacesRelatedToRegion(
         name: string,
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/regions/{name}/race',
@@ -104,21 +104,20 @@ export class RegionRaceControllerService {
                 'name': name,
             },
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }
     /**
      * @param name
      * @param pageInfo
-     * @returns Page<EntryDTO> OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getRegionsRelatedToRace(
         name: string,
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/regions/race/{name}',
@@ -126,8 +125,7 @@ export class RegionRaceControllerService {
                 'name': name,
             },
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }

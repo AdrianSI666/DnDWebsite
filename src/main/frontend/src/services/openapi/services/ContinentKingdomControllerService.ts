@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { EntryDTO } from '../models/EntryDTO';
+import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-import {Page} from "../models/Page";
 export class ContinentKingdomControllerService {
     /**
      * @param continentId
@@ -90,13 +90,13 @@ export class ContinentKingdomControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns Page<EntryDTO> OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getKingdomsWithRelationToContinent(
         name: string,
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/continents/{name}/kingdom',
@@ -104,8 +104,7 @@ export class ContinentKingdomControllerService {
                 'name': name,
             },
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }

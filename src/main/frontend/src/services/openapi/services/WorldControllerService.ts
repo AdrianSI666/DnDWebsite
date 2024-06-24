@@ -6,11 +6,11 @@ import type { DescriptionDTO } from '../models/DescriptionDTO';
 import type { EntryDTO } from '../models/EntryDTO';
 import type { EntryFullDTO } from '../models/EntryFullDTO';
 import type { ImageDTO } from '../models/ImageDTO';
+import type { PageDTOEntryDTO } from '../models/PageDTOEntryDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-import {Page} from "../models/Page";
 export class WorldControllerService {
     /**
      * @param id
@@ -50,18 +50,17 @@ export class WorldControllerService {
     }
     /**
      * @param pageInfo
-     * @returns Page<EntryDTO> OK
+     * @returns PageDTOEntryDTO OK
      * @throws ApiError
      */
     public static getWorlds(
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+        pageInfo: PageInfo,
+    ): CancelablePromise<PageDTOEntryDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/worlds',
             query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
+                'pageInfo': pageInfo,
             },
         });
     }
@@ -107,7 +106,7 @@ export class WorldControllerService {
      * @returns DescriptionDTO OK
      * @throws ApiError
      */
-    public static getDescriptionsOfRace(
+    public static getDescriptionsOfWorld(
         id: number,
     ): CancelablePromise<Array<DescriptionDTO>> {
         return __request(OpenAPI, {

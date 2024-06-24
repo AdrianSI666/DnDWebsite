@@ -43,13 +43,13 @@ public class SecurityConfiguration {
                           "/users/register",
                           "/api/v1/authenticate"
                   ).permitAll();
-                  req.anyRequest().authenticated();
+                  req.anyRequest().permitAll();
                 })
                 .formLogin(
                         AbstractAuthenticationFilterConfigurer::permitAll
                     //formLogin -> formLogin.loginPage("/login").permitAll()
                 )
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

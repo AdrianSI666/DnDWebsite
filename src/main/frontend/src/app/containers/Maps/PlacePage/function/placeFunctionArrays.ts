@@ -24,7 +24,7 @@ interface IPlaceFunction {
 export function PlaceFunctionArray(props: IPlaceFunction) {
     const queryClient = useQueryClient()
     const saveDescriptionToPlaceMutation = useMutation({
-        mutationFn: (saveDescriptionToPlace: IAddDescriptionPayload) => PlaceControllerService.saveDescriptionToPlace(saveDescriptionToPlace.placeId, saveDescriptionToPlace.descriptionDTO),
+        mutationFn: (saveDescriptionToPlace: IAddDescriptionPayload) => PlaceControllerService.saveDescriptionToPlane1(saveDescriptionToPlace.placeId, saveDescriptionToPlace.descriptionDTO),
     })
 
     async function addNewDesctiptionToPlace(id: number, title: string, text: string) {
@@ -63,7 +63,7 @@ export function PlaceFunctionArray(props: IPlaceFunction) {
     }
 
     const deleteDescriptionFromPlaceMutation = useMutation({
-        mutationFn: (deleteDescFromPlace: IRemovePlaceSubObject) => PlaceControllerService.deleteDescriptionFromPlace(deleteDescFromPlace.placeId, deleteDescFromPlace.subObjectId),
+        mutationFn: (deleteDescFromPlace: IRemovePlaceSubObject) => PlaceControllerService.deleteDescriptionFromPlane1(deleteDescFromPlace.placeId, deleteDescFromPlace.subObjectId),
     })
 
     async function deleteDescriptionFromPlace(placeId: number, descriptionId: number): Promise<void> {
