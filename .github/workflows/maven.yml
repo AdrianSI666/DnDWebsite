@@ -18,33 +18,39 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: Test with Maven
-      run: mvn test
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-    #- name: Update dependency graph
-    #  uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
-    - name: Move to frontend folder
-      run: cd ./src/main/frontend
-    - name: Setup node v20
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
-    - run: npm i
-    - run: npm run build
+      - uses: actions/checkout@v4
+      - uses: ikalnytskyi/action-setup-postgres@v6
+        with:
+          username: ${{ secrets.POSTGRES_USERNAME }}
+          password: ${{ secrets.POSTGRES_PASSWORD }}
+          database: ${{ secrets.POSTGRES_DB }}
+          port: ${{ secrets.POSTGRES_PORT }}
+        id: postgres
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Test with Maven
+        run: mvn test
+      # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+      #- name: Update dependency graph
+      #  uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+      - name: Move to frontend folder
+        run: cd ./src/main/frontend
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm i
+      - run: npm run build
     # - run: npm run test
-  #publish:
+    #publish:
     # Need to get access to docker hub, which for now is not responding
     # - uses: mr-smithers-excellent/docker-build-push@v6
     #  with:
