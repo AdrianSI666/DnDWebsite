@@ -39,12 +39,16 @@ jobs:
       #- name: Update dependency graph
       #  uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
       - name: Setup node v20
-        uses: cd src/main/frontend | actions/setup-node@v4
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      - run: cd src/main/frontend | npm i
-      - run: cd src/main/frontend | npm run build
+      - name: Install dependencies
+        working-directory: ./src/main/frontend
+        run: npm i
+      - name: Build application
+        working-directory: ./src/main/frontend
+        run: npm run build
     # - run: npm run test
     #publish:
     # Need to get access to docker hub, which for now is not responding
