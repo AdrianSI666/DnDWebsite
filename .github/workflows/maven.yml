@@ -37,14 +37,13 @@ jobs:
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       #- name: Update dependency graph
       #  uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
-      #publish:
-      # Need to get access to docker hub, which for now is not responding
-      # - uses: mr-smithers-excellent/docker-build-push@v6
-      #  with:
-      #    image: docker-hub-repo/image-name
-      #    registry: docker.io
-      #    username: ${{ secrets.DOCKER_USERNAME }}
-      #    password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Deploying backend to docker hub
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: adriansi66666/ttrpg_website_cicd_tests
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
   frontend:
     runs-on: ubuntu-latest
     defaults:
