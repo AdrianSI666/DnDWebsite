@@ -26,6 +26,8 @@ import { OneRace } from './app/containers/Races/RacePage/OneRace';
 import { SubRacePage } from './app/containers/Races/SubRacePage';
 import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
 import { Root } from './app/containers/RootPage';
+import { Login } from './app/containers/LoginAndRegistrationPage/LoginPage';
+import { Register } from './app/containers/LoginAndRegistrationPage/RegisterPage';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -69,6 +71,8 @@ root.render(
             <Route path={"regions/:name"} element={<OneRegion />} />
             <Route path={"places"} element={<PlacePage />} />
             <Route path={"places/:name"} element={<OnePlace />} />
+            <Route path={"login"} element={<Login/>}/>
+            <Route path={"register"} element={<Register/>}/>
           </Route>
         </Routes>
       </Router>

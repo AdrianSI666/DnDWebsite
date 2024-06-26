@@ -24,7 +24,8 @@ interface IPlaceFunction {
 export function PlaceFunctionArray(props: IPlaceFunction) {
     const queryClient = useQueryClient()
     const saveDescriptionToPlaceMutation = useMutation({
-        mutationFn: (saveDescriptionToPlace: IAddDescriptionPayload) => PlaceControllerService.saveDescriptionToPlane1(saveDescriptionToPlace.placeId, saveDescriptionToPlace.descriptionDTO),
+        mutationFn: (saveDescriptionToPlace: IAddDescriptionPayload) => 
+            PlaceControllerService.saveDescriptionToPlane1(saveDescriptionToPlace.placeId, saveDescriptionToPlace.descriptionDTO),
     })
 
     async function addNewDesctiptionToPlace(id: number, title: string, text: string) {

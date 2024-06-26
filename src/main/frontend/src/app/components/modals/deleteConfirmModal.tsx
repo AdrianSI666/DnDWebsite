@@ -42,7 +42,7 @@ export function DeleteConfirmationModal(props: Readonly<ICultureModals>) {
               toast.promise(props.deleteObject(props.id).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
-                let errorMessage = "Unexpected error, try again. 1";
+                let errorMessage = "Unexpected error, try again.";
                 if (err.status !== 500) errorMessage = err.body.message;
                 throw (errorMessage)
               }), {
@@ -56,7 +56,7 @@ export function DeleteConfirmationModal(props: Readonly<ICultureModals>) {
               toast.promise(props.deleteObjectsInRelation(props.id, props.secondId!).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
-                let errorMessage = "Unexpected error, try again. 2";
+                let errorMessage = "Unexpected error, try again. ";
                 if (err.status !== 500) errorMessage = err.body.message;
                 throw (errorMessage)
               }), {
