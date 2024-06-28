@@ -13,7 +13,7 @@ interface IAccordionHeaderLayout {
     fetchFullValue: (name: string) => Promise<void>
 }
 
-export function AccordionHeaderLayout(props: IAccordionHeaderLayout) {
+export function AccordionHeaderLayout(props: Readonly<IAccordionHeaderLayout>) {
     return <Accordion key={props.entryFullDTO.object?.id} defaultActiveKey={['0']}>
         <Accordion.Item eventKey={'' + props.entryFullDTO.object?.id!}
             className="borderFix">
@@ -22,6 +22,7 @@ export function AccordionHeaderLayout(props: IAccordionHeaderLayout) {
                     if (props.entryFullDTO.descriptions?.length === 0 &&
                         props.entryFullDTO.images?.length === 0 &&
                         props.entryFullDTO.subObjects?.length === 0) props.fetchFullValue(props.entryFullDTO.object?.name!)
+
                 }
             }}>
                 <table className="w-100">

@@ -115,10 +115,10 @@ input.form-control:focus {
   background-color: #5f3900;
 }
 
-.form-select {
+/* .form-select {
   color: #ffffff;
   background-color: #5f3900;
-}
+} */
 
 .btn-danger {
   display: inline-block;

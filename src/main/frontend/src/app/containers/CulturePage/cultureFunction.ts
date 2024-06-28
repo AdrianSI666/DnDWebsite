@@ -1,121 +1,82 @@
 
-import { Dispatch } from "@reduxjs/toolkit";
-import { ApiError, CultureControllerService, DescriptionDTO, EntryDTO, ImageDTO } from "../../../services/openapi";
-import { useAppDispatch } from "../../hooks";
-import { addCultureDescription, addImageToCulture, removeCulture, removeCultureDescription, removeImageFromCulture, updateCulture, updateCultureDescription } from "./store/culturePageSlice";
-import { GlobalDescriptionFunction } from "../../globalFunctions/GlobalDescriptionFunction";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CultureControllerService, EntryDTO, EntryFullDTO, Page } from "../../../services/openapi";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    removeCulture: (id: number) => {
-        dispatch(removeCulture(id))
-    },
-    updateCulture: (id: number, entryDTO: EntryDTO) => {
-        dispatch(updateCulture({ id, entryDTO }))
-    },
+interface IUpdateCultureData {
+    id: number,
+    cultureDTO: EntryDTO
+}
 
-    addNewStateCultureDescription: (id: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(addCultureDescription({cultureId: id, descriptionDTO}))
-    },
-    updateStateCultureDescription: (cultureId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(updateCultureDescription({cultureId, descriptionId, descriptionDTO}))
-    },
-    removeStateCultureDescription: (cultureId: number, descriptionId: number) => {
-        dispatch(removeCultureDescription({cultureId, descriptionId}))
-    },
+interface ICultureFunction {
+    pageNumber: number,
+    pageSize: number,
+    resetFullEntryDTO?: (name: string) => Promise<void>
+}
 
-    addImageToCulture: (imageDTO: ImageDTO, cultureId: number) => {
-        let payload = {
-            cultureId,
-            imageDTO
-        }
-        dispatch(addImageToCulture(payload))
-    },
-    removeImageFromCulture: (imageId: number, cultureId: number) => {
-        dispatch(removeImageFromCulture({
-            cultureId,
-            imageId
-        }))
-    },
-})
+export function CultureFunction(props: ICultureFunction) {
+    const queryClient = useQueryClient()
 
-export function CultureFunction() {
-    const { removeCulture, addImageToCulture, removeImageFromCulture, updateCulture, addNewStateCultureDescription, updateStateCultureDescription, removeStateCultureDescription } = actionDispatch(useAppDispatch());
-    const {updateDescription} = GlobalDescriptionFunction({updateDescription: updateStateCultureDescription})
-    async function deleteCulture(id: number): Promise<void> {
-        return CultureControllerService.deleteCulture(id)
-            .then(() => removeCulture(id))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+    const saveCultureMutation = useMutation({
+        mutationFn: CultureControllerService.saveCulture,
+    })
+
+    async function saveCulture(name: string, shortDescription: string): Promise<void> {
+        return saveCultureMutation.mutateAsync({ name, shortDescription }).then(res => {
+            let entryFullDTO: EntryFullDTO = {
+                object: res,
+                images: [],
+                domObjects: {},
+                subObjects: [],
+                descriptions: []
+            }
+            queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
+                const newData = oldData;
+                newData.data?.unshift(entryFullDTO)
+                newData.data?.pop()
+                return newData
+            })
+        })
     }
 
-    const editCulture = async (id: number, name: string, shortDescription: string): Promise<void> => {
+    const editCultureMutation = useMutation({
+        mutationFn: (updateCultureData: IUpdateCultureData) => CultureControllerService.updateCulture(updateCultureData.id, updateCultureData.cultureDTO)
+    })
+
+    async function editCulture(id: number, name: string, shortDescription: string): Promise<void> {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
             shortDescription: shortDescription
         }
-        return CultureControllerService.updateCulture(id, entryDTO)
-            .then(() => {
-                updateCulture(id, entryDTO);
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+        return editCultureMutation.mutateAsync({ cultureDTO: entryDTO, id: id }).then(_ => {
+            queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize],
+                (oldData: Page<EntryFullDTO>) => {
+                    if (props.resetFullEntryDTO) props.resetFullEntryDTO(entryDTO.name!)
+                    let newData = oldData
+                    newData.data = newData?.data?.map(culture => {
+                        if (culture.object?.id === entryDTO.id) {
+                            culture.object = entryDTO
+                        }
+                        return culture
+                    });
+                    return newData
+                })
+        })
     }
 
-    async function addNewDesctiptionToCulture(id: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            title: title,
-            text: text
-        }
-        return CultureControllerService.saveDescriptionToCulture(id, descriptionDTO)
-            .then((res) => addNewStateCultureDescription(id, res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+    const deleteCultureMutation = useMutation({
+        mutationFn: CultureControllerService.deleteCulture,
+    })
+
+    async function deleteCulture(id: number): Promise<void> {
+        return deleteCultureMutation.mutateAsync(id).then(() => {
+            queryClient.invalidateQueries({ queryKey: ["culturePage", props.pageNumber, props.pageSize] })
+        })
     }
 
-    async function updateCultureDescription(cultureId: number, descriptionId: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            id: descriptionId,
-            title: title,
-            text: text
-        }
-        return updateDescription(cultureId, descriptionId, descriptionDTO);
-    }
-
-    async function deleteDescriptionFromCulture(cultureId: number, descriptionId: number) {
-        return CultureControllerService.deleteDescriptionFromCulture(cultureId, descriptionId)
-            .then((_) => removeStateCultureDescription(cultureId, descriptionId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function saveImageToCulture(acceptedFiles: Blob, cultureId: number) {
-        return CultureControllerService.saveImageToCulture(cultureId, { image: acceptedFiles })
-            .then((res) => addImageToCulture(res, cultureId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function deleteImageFromCulture(cultureId: number, imageId: number): Promise<void> {
-        return CultureControllerService.deleteImageFromCulture(cultureId, imageId)
-            .then(() => removeImageFromCulture(imageId, cultureId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    return { deleteCulture, editCulture, 
-        saveImageToCulture, deleteImageFromCulture, 
-        addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture };
+    return {
+        saveCulture,
+        editCulture,
+        deleteCulture
+    };
 }

@@ -1,139 +1,81 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { EntryDTO, EntryFullDTO, Page, KingdomControllerService } from "../../../../../services/openapi"
 
-import { useLocation, useNavigate } from "react-router-dom";
-import { ApiError, DescriptionDTO, EntryDTO, ImageDTO, KingdomControllerService } from "../../../../../services/openapi";
-import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction";
+interface IUpdateKingdomData {
+    id: number,
+    kingdomDTO: EntryDTO
+}
 
 interface IKingdomFunction {
-    removeKingdom?: (id: number) => void
-
-    updateKingdom?: (id: number, entryDTO: EntryDTO) => void
-    updateOneKingdom?: (entryDTO: EntryDTO) => void
-
-    addImageToKingdom?: (imageDTO: ImageDTO, regionId: number) => void
-    addImageToOneKingdom?: (imageDTO: ImageDTO) => void
-
-    removeImageFromKingdom?: (imageId: number, regionId: number) => void
-    removeImageFromOneKingdom?: (imageId: number) => void
-
-    addNewDescriptionKingdom?: (kingdomId: number, descriptionDTO: DescriptionDTO) => void,
-    addNewDescriptionOneKingdom?: (descriptionDTO: DescriptionDTO) => void,
-
-    updateStateKingdomDescription?: (kingdomId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => void
-    updateStateOneKingdomDescription?: (descriptionId: number, descriptionDTO: DescriptionDTO) => void
-
-    removeDescriptionFromKingdom?: (kingdomId: number, descriptionId: number) => void,
-    removeDescriptionFromOneKingdom?: (descriptionId: number) => void,
+    pageNumber: number,
+    pageSize: number,
+    resetFullKingdomDTO?: (name: string) => Promise<void>
 }
 
 export function KingdomFunction(props: IKingdomFunction) {
-    const navigate = useNavigate();
-    const location = useLocation();
-    async function deleteKingdom(id: number): Promise<void> {
-        return KingdomControllerService.deleteKingdom(id)
-            .then(() => {
-                if (props.removeKingdom) props.removeKingdom(id);
-                else throw new Error("Didn't sepcify dispatch action when removing region.");
+    const queryClient = useQueryClient()
+
+    const saveKingdomMutation = useMutation({
+        mutationFn: KingdomControllerService.saveKingdom,
+    })
+
+    async function saveKingdom(name: string, shortDescription: string): Promise<void> {
+        return saveKingdomMutation.mutateAsync({ name, shortDescription }).then(res => {
+            let kingdomDTO: EntryFullDTO = {
+                object: res,
+                images: [],
+                subObjects: [],
+                domObjects: {},
+                descriptions: []
+            }
+            queryClient.setQueryData(["kingdomPage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
+                const newData = oldData;
+                newData.data?.unshift(kingdomDTO)
+                newData.data?.pop()
+                return newData
             })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+        })
     }
 
-    const editKingdom = async (id: number, name: string, shortDescription: string): Promise<void> => {
+    const editKingdomMutation = useMutation({
+        mutationFn: (updateKingdomData: IUpdateKingdomData) => KingdomControllerService.updateKingdom(updateKingdomData.id, updateKingdomData.kingdomDTO)
+    })
+
+    async function editKingdom(id: number, name: string, shortDescription: string): Promise<void> {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
             shortDescription: shortDescription
         }
-        return KingdomControllerService.updateKingdom(id, entryDTO)
-            .then(() => {
-                if (props.updateKingdom) props.updateKingdom(id, entryDTO);
-                else if (props.updateOneKingdom) {
-                    props.updateOneKingdom(entryDTO);
-                    if (location.pathname !== "/kingdoms/" + name) navigate('/kingdoms/' + name);
-                }
-                else throw new Error("Didn't sepcify dispatch action when editing kingdom.");
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+        return editKingdomMutation.mutateAsync({ kingdomDTO: entryDTO, id: id }).then(_ => {
+            queryClient.setQueryData(["kingdomPage", props.pageNumber, props.pageSize],
+                (oldData: Page<EntryFullDTO>) => {
+                    if (props.resetFullKingdomDTO) props.resetFullKingdomDTO(entryDTO.name!)
+                    let newData = oldData
+                    newData.data = newData?.data?.map(kingdom => {
+                        if (kingdom.object?.id === entryDTO.id) {
+                            kingdom.object = entryDTO
+                        }
+                        return kingdom
+                    });
+                    return newData
+                })
+        })
     }
 
-    async function addNewDesctiptionToKingdom(id: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            title: title,
-            text: text
-        }
-        return KingdomControllerService.saveDescriptionToKingdom(id, descriptionDTO)
-            .then((res) => {
-                if (props.addNewDescriptionKingdom) props.addNewDescriptionKingdom(id, descriptionDTO);
-                else if (props.addNewDescriptionOneKingdom) props.addNewDescriptionOneKingdom(descriptionDTO);
-                else throw new Error("Didn't sepcify dispatch action when adding new Description to Kingdom.");
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+    const deleteKingdomMutation = useMutation({
+        mutationFn: KingdomControllerService.deleteKingdom,
+    })
+
+    async function deleteKingdom(id: number): Promise<void> {
+        return deleteKingdomMutation.mutateAsync(id).then(() => {
+            queryClient.invalidateQueries({ queryKey: ["kingdomPage", props.pageNumber, props.pageSize] })
+        })
     }
 
-    async function updateKingdomDescription(kingdomId: number, descriptionId: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            id: descriptionId,
-            title: title,
-            text: text
-        }
-        if(props.updateStateKingdomDescription) {
-            let { updateDescription } = GlobalDescriptionFunction({ updateDescription: props.updateStateKingdomDescription })
-            return updateDescription(kingdomId, descriptionId, descriptionDTO);
-        } else if (props.updateStateOneKingdomDescription) {
-            let { updateDescription } = GlobalDescriptionFunction({ updateOneEntryDescription: props.updateStateOneKingdomDescription })
-            return updateDescription(kingdomId, descriptionId, descriptionDTO);
-        } throw new Error("Didn't sepcify dispatch action when updating Description of Kingdom.");
-        
+    return {
+        saveKingdom,
+        editKingdom,
+        deleteKingdom
     }
-
-    async function deleteDescriptionFromKingdom(kingdomId: number, descriptionId: number) {
-        return KingdomControllerService.deleteDescriptionFromKingdom(kingdomId, descriptionId)
-            .then((_) => {
-                if (props.removeDescriptionFromKingdom) props.removeDescriptionFromKingdom(kingdomId, descriptionId);
-                else if (props.removeDescriptionFromOneKingdom) props.removeDescriptionFromOneKingdom(descriptionId);
-                else throw new Error("Didn't sepcify dispatch action when removing Description from Kingdom.");
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function saveImageToKingdom(acceptedFiles: Blob, id: number) {
-        return KingdomControllerService.saveImageToKingdom(id, { image: acceptedFiles })
-            .then((res) => {
-                if (props.addImageToKingdom) props.addImageToKingdom(res, id);
-                else if (props.addImageToOneKingdom) props.addImageToOneKingdom(res);
-                else throw new Error("Didn't sepcify dispatch action when saving image to kingdom.");
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function deleteImageFromKingdom(kingdomId: number, imageId: number): Promise<void> {
-        return KingdomControllerService.deleteImageFromKingdom(kingdomId, imageId)
-            .then(() => {
-                if (props.removeImageFromKingdom) props.removeImageFromKingdom(imageId, kingdomId);
-                else if (props.removeImageFromOneKingdom) props.removeImageFromOneKingdom(imageId);
-                else throw new Error("Didn't sepcify dispatch action when saving image to kingdom.");
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    return { deleteKingdom, editKingdom,
-        addNewDesctiptionToKingdom, deleteDescriptionFromKingdom, updateKingdomDescription,
-        saveImageToKingdom, deleteImageFromKingdom };
 }

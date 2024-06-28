@@ -1,41 +1,51 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './app/store';
-import reportWebVitals from './reportWebVitals';
-import './index.css';
 import {
+  Route,
   BrowserRouter as Router,
-  Routes,
-  Route
+  Routes
 } from "react-router-dom";
-import { Root } from './app/containers/RootPage';
 import { CulturePage } from './app/containers/CulturePage';
-import { Home } from './app/containers/HomePage';
-import { RegionPage } from './app/containers/Maps/RegionPage';
 import { OneCulture } from './app/containers/CulturePage/OneCulture';
-import { RacePage } from './app/containers/Races/RacePage';
-import { OneRace } from './app/containers/Races/RacePage/OneRace';
-import { SubRacePage } from './app/containers/Races/SubRacePage';
-import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
-import { WorldPage } from './app/containers/Maps/WorldPage';
-import { OneWorld } from './app/containers/Maps/WorldPage/OneWorld';
-import { PlanePage } from './app/containers/Maps/PlanePage';
-import { OnePlane } from './app/containers/Maps/PlanePage/OnePlane';
+import { Home } from './app/containers/HomePage';
 import { ContinentPage } from './app/containers/Maps/ContinentPage';
 import { OneContinent } from './app/containers/Maps/ContinentPage/OneContinent';
-import { OneRegion } from './app/containers/Maps/RegionPage/OneRegion';
 import { KingdomPage } from './app/containers/Maps/KingdomPage';
 import { OneKingdom } from './app/containers/Maps/KingdomPage/OneKingdom';
 import { PlacePage } from './app/containers/Maps/PlacePage';
 import { OnePlace } from './app/containers/Maps/PlacePage/OnePlace';
+import { PlanePage } from './app/containers/Maps/PlanePage';
+import { OnePlane } from './app/containers/Maps/PlanePage/OnePlane';
+import { RegionPage } from './app/containers/Maps/RegionPage';
+import { OneRegion } from './app/containers/Maps/RegionPage/OneRegion';
+import { WorldPage } from './app/containers/Maps/WorldPage';
+import { OneWorld } from './app/containers/Maps/WorldPage/OneWorld';
+import { RacePage } from './app/containers/Races/RacePage';
+import { OneRace } from './app/containers/Races/RacePage/OneRace';
+import { SubRacePage } from './app/containers/Races/SubRacePage';
+import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
+import { Root } from './app/containers/RootPage';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
+
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60,
+      retry: 1
+    },
+  }
+})
+
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
           <Route path={"/"} element={<Root />}>
@@ -62,7 +72,8 @@ root.render(
           </Route>
         </Routes>
       </Router>
-    </Provider>
+      <ReactQueryDevtools initialIsOpen />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

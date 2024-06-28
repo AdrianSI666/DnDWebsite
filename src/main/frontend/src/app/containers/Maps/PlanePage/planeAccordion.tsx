@@ -1,48 +1,83 @@
-import { createSelector } from "reselect";
-import { makeSelectPlanePage } from "./store/selector";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { PlaneControllerService, EntryFullDTO } from "../../../../services/openapi";
-import { fillPlaneData } from "./store/planePageSlice";
-import { Dispatch } from "@reduxjs/toolkit";
-import { PlaneAccordionBody } from "./planeAccordionBody";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { Accordion } from "react-bootstrap";
+import { EntryFullDTO, PlaneControllerService } from "../../../../services/openapi";
+import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
+import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
+import '../../../styles/masonary.css';
+import "../../../styles/subObjects.css";
 import { PlaneFunction } from "./planeFunction";
+import { PlaneFunctionSubObjects } from "./planeFunctionSubObjects";
+import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { PlaneFunctionArray } from "./planeFunctionArrays";
+import { PlaneFunctionDomObjects } from "./planeFunctionDomObjects";
 
-const statePlanePageSelect = createSelector(makeSelectPlanePage, (page) => ({
-  page
-}))
+interface IPlaneAccordion {
+    plane: EntryFullDTO,
+    pageNumber: number,
+    pageSize: number,
+    status: string
+}
 
-const actionDispatch = (dispatch: Dispatch) => ({
-  fillPlaneData: (data: EntryFullDTO) => {
-    dispatch(fillPlaneData(data))
-  }
-})
+export function PlaneAccordion(props: Readonly<IPlaneAccordion>) {
+    const [name, setName] = useState<string | undefined>();
 
-export function PlaneAccordion() {
-  const { page } = useAppSelector(statePlanePageSelect);
-  const isLoading = !page || page.data === undefined
-  const isEmptyPage = page.data?.length === 0
-  const { fillPlaneData } = actionDispatch(useAppDispatch());
-  const fetchPlaneData = async (name: string) => {
-    PlaneControllerService.getPlaneByName(name)
-      .then((response) => {
-        fillPlaneData(response);
-      })
-      .catch((err) => {
-        console.log("My Error: ", err);
-      });
-  }
-  const { deletePlane, editPlane } = PlaneFunction();
-  if (isEmptyPage) return <div>No planes created, yet.</div>;
-  if (isLoading) return <div>Loading...</div>;
+    const { status, data } = useQuery({
+        queryKey: ["plane", name],
+        queryFn: async () => PlaneControllerService.getPlaneByName(name!),
+        enabled: !!name,
+    })
 
-  return <div className='lightbox'>
-    {page && page.data && page.data.map((plane) => (
-      <AccordionHeaderLayout categoryName={"plane"} updateEntry={editPlane}
+    const getFullPlaneDTO = async (name: string) => {
+        setName(name);
+    }
+
+    const { editPlane, deletePlane } = PlaneFunction({ pageNumber: props.pageNumber, pageSize: props.pageSize, resetFullPlaneDTO: getFullPlaneDTO })
+    const { saveImageToPlane, deleteImageFromPlane, addNewDesctiptionToPlane, updatePlaneDescription, deleteDescriptionFromPlane } = PlaneFunctionArray({ name: props.plane!.object!.name! });
+    const { getAllContinentsWithoutPlane,
+        saveExistingContinentToPlane, removeContinentFromPlaneFunction, saveNewContinentToPlane } = PlaneFunctionSubObjects({ name: props.plane!.object!.name! });
+    const { setNewWorldToPlane, setExistingWorldToPlane, removeWorldFromPlaneFunction, getAllWorlds } = PlaneFunctionDomObjects({ name: props.plane!.object!.name! });
+
+
+    if (props.status === "pending") return <div>Loading...</div>;
+    return (<AccordionHeaderLayout categoryName={"plane"} updateEntry={editPlane}
         deleteEntry={deletePlane} deleteMainObjectButtonActionText={"Delete"}
-        entryFullDTO={plane} fetchFullValue={fetchPlaneData} key={plane.object?.id}>
-        <PlaneAccordionBody plane={plane} />
-      </AccordionHeaderLayout>
-    ))}
-  </div>
+        entryFullDTO={props.plane} fetchFullValue={getFullPlaneDTO} key={props.plane.object?.id}>
+        {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
+        {data &&
+            <Accordion.Body>
+                <DomCategoryBody categoryName={"Plane"} mainEntryId={data.object?.id!}
+                    descriptionOfConnectionString={"Plane of"} descriptionOfNullConnectionString={"This plane isn't linked to any world."}
+                    domObject={data.domObjects}
+                    domCategoryName={"World"} domCategoryLink={"worlds"}
+                    fillTheListWithAllSubObjects={getAllWorlds}
+                    setNewDomEntryToRelation={setNewWorldToPlane}
+                    addExistingObjectToRelation={setExistingWorldToPlane}
+                    deleteSubObject={removeWorldFromPlaneFunction}
+                    addButtonActionText={`Set new world to ${data.object?.name}`}
+                    deleteButtonActionText={`Unlink this plane from world`}
+                    addExistingButtonActionText={`Set existing world to ${data.object?.name}`} />
+                <FullEntryAccordionBody categoryName={"Plane"} entryFullDTO={data}
+                    saveImageToEntry={saveImageToPlane}
+                    deleteImageFromEntry={deleteImageFromPlane}
+                    deleteImageButtonActionText={"Delete image"}
+                    addNewDescriptionToEntry={addNewDesctiptionToPlane}
+                    updateDescription={updatePlaneDescription}
+                    deleteDescriptionFromEntry={deleteDescriptionFromPlane} />
+                <SubCategoryBody mainEntryId={data.object?.id!}
+                    subObjects={data.subObjects}
+                    subCategoryTitle={"Continents"} subCategoryLink={"continents"}
+                    fillTheListWithAllSubObjects={getAllContinentsWithoutPlane}
+                    addExistingObjectToRelation={saveExistingContinentToPlane}
+                    deleteSubObject={removeContinentFromPlaneFunction}
+                    addNewSubEntryToRelation={saveNewContinentToPlane}
+                    addButtonActionText={`Add new continent to ${data.object?.name}`}
+                    addExistingButtonActionText={"Link existing Continent to this plane"}
+                    deleteButtonActionText={`Unlink this continent from ${data.object?.name}`}
+                    subCategoryLinkText={"continent"} />
+            </Accordion.Body>
+        }
+    </AccordionHeaderLayout>
+    )
 }

@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { ApiError, EntryDTO } from "../../../services/openapi";
 import toast from "react-hot-toast";
+import { addExistingObjectToRelation } from "../types";
 
 interface IAddFromListModal {
-    addExistingObjectToRelation: (coreObjectId: number, objectToAddId: number, objectName: string, objectDescription: string) => Promise<void>;
+    addExistingObjectToRelation: (args: addExistingObjectToRelation) => Promise<void>;
     fillTheListWithSubObjects: () => Promise<void | EntryDTO[]>
     addButtonActionText: string;
     categoryName: string;
@@ -39,19 +40,24 @@ export function AddFromListModal(props: Readonly<IAddFromListModal>) {
                 <Modal.Body>
                     <Form onSubmit={(e) => {
                         e.preventDefault();
-                        let name = objectsList.find(object => object.id === idOfLinkedObject)?.name;
+                        const name = objectsList.find(object => object.id === idOfLinkedObject)?.name;
                         toast.promise(
-                        props.addExistingObjectToRelation(props.id!, idOfLinkedObject, name!, objectsList.find(object => object.id === idOfLinkedObject)?.shortDescription!).then(() => {
-                            setModalShow(false);
-                          }).catch((err: ApiError) => {
-                            let errorMessage = err.body.message;
-                            if(err.status === 409) errorMessage = `Selected ${props.categoryName} is already on this list.`
-                            throw(errorMessage)
-                          }), {
+                            props.addExistingObjectToRelation({
+                                coreObjectId: props.id!,
+                                objectToAddId: idOfLinkedObject,
+                                objectName: name!,
+                                objectDescription: objectsList.find(object => object.id === idOfLinkedObject)?.shortDescription!
+                            }).then(() => {
+                                setModalShow(false);
+                            }).catch((err: ApiError) => {
+                                let errorMessage = err.body.message;
+                                if (err.status === 409) errorMessage = `Selected ${props.categoryName} is already on this list.`
+                                throw (errorMessage)
+                            }), {
                             loading: 'Saving...',
                             success: `Sucesfully added ${name}.`,
                             error: (err) => `Operation failed.\n ${err}`,
-                          });
+                        });
                     }}>
                         <Form.Select value={idOfLinkedObject} onChange={e => setIdOfLinkedObject(parseInt(e.target.value))}>
                             <option value="-1" disabled>Chose {props.categoryName}</option>

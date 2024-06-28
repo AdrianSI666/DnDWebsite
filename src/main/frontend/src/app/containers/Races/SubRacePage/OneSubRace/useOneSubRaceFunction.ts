@@ -1,57 +1,26 @@
-
-import { Dispatch } from "@reduxjs/toolkit"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { ApiError, DescriptionDTO, EntryDTO, EntryFullDTO, ImageDTO, SubRaceControllerService } from "../../../../../services/openapi"
-import { useAppDispatch } from "../../../../hooks"
-import { addImageToSubRace, addRaceDescription, removeImageFromSubRace, removeRaceDescription, setSubRace, updateRaceDescription, updateSubRace } from "./store/oneSubRaceSlice"
-import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction"
+import { EntryDTO, SubRaceControllerService, SubRaceDTO } from "../../../../../services/openapi"
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    setSubRace: (subRace: EntryFullDTO) => {
-        dispatch(setSubRace(subRace))
-    },
-    updateSubRace: (subRace: EntryDTO) => {
-        dispatch(updateSubRace(subRace))
-    },
+interface IUpdateSubRaceData {
+    id: number,
+    subRaceDTO: EntryDTO
+}
 
-    addNewStateSubRaceDescription: (descriptionDTO: DescriptionDTO) => {
-        dispatch(addRaceDescription(descriptionDTO))
-    },
-    updateStateSubRaceDescription: (descriptionId: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(updateRaceDescription({ descriptionId, descriptionDTO }))
-    },
-    removeStateSubRaceDescription: (descriptionId: number) => {
-        dispatch(removeRaceDescription(descriptionId))
-    },
+interface IUseOneSubRaceFunction {
+    name: string
+}
 
-    addImageToSubRace: (imageDTO: ImageDTO) => {
-        dispatch(addImageToSubRace(imageDTO))
-    },
-    removeImageFromSubRace: (imageId: number) => {
-        dispatch(removeImageFromSubRace(imageId))
-    },
-})
-
-export function UseOneSubRaceObjectFunction() {
-    const { setSubRace, addImageToSubRace, removeImageFromSubRace, updateSubRace, addNewStateSubRaceDescription, updateStateSubRaceDescription, removeStateSubRaceDescription } = actionDispatch(useAppDispatch());
-    const { updateDescription } = GlobalDescriptionFunction({ updateOneEntryDescription: updateStateSubRaceDescription })
+export function UseOneSubRaceFunction(props: IUseOneSubRaceFunction) {
+    const queryClient = useQueryClient()
     const navigate = useNavigate();
     const location = useLocation();
-    const fetchSubRace = async (name: string): Promise<boolean> => {
-        return SubRaceControllerService.getSubRaceByName(name)
-            .then((response) => {
-                setSubRace(response)
-                return true
-            })
-            .catch((_) => {
-                return false
-            })
-    }
 
     const removeSubRace = async (id: number) => {
         return SubRaceControllerService.deleteSubRace(id)
             .then((_) => {
-                navigate("/SubRaces")
+                navigate("/subRaces")
+                queryClient.removeQueries({ queryKey: ["subRace", props.name] })
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -59,71 +28,29 @@ export function UseOneSubRaceObjectFunction() {
             });
     }
 
-    const editSubRace = async (id: number, name: string, shortDescription: string) => {
+    const editSubRaceMutation = useMutation({
+        mutationFn: (updateSubRaceData: IUpdateSubRaceData) => SubRaceControllerService.updateSubRace(updateSubRaceData.id, updateSubRaceData.subRaceDTO)
+    })
+
+    async function editSubRace(id: number, name: string, shortDescription: string): Promise<void> {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
             shortDescription: shortDescription
         }
-        return SubRaceControllerService.updateSubRace(id, entryDTO)
-            .then((_) => {
-                updateSubRace(entryDTO)
-                if (location.pathname !== "/subraces/" + name) navigate('/subraces/' + name);
-            })
-            .catch((err) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+        return editSubRaceMutation.mutateAsync({ subRaceDTO: entryDTO, id: id }).then(_ => {
+            if (location.pathname !== "/subRaces/" + name) {
+                navigate('/subRaces/' + name);
+                queryClient.removeQueries({ queryKey: ["subRace", location.pathname] })
+            } else {
+                queryClient.setQueryData(["subRace", props.name], (oldData: SubRaceDTO) => {
+                    let newData = oldData
+                    newData.subRace = entryDTO
+                    return newData
+                })
+            }
+        })
     }
 
-    async function addNewDesctiptionToSubRace(id: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            title: title,
-            text: text
-        }
-        return SubRaceControllerService.saveDescriptionToSubRace(id, descriptionDTO)
-            .then((res) => addNewStateSubRaceDescription(res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function updateSubRaceDescription(raceId: number, descriptionId: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            id: descriptionId,
-            title: title,
-            text: text
-        }
-        return updateDescription(raceId, descriptionId, descriptionDTO);
-    }
-
-    async function deleteDescriptionFromSubRace(raceId: number, descriptionId: number) {
-        return SubRaceControllerService.deleteDescriptionFromSubRace(raceId, descriptionId)
-            .then((res) => removeStateSubRaceDescription(descriptionId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const saveImageToSubRace = async (acceptedFiles: Blob, id: number) => {
-        return SubRaceControllerService.saveImageToSubRace(id, { image: acceptedFiles })
-            .then((res) => addImageToSubRace(res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    const deleteImageFromSubRace = async (subRaceId: number, imageId: number) => {
-        return SubRaceControllerService.deleteImageFromSubRace(subRaceId, imageId)
-            .then(() => removeImageFromSubRace(imageId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    return { fetchSubRace, removeSubRace, editSubRace, saveImageToSubRace, deleteImageFromSubRace, addNewDesctiptionToSubRace, updateSubRaceDescription, deleteDescriptionFromSubRace };
+    return { removeSubRace, editSubRace };
 }

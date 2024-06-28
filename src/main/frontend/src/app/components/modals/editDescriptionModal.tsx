@@ -4,8 +4,7 @@ import { ApiError } from "../../../services/openapi";
 import toast from "react-hot-toast";
 
 interface IEditDescriptionModals {
-  updateFunction: (entryId: number, descriptionId: number, title: string, description: string) => Promise<void>,
-  entryId: number,
+  updateFunction: (descriptionId: number, title: string, description: string) => Promise<void>,
   descriptionId: number,
   title: string,
   description: string
@@ -18,7 +17,7 @@ export function EditDescriptionModal(props: IEditDescriptionModals) {
   return (
     <div className="d-grid gap-2" onClick={(e) => {
       e.stopPropagation();}}>
-      <Button variant="success" onClick={(e) => {
+      <Button variant="success" onClick={(_) => {
         setModalShow(true);
       }}>
         Edit
@@ -39,7 +38,7 @@ export function EditDescriptionModal(props: IEditDescriptionModals) {
           <Form onSubmit={(e) => {
             e.preventDefault();
             toast.promise(
-              props.updateFunction(props.entryId!, props.descriptionId!, title!, description!).then(() => {
+              props.updateFunction(props.descriptionId!, title!, description!).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
                 let errorMessage = err.body.message;

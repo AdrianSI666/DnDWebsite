@@ -40,6 +40,7 @@ export function AddNewDescriptionModal(props: Readonly<IAddNewDescriptionModal>)
             toast.promise(props.addNewDescriptionToEntry(props.id!, title, description).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
+                console.log(err)
                 throw (err.body.message)
               }), {
                 loading: 'Saving...',

@@ -4,6 +4,7 @@ import { AddNewEntryModal } from "../modals/addNewEntryModal";
 import { List, ListItem, ListItemText } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AddFromListModal } from "../modals/addFromListModal";
+import { addExistingObjectToRelation } from "../types";
 
 interface ISubCategoryBody {
     mainEntryId: number,
@@ -17,7 +18,7 @@ interface ISubCategoryBody {
     subCategoryLink: string;
     fillTheListWithAllSubObjects: () => Promise<void | EntryDTO[]>;
     addNewSubEntryToRelation: (id: number, name: string, description: string) => Promise<void>;
-    addExistingObjectToRelation: (coreObjectId: number, objectToAddId: number, objectName: string, objectDescription: string) => Promise<void>;
+    addExistingObjectToRelation: (args: addExistingObjectToRelation) => Promise<void>;
     deleteSubObject: (id: number, secondId: number) => Promise<void>;
 
 }

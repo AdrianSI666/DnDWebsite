@@ -73,7 +73,7 @@ export class RegionCultureControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static addNewRegionCultureRegion(
+    public static addNewRegionCultureRelation(
         cultureId: number,
         requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {

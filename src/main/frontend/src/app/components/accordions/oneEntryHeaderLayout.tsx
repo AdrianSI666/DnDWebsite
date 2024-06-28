@@ -12,9 +12,9 @@ interface IOneEntryHeaderLayout {
     children: string | React.ReactNode
 }
 
-export function OneEntryHeaderLayout(props: IOneEntryHeaderLayout) {
+export function OneEntryHeaderLayout(props: Readonly<IOneEntryHeaderLayout>) {
     return <div className="d-grid gap-2">
-        <h1>Culture {props.entryFullDTO.object?.name}</h1>
+        <h1>{props.categoryName} {props.entryFullDTO.object?.name}</h1>
         <Container key={props.entryFullDTO.object?.id}>
             <Row className="accordion-header accordion-button oneEntryButton">
                 <Col>

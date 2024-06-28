@@ -11,7 +11,7 @@ interface IEditEntryModals {
   categoryName: string,
 }
 
-export function EditEntryModal(props: IEditEntryModals) {
+export function EditEntryModal(props: Readonly<IEditEntryModals>) {
   const [modalShow, setModalShow] = useState(false);
   const [name, setName] = useState(props.name)
   const [shortDescription, setShortDescription] = useState(props.shortDescription)
@@ -42,6 +42,7 @@ export function EditEntryModal(props: IEditEntryModals) {
               props.updateFunction(props.id!, name!, shortDescription!).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
+                console.log(err)
                 let errorMessage = err.body.message;
                 if (err.status === 409) errorMessage = `Name that you want to change to is already taken.`
                 throw (errorMessage)

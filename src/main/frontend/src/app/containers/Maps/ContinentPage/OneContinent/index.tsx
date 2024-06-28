@@ -1,47 +1,37 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
-import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
-import { useAppSelector } from "../../../../hooks";
-
+import { ContinentControllerService } from "../../../../../services/openapi";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
+import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
-import { OneContinentDomObjectsFunction } from "./oneContinentDomObjectsFunction";
-import { OneContinentSubObjectsFunction } from "./oneContinentSubObjectsFunction";
-import { makeSelectOneContinent } from "./store/selector";
-import { UseOneContinentObjectFunction } from "./useOneContinentFunction";
+import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
+import { ContinentFunctionArray } from "../continentFunctionArrays";
+import { ContinentFunctionDomObjects } from "../continentFunctionDomObjects";
+import { ContinentFunctionSubObjects } from "../continentFunctionSubObjects";
+import { UseOneContinentFunction } from "./useOneContinentFunction";
 
-interface IOneContinentProps {
-}
-
-const oneContinentSelect = createSelector(makeSelectOneContinent, (continentDTO) => ({
-    continentDTO
-}))
-
-export function OneContinent(props: IOneContinentProps) {
+export function OneContinent() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { continentDTO } = useAppSelector(oneContinentSelect);
-    const { fetchContinent, removeContinent, editContinent,
-        addNewDesctiptionToContinent, updateContinentDescription, deleteDescriptionFromContinent,
-        saveImageToContinent, deleteImageFromContinent } = UseOneContinentObjectFunction();
-    const { saveNewKingdomToContinent, saveExistingKingdomToContinent, removeKingdomFromContinentFunction, getAllKingdomsWithoutContinent } = OneContinentSubObjectsFunction();
-    const { setNewPlaneToContinent, setExistingPlaneToContinent, removePlaneFromContinentFunction, getAllPlanes } = OneContinentDomObjectsFunction();
+    const { status, data: continentDTO, error } = useQuery({
+        queryKey: ["continent", name],
+        queryFn: async () => ContinentControllerService.getContinentByName(name!)
+    })
 
-    useEffect(() => {
-        fetchContinent(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const { removeContinent, editContinent } = UseOneContinentFunction({ name: name! });
+    const { saveImageToContinent, deleteImageFromContinent,
+        addNewDesctiptionToContinent, updateContinentDescription, deleteDescriptionFromContinent } = ContinentFunctionArray({ name: name! })
+    const { getAllKingdomsWithoutContinent, saveNewKingdomToContinent, saveExistingKingdomToContinent, removeKingdomFromContinentFunction } = ContinentFunctionSubObjects({ name: name! })
+    const { setNewPlaneToContinent, setExistingPlaneToContinent, removePlaneFromContinentFunction, getAllPlanes } = ContinentFunctionDomObjects({ name: name! });
 
-    if (!exist) return <div>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
         <h1>Continent named {name} doesn't exist.</h1>
     </div>;
 
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this continent"}
         deleteEntry={removeContinent}
-        updateEntry={editContinent} categoryName={"continent"} entryFullDTO={continentDTO}>
+        updateEntry={editContinent} categoryName={"Continent"} entryFullDTO={continentDTO}>
         <DomCategoryBody categoryName={"Plane"} mainEntryId={continentDTO.object?.id!}
             descriptionOfConnectionString={"Plane of"} descriptionOfNullConnectionString={"This continent isn't linked to any plane."}
             domObject={continentDTO.domObjects}

@@ -1,47 +1,41 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { CultureControllerService } from "../../../../services/openapi";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../components/accordions/oneEntryHeaderLayout";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
 import { getAllRegions } from "../../../globalFunctions/RegionHooks";
-import { useAppSelector } from "../../../hooks";
-import { OneCultureSubObjectsFunction } from "./oneCultureSubObjectsFunction";
-import { makeSelectOneCulture } from "./store/selector";
+import { CultureFunctionArray } from "../cultureFunctionArrays";
+import { CultureFunctionSubObjects } from "../cultureFunctionSubObjects";
 import { UseOneCultureFunction } from "./useOneCultureFunction";
 
-interface IOneCultureProps {
-}
+export function OneCulture() {
+    let { name } = useParams<string>();
+    const { status, data: culture, error } = useQuery({
+        queryKey: ["culture", name],
+        queryFn: async () => CultureControllerService.getCultureByName(name!)
+    })
 
-const oneCultureSelect = createSelector(makeSelectOneCulture, (culture) => ({
-    culture
-}))
+    const { removeCulture, editCulture } = UseOneCultureFunction({ name: name! })
+    const { saveImageToCulture, deleteImageFromCulture,
+        addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture } = CultureFunctionArray({ name: name! })
+    const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = CultureFunctionSubObjects({ name: name! })
 
-export function OneCulture(props: IOneCultureProps) {
-    let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { culture } = useAppSelector(oneCultureSelect);
-    const { fetchCulture, removeCulture, editCulture, saveImageToCulture, deleteImageFromCulture, addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture, } = UseOneCultureFunction();
-    const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = OneCultureSubObjectsFunction();
-    useEffect(() => {
-        fetchCulture(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    if (!exist) return <div>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
         <h1>Culture named {name} doesn't exist.</h1>
     </div>;
-    
+
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this culture"}
         deleteEntry={removeCulture}
-        updateEntry={editCulture} categoryName={"culture"} entryFullDTO={culture}>
+        updateEntry={editCulture} categoryName={"Culture"} entryFullDTO={culture}>
         <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={culture}
             saveImageToEntry={saveImageToCulture}
             deleteImageFromEntry={deleteImageFromCulture}
-            deleteImageButtonActionText={"Delete image"} 
-            addNewDescriptionToEntry={addNewDesctiptionToCulture} 
-            updateDescription={updateCultureDescription} 
+            deleteImageButtonActionText={"Delete image"}
+            addNewDescriptionToEntry={addNewDesctiptionToCulture}
+            updateDescription={updateCultureDescription}
             deleteDescriptionFromEntry={deleteDescriptionFromCulture} />
         <SubCategoryBody mainEntryId={culture.object?.id!}
             subObjects={culture.subObjects}
