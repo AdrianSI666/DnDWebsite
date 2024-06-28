@@ -1,102 +1,67 @@
-import { Dispatch, createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
-import { ApiError, EntryDTO, PageInfo, SubRaceControllerService, SubRaceDTO } from "../../../../services/openapi";
-import { Page } from "../../../../services/openapi/models/Page";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { SubRaceFunction } from "./subRaceFunction";
+import { Accordion } from "react-bootstrap";
+import { ApiError, SubRaceControllerService, SubRaceDTO } from "../../../../services/openapi";
 import { AddNewEntryModal } from "../../../components/modals/addNewEntryModal";
 import { CustomPagination } from "../../../components/pagination/pagination";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { SubRaceAccordion } from "./subRaceAccordion";
-import { addSubRace, setSubRacePage } from "./store/subRacePageSlice";
-import { makeSelectSubRacePage } from "./store/selector";
 
-interface ISubRacePageProps {
-}
+export function SubRacePage() {
+    const [pageSize, setPageSize] = useState(10);
+    const [pageNumber, setPageNumber] = useState(1)
+    const { saveSubRace } = SubRaceFunction({ pageSize, pageNumber })
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    setSubRacePage: (page: Page<EntryDTO>) => {
-        let fullPage: Page<SubRaceDTO> = {
-            data: page.data?.map((subRaceDto) => {
-                let entryFullDTO: SubRaceDTO = {
-                    subRace: subRaceDto,
-                    images: [],
-                    regions: [],
-                    race: {},
-                    descriptions: []
+    const { status, data: subRacePage, error } = useQuery({
+        queryKey: ["subRacePage", pageNumber, pageSize],
+        queryFn: async () => SubRaceControllerService.getSubRaces({ number: pageNumber, size: pageSize })
+            .then(res => {
+                return {
+                    data: res.data?.map((subRaceDto) => {
+                        let subRaceDTO: SubRaceDTO = {
+                            subRace: subRaceDto,
+                            images: [],
+                            regions: [],
+                            race: {},
+                            descriptions: []
+                        }
+                        return subRaceDTO
+                    }),
+                    currentPage: res.currentPage,
+                    totalPages: res.totalPages
                 }
-                return entryFullDTO
-            }),
-            currentPage: page.currentPage,
-            totalPages: page.totalPages
-        }
-        dispatch(setSubRacePage(fullPage))
-    },
-    addSubRace: (subRace: EntryDTO) => {
-        let entryFullDTO: SubRaceDTO = {
-            subRace: subRace,
-            images: [],
-            regions: [],
-            race: {},
-            descriptions: []
-        }
-        dispatch(addSubRace(entryFullDTO))
-    }
-})
-
-const stateSelect = createSelector(makeSelectSubRacePage, (page) => ({
-    page
-}))
-
-export function SubRacePage(props: ISubRacePageProps) {
-    const [pageSize, setPageSize] = useState(0);
-    const { page } = useAppSelector(stateSelect);
-    const { setSubRacePage, addSubRace } = actionDispatch(useAppDispatch());
-
-    const saveSubRace = async (name: string, shortDescription: string): Promise<void> => {
-        return SubRaceControllerService.saveSubRace({
-            name,
-            shortDescription
-        })
-            .then((response) => {
-                addSubRace(response);
-            })
-            .catch((err: ApiError) => {
+            }).catch((err: ApiError) => {
                 console.log("My Error: ", err);
                 throw err
-            });
-    }
+            }),
+        placeholderData: keepPreviousData,
+    })
 
     const changeSubRacePage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
-        let sendSize = pageSize
         if (size && size !== pageSize) {
-            sendSize = size
             setPageSize(size);
         }
-        const pageInfo: PageInfo = {
-            number: value,
-            size: sendSize
-        };
-        if (value !== page.currentPage || sendSize !== pageSize) {
-            SubRaceControllerService.getSubRaces(pageInfo)
-                .then((response) => {
-                    setSubRacePage(response);
-                })
-                .catch((err) => {
-                    console.log("My Error: ", err);
-                });
+        if (value && value !== pageNumber) {
+            setPageNumber(value!);
         }
     }
 
-    useEffect(() => {
-        changeSubRacePage(undefined, 1, 10);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
+    if (status === "pending") return <div>Loading...</div>
+    if (error) {
+        console.log(error.message)
+        return <div>Error trying to get data from server. Please try again later.</div>
+    }
     return <div>
         <div className="d-grid gap-2">
-            <h1>SubRaces</h1>
-            <AddNewEntryModal addNewEntry={saveSubRace} addButtonActionText={"Create new Sub Race"} />
-            <CustomPagination pageSize={pageSize} changePage={changeSubRacePage} page={page} />
-            <SubRaceAccordion />
+            <h1>Subraces</h1>
+            <AddNewEntryModal addNewEntry={saveSubRace} addButtonActionText={"Create new subrace"} />
+            <CustomPagination pageSize={pageSize} changePage={changeSubRacePage} page={subRacePage!} />
+            {subRacePage.data?.length === 0 && <div>No subraces created, yet.</div>}
+            <Accordion>
+                {subRacePage?.data && subRacePage.data?.map((subRace) =>
+                    (<SubRaceAccordion subRace={subRace} pageNumber={pageNumber} pageSize={pageSize} status={status} key={subRace.subRace?.id}/>)
+                )}
+            </Accordion>
         </div>
     </div>
 }

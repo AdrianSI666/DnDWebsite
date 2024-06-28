@@ -1,41 +1,35 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { WorldControllerService } from "../../../../../services/openapi";
 import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
-import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
-import { useAppSelector } from "../../../../hooks";
-import { OneWorldSubObjectsFunction } from "./oneWorldSubObjectsFunction";
-import { makeSelectOneWorld } from "./store/selector";
-import { UseOneWorldObjectFunction } from "./useOneWorldObjectFunction";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
+import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
+import { WorldFunctionArray } from "../worldFunctionArrays";
+import { WorldFunctionSubObjects } from "../worldFunctionSubObjects";
+import { UseOneWorldFunction } from "./useOneWorldFunction";
 
-interface IOneWorldProps {
-}
-
-const oneWorldSelect = createSelector(makeSelectOneWorld, (worldDTO) => ({
-    worldDTO
-}))
-
-export function OneWorld(props: IOneWorldProps) {
+export function OneWorld() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { worldDTO } = useAppSelector(oneWorldSelect);
-    const { fetchWorld, removeWorld, editWorld, saveImageToWorld, deleteImageFromWorld, addNewDesctiptionToWorld, updateWorldDescription, deleteDescriptionFromWorld } = UseOneWorldObjectFunction();
-    const { saveNewPlaneToWorld, saveExistingPlaneToWorld, removePlaneFromWorldFunction, getAllPlanesWithoutWorld } = OneWorldSubObjectsFunction();
+    const { status, data: worldDTO, error } = useQuery({
+        queryKey: ["world", name],
+        queryFn: async () => WorldControllerService.getWorldByName(name!)
+    })
 
-    useEffect(() => {
-        fetchWorld(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const { removeWorld, editWorld } = UseOneWorldFunction({ name: name! });
+    const { saveImageToWorld, deleteImageFromWorld,
+        addNewDesctiptionToWorld, updateWorldDescription, deleteDescriptionFromWorld } = WorldFunctionArray({ name: name! })
+    const { getAllPlanesWithoutWorld, saveNewPlaneToWorld, saveExistingPlaneToWorld, removePlaneFromWorldFunction } = WorldFunctionSubObjects({ name: name! })
 
-    if (!exist) return <div>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
         <h1>World named {name} doesn't exist.</h1>
     </div>;
+
 
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this world"}
         deleteEntry={removeWorld}
-        updateEntry={editWorld} categoryName={"world"} entryFullDTO={worldDTO}>
+        updateEntry={editWorld} categoryName={"World"} entryFullDTO={worldDTO}>
         <FullEntryAccordionBody categoryName={"World"} entryFullDTO={worldDTO}
             saveImageToEntry={saveImageToWorld}
             deleteImageFromEntry={deleteImageFromWorld}

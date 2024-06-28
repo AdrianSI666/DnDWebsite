@@ -3,6 +3,7 @@ import { EntryDTO } from "../../../services/openapi";
 import { AddFromListModal } from "../modals/addFromListModal";
 import { AddNewEntryModal } from "../modals/addNewEntryModal";
 import { DeleteConfirmationModal } from "../modals/deleteConfirmModal";
+import { addExistingObjectToRelation } from "../types";
 
 interface ISubCategoryBody {
     categoryName: string;
@@ -20,7 +21,7 @@ interface ISubCategoryBody {
     domCategoryLink: string;
     fillTheListWithAllSubObjects: () => Promise<void | EntryDTO[]>;
     setNewDomEntryToRelation: (id: number, name: string, description: string) => Promise<void>;
-    addExistingObjectToRelation: (coreObjectId: number, objectToAddId: number, objectName: string, objectDescription: string) => Promise<void>;
+    addExistingObjectToRelation: (args: addExistingObjectToRelation) => Promise<void>;
     deleteSubObject: (id: number, secondId: number) => Promise<void>;
 
 }

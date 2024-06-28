@@ -1,42 +1,36 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { RaceControllerService } from "../../../../../services/openapi";
 import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
+import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
 import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
 import { getAllRegions } from "../../../../globalFunctions/RegionHooks";
-import { useAppSelector } from "../../../../hooks";
-import { OneRaceSubObjectsFunction } from "./oneRaceSubObjectsFunction";
-import { makeSelectOneRace } from "./store/selector";
-import { UseOneRaceObjectFunction } from "./useOneRaceObjectFunction";
-import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
+import { RaceFunctionArray } from "../raceFunctionArrays";
+import { RaceFunctionSubObjects } from "../raceFunctionSubObjects";
+import { UseOneRaceFunction } from "./useOneRaceFunction";
 
-interface IOneRaceProps {
-}
-
-const oneRaceSelect = createSelector(makeSelectOneRace, (raceDTO) => ({
-    raceDTO
-}))
-
-export function OneRace(props: IOneRaceProps) {
+export function OneRace() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { raceDTO } = useAppSelector(oneRaceSelect);
-    const { fetchRace, removeRace, editRace, saveImageToRace, deleteImageFromRace, addNewDesctiptionToRace, updateRaceDescription, deleteDescriptionFromRace } = UseOneRaceObjectFunction();
-    const { getAllSubRacesWithoutRace, removeSubRaceFromRaceFunction, saveNewSubRaceToRace, saveExistingSubRaceToRace, removeRegionFromRaceFunction, saveNewRegionToRace, saveExistingRegionToRace } = OneRaceSubObjectsFunction();
+    const { status, data: raceDTO, error } = useQuery({
+        queryKey: ["race", name],
+        queryFn: async () => RaceControllerService.getRaceByName(name!)
+    })
 
-    useEffect(() => {
-        fetchRace(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const { removeRace, editRace } = UseOneRaceFunction({ name: name! });
+    const { saveImageToRace, deleteImageFromRace,
+        addNewDesctiptionToRace, updateRaceDescription, deleteDescriptionFromRace } = RaceFunctionArray({ name: name! })
+    const { getAllSubRaces, removeSubRaceFromRaceFunction, saveNewSubRaceToRace, saveExistingSubRaceToRace,
+        saveNewRegionToRace, saveExistingRegionToRace, removeRegionFromRaceFunction } = RaceFunctionSubObjects({ name: name! })
 
-    if (!exist) return <div>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
         <h1>Race named {name} doesn't exist.</h1>
     </div>;
 
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this race"}
         deleteEntry={removeRace}
-        updateEntry={editRace} categoryName={"race"} entryFullDTO={{
+        updateEntry={editRace} categoryName={"Race"} entryFullDTO={{
             object: raceDTO.race,
             images: raceDTO.images,
             domObjects: {},
@@ -59,14 +53,14 @@ export function OneRace(props: IOneRaceProps) {
         <SubCategoryBody mainEntryId={raceDTO.race?.id!}
             subObjects={raceDTO.subRaces}
             subCategoryTitle={"Sub Races"} subCategoryLink={"subRaces"}
-            fillTheListWithAllSubObjects={getAllSubRacesWithoutRace}
+            fillTheListWithAllSubObjects={getAllSubRaces}
             addNewSubEntryToRelation={saveNewSubRaceToRace}
             addExistingObjectToRelation={saveExistingSubRaceToRace}
             deleteSubObject={removeSubRaceFromRaceFunction}
-            addButtonActionText={"Add new sub race that originated from this race"}
-            addExistingButtonActionText={"Link existing sub race to this main race"}
-            deleteButtonActionText={`Unlink this sub race from ${raceDTO.race?.name}`}
-            subCategoryLinkText={"sub race"} />
+            addButtonActionText={"Add new subrace that originated from this race"}
+            addExistingButtonActionText={"Link existing subrace to this main race"}
+            deleteButtonActionText={`Unlink this subrace from ${raceDTO.race?.name}`}
+            subCategoryLinkText={"subrace"} />
         <SubCategoryBody mainEntryId={raceDTO.race?.id!}
             subObjects={raceDTO.regions}
             subCategoryTitle={"Regions"} subCategoryLink={"regions"}

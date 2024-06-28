@@ -1,68 +1,38 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
-import { useAppSelector } from "../../../../hooks";
 
+import { useQuery } from "@tanstack/react-query";
+import { KingdomControllerService } from "../../../../../services/openapi";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
-import { KingdomDomContinentFunction } from "../function/kingdomDomContinentFunction";
-import { KingdomFunction } from "../function/kingdomFunction";
-import { KingdomRegionsFunction } from "../function/kingdomRegionsFunction";
-import { OneKingdomDispatcher } from "./store/dispatcher";
-import { makeSelectOneKingdom } from "./store/selector";
-import { UseOneKingdomObjectFunction } from "./useOneKingdomFunction";
+import { KingdomFunctionArray } from "../function/kingdomFunctionArrays";
+import { KingdomFunctionDomObjects } from "../function/kingdomFunctionDomObjects";
+import { KingdomFunctionSubObjects } from "../function/kingdomFunctionSubObjects";
+import { UseOneKingdomFunction } from "./useOneKingdomFunction";
 
-interface IOneKingdomProps {
-}
-
-const oneKingdomSelect = createSelector(makeSelectOneKingdom, (kingdomDTO) => ({
-    kingdomDTO
-}))
-
-export function OneKingdom(props: IOneKingdomProps) {
+export function OneKingdom() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { kingdomDTO } = useAppSelector(oneKingdomSelect);
-    const { addImageToKingdom, removeImageFromKingdom, updateKingdom,
-        addNewStateKingdomDescription, updateStateKingdomDescription, removeStateKingdomDescription
-    } = OneKingdomDispatcher();
-    const { fetchKingdom, removeKingdom } = UseOneKingdomObjectFunction();
-    const { editKingdom, saveImageToKingdom, deleteImageFromKingdom,
-        addNewDesctiptionToKingdom, updateKingdomDescription, deleteDescriptionFromKingdom
-    } = KingdomFunction({
-        updateOneKingdom: updateKingdom,
-        addImageToOneKingdom: addImageToKingdom,
-        removeImageFromOneKingdom: removeImageFromKingdom,
-        addNewDescriptionOneKingdom: addNewStateKingdomDescription,
-        updateStateOneKingdomDescription: updateStateKingdomDescription,
-        removeDescriptionFromOneKingdom: removeStateKingdomDescription
-    });
-    const { addNewRegionToKingdom, removeRegionFromKingdom } = OneKingdomDispatcher();
-    const { saveNewRegionToKingdom, saveExistingRegionToKingdom, removeRegionFromKingdomFunction, getAllRegionsWithoutKingdom } = KingdomRegionsFunction({
-        addNewRegionToOneKingdom: addNewRegionToKingdom,
-        removeRegionFromOneKingdom: removeRegionFromKingdom
-    });
-    const { setContinentToKingdom, removeContinentFromKingdom } = OneKingdomDispatcher();
-    const { setNewContinentToKingdom, setExistingContinentToKingdom, removeContinentFromKingdomFunction, getAllContinents } = KingdomDomContinentFunction({
-        setContinentToOneKingdom: setContinentToKingdom,
-        removeContinentFromOneKingdom: removeContinentFromKingdom
-    });
+    const { status, data: kingdomDTO, error } = useQuery({
+        queryKey: ["kingdom", name],
+        queryFn: async () => KingdomControllerService.getKingdomByName(name!)
+    })
 
-    useEffect(() => {
-        fetchKingdom(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const { removeKingdom, editKingdom } = UseOneKingdomFunction({ name: name! });
+    const { saveImageToKingdom, deleteImageFromKingdom,
+        addNewDesctiptionToKingdom, updateKingdomDescription, deleteDescriptionFromKingdom } = KingdomFunctionArray({ name: name! })
+    const { getAllRegionsWithoutKingdom, saveExistingRegionToKingdom, saveNewRegionToKingdom, removeRegionFromKingdomFunction } = KingdomFunctionSubObjects({ name: name! })
+    const { setNewContinentToKingdom, setExistingContinentToKingdom, removeContinentFromKingdomFunction, getAllContinents } = KingdomFunctionDomObjects({ name: name! });
 
-    if (!exist) return <div>
+    if (status === "pending") return <div>Loading...</div>;
+    if (error) return <div>
         <h1>Kingdom named {name} doesn't exist.</h1>
     </div>;
 
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this kingdom"}
         deleteEntry={removeKingdom}
-        updateEntry={editKingdom} categoryName={"kingdom"}
+        updateEntry={editKingdom} categoryName={"Kingdom"}
         entryFullDTO={kingdomDTO}>
         <DomCategoryBody categoryName={"Continent"} mainEntryId={kingdomDTO.object?.id!}
             descriptionOfConnectionString={"Continent of"} descriptionOfNullConnectionString={"This kingdom isn't linked to any continent."}

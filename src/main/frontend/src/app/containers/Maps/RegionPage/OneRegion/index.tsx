@@ -1,85 +1,47 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
-import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
-import { useAppSelector } from "../../../../hooks";
-
+import { RegionControllerService } from "../../../../../services/openapi";
 import { DomCategoryBody } from "../../../../components/accordions/domCategoryBody";
-import { RegionCulturesFunction } from "../function/regionCulturesFunction";
-import { RegionFunction } from "../function/regionFunction";
-import { RegionKingdomFunction } from "../function/regionKingdomFunction";
-import { RegionPlacesFunction } from "../function/regionPlacesFunction";
-import { RegionRacesFunction } from "../function/regionRacesFunction";
-import { RegionSubRacesFunction } from "../function/regionSubRacesFunction";
-import { OneRegionDispatcher } from "./store/dispatcher";
-import { makeSelectOneRegion } from "./store/selector";
-import { UseOneRegionFunction } from "./useOneRegionFunction";
+import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
+import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
+import { RegionFunctionArray } from "../function/regionFunctionArrays";
+import { RegionFunctionCultures } from "../function/regionFunctionCultures";
+import { RegionFunctionKingdom } from "../function/regionFunctionKingdom";
+import { RegionFunctionPlaces } from "../function/regionFunctionPlaces";
+import { RegionFunctionRaces } from "../function/regionFunctionRaces";
+import { RegionFunctionSubRaces } from "../function/regionFunctionSubRaces";
+import { UseOneRegionFunction } from "./useOneRegionFunction";
 
-interface IOneRegionProps {
-}
-
-const oneRegionSelect = createSelector(makeSelectOneRegion, (regionDTO) => ({
-    regionDTO
-}))
-
-export function OneRegion(props: IOneRegionProps) {
+export function OneRegion() {
     let { name } = useParams();
-    const [exist, setExist] = useState(false);
-    const { regionDTO } = useAppSelector(oneRegionSelect);
+    const { status, data: regionDTO, error } = useQuery({
+        queryKey: ["region", name],
+        queryFn: async () => RegionControllerService.getRegionByName(name!)
+    })
 
-    const { addNewCultureToRegion, removeCultureFromRegion } = OneRegionDispatcher();
-    const { updateRegion, addImageToRegion, removeImageFromRegion, addNewStateRegionDescription, removeStateRegionDescription, updateStateRegionDescription } = OneRegionDispatcher();
-    const { setKingdomToRegion, removeKingdomFromRegion } = OneRegionDispatcher();
-    const { addNewPlaceToRegion, removePlaceFromRegion } = OneRegionDispatcher();
-    const { addNewRaceToRegion, removeRaceFromRegion } = OneRegionDispatcher();
-    const { addNewSubRaceToRegion, removeSubRaceFromRegion } = OneRegionDispatcher();
+    const { removeRegion, editRegion } = UseOneRegionFunction({ name: name! });
+    const { saveImageToRegion, deleteImageFromRegion, addNewDesctiptionToRegion, updateRegionDescription, deleteDescriptionFromRegion } =
+        RegionFunctionArray({ name: regionDTO?.region!.name! });
+    const { getAllPlacesWithoutRegion, removePlaceFromRegionFunction, saveNewPlaceToRegion, saveExistingPlaceToRegion } =
+        RegionFunctionPlaces({ name: regionDTO?.region!.name! });
+    const { getAllKingdoms, removeKingdomFromRegionFunction, setNewKingdomToRegion, setExistingKingdomToRegion } =
+        RegionFunctionKingdom({ name: regionDTO?.region!.name! });
+    const { getAllCultures, removeCultureFromRegionFunction, saveNewCultureToRegion, saveExistingCultureToRegion } =
+        RegionFunctionCultures({ name: regionDTO?.region!.name! });
+    const { getAllRaces, removeRaceFromRegionFunction, saveNewRaceToRegion, saveExistingRaceToRegion } =
+        RegionFunctionRaces({ name: regionDTO?.region!.name! });
+    const { getAllSubRaces, removeSubRaceFromRegionFunction, saveNewSubRaceToRegion, saveExistingSubRaceToRegion } =
+        RegionFunctionSubRaces({ name: regionDTO?.region!.name! });
 
-    const { fetchRegion, removeRegion } = UseOneRegionFunction();
-    const { editRegion, saveImageToRegion, deleteImageFromRegion, addNewDesctiptionToRegion, updateRegionDescription, deleteDescriptionFromRegion } = RegionFunction({
-        updateOneRegion: updateRegion,
-        addImageToOneRegion: addImageToRegion,
-        removeImageFromOneRegion: removeImageFromRegion,
-        addNewDescriptionOneRegion: addNewStateRegionDescription,
-        removeDescriptionFromOneRegion: removeStateRegionDescription,
-        updateStateOneRegionDescription: updateStateRegionDescription
-    });
-
-    const { saveNewPlaceToRegion, saveExistingPlaceToRegion, removePlaceFromRegionFunction, getAllPlacesWithoutRegion } = RegionPlacesFunction({
-        addNewPlaceToOneRegion: addNewPlaceToRegion,
-        removePlaceFromOneRegion: removePlaceFromRegion,
-    });
-    const { setNewKingdomToRegion, setExistingKingdomToRegion, removeKingdomFromRegionFunction, getAllKingdoms } = RegionKingdomFunction({
-        setKingdomToOneRegion: setKingdomToRegion,
-        removeKingdomFromOneRegion: removeKingdomFromRegion
-    });
-    const { saveNewCultureToRegion, saveExistingCultureToRegion, removeCultureFromRegionFunction, getAllCultures } = RegionCulturesFunction({
-        addNewCultureToOneRegion: addNewCultureToRegion
-        , removeCultureFromOneRegion: removeCultureFromRegion
-    });
-    const { saveNewRaceToRegion, saveExistingRaceToRegion, removeRaceFromRegionFunction, getAllRaces } = RegionRacesFunction({
-        addNewRaceToOneRegion: addNewRaceToRegion,
-        removeRaceFromOneRegion: removeRaceFromRegion
-    });
-    const { saveNewSubRaceToRegion, saveExistingSubRaceToRegion, removeSubRaceFromRegionFunction, getAllSubRaces } = RegionSubRacesFunction({
-        addNewSubRaceToOneRegion: addNewSubRaceToRegion,
-        removeSubRaceFromOneRegion: removeSubRaceFromRegion
-    });
-
-    useEffect(() => {
-        fetchRegion(name!).then((res) => setExist(res));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    if (!exist) return <div>
+    if (error) return <div>
         <h1>Region named {name} doesn't exist.</h1>
     </div>;
-
+    if (status === "pending") return <div>Loading...</div>;
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this region"}
         deleteEntry={removeRegion}
-        updateEntry={editRegion} categoryName={"region"} entryFullDTO={{
+        updateEntry={editRegion} categoryName={"Region"} entryFullDTO={{
             object: regionDTO.region,
             images: regionDTO.images,
             domObjects: regionDTO.kingdom,

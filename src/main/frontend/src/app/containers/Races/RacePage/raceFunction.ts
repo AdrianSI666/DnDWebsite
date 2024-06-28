@@ -1,125 +1,82 @@
 
-import { Dispatch } from "@reduxjs/toolkit"
-import { ApiError, DescriptionDTO, EntryDTO, ImageDTO, RaceControllerService } from "../../../../services/openapi"
-import { useAppDispatch } from "../../../hooks"
-import { addImageToRace, addRaceDescription, removeImageFromRace, removeRace, removeRaceDescription, updateRace, updateRaceDescription } from "./store/racePageSlice"
-import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { RaceControllerService, EntryDTO, RaceDTO, Page } from "../../../../services/openapi";
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    removeRace: (id: number) => {
-        dispatch(removeRace(id))
-    },
-    updateRace: (id: number, entryDTO: EntryDTO) => {
-        dispatch(updateRace({ id, entryDTO }))
-    },
+interface IUpdateRaceData {
+    id: number,
+    raceDTO: EntryDTO
+}
 
-    addNewStateRaceDescription: (id: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(addRaceDescription({ raceId: id, descriptionDTO }))
-    },
-    updateStateRaceDescription: (raceId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(updateRaceDescription({ raceId, descriptionId, descriptionDTO }))
-    },
-    removeStateRaceDescription: (raceId: number, descriptionId: number) => {
-        dispatch(removeRaceDescription({ raceId, subObjectId: descriptionId }))
-    },
+interface IRaceFunction {
+    pageNumber: number,
+    pageSize: number,
+    resetFullRaceDTO?: (name: string) => Promise<void>
+}
 
-    addImageToRace: (imageDTO: ImageDTO, raceId: number) => {
-        let payload = {
-            raceId,
-            imageDTO
-        }
-        dispatch(addImageToRace(payload))
-    },
-    removeImageFromRace: (imageId: number, raceId: number) => {
-        dispatch(removeImageFromRace({
-            raceId,
-            subObjectId: imageId
-        }))
-    },
+export function RaceFunction(props: IRaceFunction) {
+    const queryClient = useQueryClient()
 
-})
+    const saveRaceMutation = useMutation({
+        mutationFn: RaceControllerService.saveRace,
+    })
 
-export function RaceFunction() {
-    const { removeRace, updateRace, addImageToRace, removeImageFromRace, addNewStateRaceDescription, updateStateRaceDescription, removeStateRaceDescription } = actionDispatch(useAppDispatch());
-    const { updateDescription } = GlobalDescriptionFunction({ updateDescription: updateStateRaceDescription })
-
-    async function deleteRace(id: number): Promise<void> {
-        return RaceControllerService.deleteRace(id)
-            .then(() => removeRace(id))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+    async function saveRace(name: string, shortDescription: string): Promise<void> {
+        return saveRaceMutation.mutateAsync({ name, shortDescription }).then(res => {
+            let raceDTO: RaceDTO = {
+                race: res,
+                images: [],
+                subRaces: [],
+                regions: [],
+                descriptions: []
+            }
+            queryClient.setQueryData(["racePage", props.pageNumber, props.pageSize], (oldData: Page<RaceDTO>) => {
+                const newData = oldData;
+                newData.data?.unshift(raceDTO)
+                newData.data?.pop()
+                return newData
+            })
+        })
     }
 
-    const editRace = async (id: number, name: string, shortDescription: string): Promise<void> => {
+    const editRaceMutation = useMutation({
+        mutationFn: (updateRaceData: IUpdateRaceData) => RaceControllerService.updateRace(updateRaceData.id, updateRaceData.raceDTO)
+    })
+
+    async function editRace(id: number, name: string, shortDescription: string): Promise<void> {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
             shortDescription: shortDescription
         }
-        return RaceControllerService.updateRace(id, entryDTO)
-            .then(() => {
-                updateRace(id, entryDTO);
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+        return editRaceMutation.mutateAsync({ raceDTO: entryDTO, id: id }).then(_ => {
+            queryClient.setQueryData(["racePage", props.pageNumber, props.pageSize],
+                (oldData: Page<RaceDTO>) => {
+                    if(props.resetFullRaceDTO)props.resetFullRaceDTO(entryDTO.name!)
+                    let newData = oldData
+                    newData.data = newData?.data?.map(race => {
+                        if (race.race?.id === entryDTO.id) {
+                            race.race = entryDTO
+                        }
+                        return race
+                    });
+                    return newData
+                })
+        })
     }
 
-    async function addNewDesctiptionToRace(id: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            title: title,
-            text: text
-        }
-        return RaceControllerService.saveDescriptionToRace(id, descriptionDTO)
-            .then((res) => addNewStateRaceDescription(id, res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
+    const deleteRaceMutation = useMutation({
+        mutationFn: RaceControllerService.deleteRace,
+    })
 
-    async function updateRaceDescription(raceId: number, descriptionId: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            id: descriptionId,
-            title: title,
-            text: text
-        }
-        return updateDescription(raceId, descriptionId, descriptionDTO);
-    }
-
-    async function deleteDescriptionFromRace(raceId: number, descriptionId: number) {
-        return RaceControllerService.deleteDescriptionFromRace(raceId, descriptionId)
-            .then((_) => removeStateRaceDescription(raceId, descriptionId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function saveImageToRace(acceptedFiles: Blob, raceId: number) {
-        return RaceControllerService.saveImageToRace(raceId!, { image: acceptedFiles })
-            .then((res) => addImageToRace(res, raceId!))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function deleteImageFromRace(raceId: number, imageId: number): Promise<void> {
-        return RaceControllerService.deleteImageFromRace(raceId, imageId)
-            .then(() => removeImageFromRace(imageId, raceId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+    async function deleteRace(id: number): Promise<void> {
+        return deleteRaceMutation.mutateAsync(id).then(() => {
+            queryClient.invalidateQueries({ queryKey: ["racePage", props.pageNumber, props.pageSize] })
+        })
     }
 
     return {
-        deleteRace, editRace,
-        addNewDesctiptionToRace, updateRaceDescription, deleteDescriptionFromRace,
-        saveImageToRace, deleteImageFromRace
+        saveRace,
+        editRace,
+        deleteRace
     };
 }

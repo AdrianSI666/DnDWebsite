@@ -1,27 +1,26 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useLocation, useNavigate } from "react-router-dom"
+import { EntryDTO, EntryFullDTO, RegionControllerService } from "../../../../../services/openapi"
 
-import { useNavigate } from "react-router-dom";
-import { RegionControllerService } from "../../../../../services/openapi";
-import { OneRegionDispatcher } from "./store/dispatcher";
+interface IUpdateRegionData {
+    id: number,
+    entryFullDTO: EntryDTO
+}
 
-export function UseOneRegionFunction() {
-    const { setRegion } = OneRegionDispatcher();
+interface IUseOneRegionFunction {
+    name: string
+}
+
+export function UseOneRegionFunction(props: IUseOneRegionFunction) {
+    const queryClient = useQueryClient()
     const navigate = useNavigate();
-    const fetchRegion = async (name: string): Promise<boolean> => {
-        console.log(name)
-        return RegionControllerService.getRegionByName(name)
-            .then((response) => {
-                setRegion(response)
-                return true
-            })
-            .catch((_) => {
-                return false
-            })
-    }
+    const location = useLocation();
 
     const removeRegion = async (id: number) => {
         return RegionControllerService.deleteRegion(id)
             .then((_) => {
-                navigate("/Regions")
+                navigate("/regions")
+                queryClient.removeQueries({ queryKey: ["region", props.name] })
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -29,5 +28,29 @@ export function UseOneRegionFunction() {
             });
     }
 
-    return { fetchRegion, removeRegion };
+    const editRegionMutation = useMutation({
+        mutationFn: (updateRegionData: IUpdateRegionData) => RegionControllerService.updateRegion(updateRegionData.id, updateRegionData.entryFullDTO)
+    })
+
+    async function editRegion(id: number, name: string, shortDescription: string): Promise<void> {
+        let entryDTO: EntryDTO = {
+            id: id,
+            name: name,
+            shortDescription: shortDescription
+        }
+        return editRegionMutation.mutateAsync({ entryFullDTO: entryDTO, id: id }).then(_ => {
+            if (location.pathname !== "/regions/" + name) {
+                navigate('/regions/' + name);
+                queryClient.removeQueries({ queryKey: ["region", location.pathname] })
+            } else {
+                queryClient.setQueryData(["region", props.name], (oldData: EntryFullDTO) => {
+                    let newData = oldData
+                    newData.object = entryDTO
+                    return newData
+                })
+            }
+        })
+    }
+
+    return { removeRegion, editRegion };
 }

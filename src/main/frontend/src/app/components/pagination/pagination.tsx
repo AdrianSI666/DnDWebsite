@@ -1,6 +1,6 @@
 import { Pagination } from "@mui/material";
 import { Col, Container, Form, Row } from "react-bootstrap";
-import { Page } from "../../../services/openapi/models/Page";
+import { Page } from "../../../services/openapi";
 
 interface IPaginationData {
     pageSize: number,
@@ -15,7 +15,7 @@ export function CustomPagination(props: Readonly<IPaginationData>) {
                 <h5 className="text-md-center">Max results on page:</h5>
             </Form.Label>
             <Col md="auto">
-            <Form.Select id="pageSizeSelect" defaultValue={10} onChange={e => {
+            <Form.Select id="pageSizeSelect" defaultValue={props.pageSize} onChange={e => {
                 let newPage = Math.ceil((props.page.currentPage! * props.pageSize - props.pageSize + 1) / Number(e.target.value))
                 props.changePage(e, newPage, Number(e.target.value))
             }}>

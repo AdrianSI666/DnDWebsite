@@ -1,119 +1,81 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { EntryDTO, EntryFullDTO, Page, ContinentControllerService } from "../../../../services/openapi"
 
-import { Dispatch } from "@reduxjs/toolkit";
-import { ApiError, ContinentControllerService, DescriptionDTO, EntryDTO, ImageDTO } from "../../../../services/openapi";
-import { useAppDispatch } from "../../../hooks";
-import { addContinentDescription, addImageToContinent, removeContinent, removeContinentDescription, removeImageFromContinent, updateContinent, updateContinentDescription } from "./store/continentPageSlice";
-import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction";
+interface IUpdateContinentData {
+    id: number,
+    continentDTO: EntryDTO
+}
 
-const actionDispatch = (dispatch: Dispatch) => ({
-    removeContinent: (id: number) => {
-        dispatch(removeContinent(id))
-    },
-    updateContinent: (id: number, entryDTO: EntryDTO) => {
-        dispatch(updateContinent({ id, entryDTO }))
-    },
+interface IContinentFunction {
+    pageNumber: number,
+    pageSize: number,
+    resetFullContinentDTO?: (name: string) => Promise<void>
+}
 
-    addNewStateContinentDescription: (id: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(addContinentDescription({ continentId: id, descriptionDTO }))
-    },
-    updateStateContinentDescription: (continentId: number, descriptionId: number, descriptionDTO: DescriptionDTO) => {
-        dispatch(updateContinentDescription({ continentId, descriptionId, descriptionDTO }))
-    },
-    removeStateContinentDescription: (continentId: number, descriptionId: number) => {
-        dispatch(removeContinentDescription({ continentId, subObjectId: descriptionId }))
-    },
+export function ContinentFunction(props: IContinentFunction) {
+    const queryClient = useQueryClient()
 
-    addImageToContinent: (imageDTO: ImageDTO, continentId: number) => {
-        let payload = {
-            continentId,
-            imageDTO
-        }
-        dispatch(addImageToContinent(payload))
-    },
-    removeImageFromContinent: (imageId: number, continentId: number) => {
-        dispatch(removeImageFromContinent({
-            continentId,
-            subObjectId: imageId
-        }))
-    },
-})
+    const saveContinentMutation = useMutation({
+        mutationFn: ContinentControllerService.saveContinent,
+    })
 
-export function ContinentFunction() {
-    const { removeContinent, addImageToContinent, removeImageFromContinent, updateContinent, addNewStateContinentDescription, updateStateContinentDescription, removeStateContinentDescription } = actionDispatch(useAppDispatch());
-    const { updateDescription } = GlobalDescriptionFunction({ updateDescription: updateStateContinentDescription })
-    async function deleteContinent(id: number): Promise<void> {
-        return ContinentControllerService.deleteContinent(id)
-            .then(() => removeContinent(id))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+    async function saveContinent(name: string, shortDescription: string): Promise<void> {
+        return saveContinentMutation.mutateAsync({ name, shortDescription }).then(res => {
+            let continentDTO: EntryFullDTO = {
+                object: res,
+                images: [],
+                subObjects: [],
+                domObjects: {},
+                descriptions: []
+            }
+            queryClient.setQueryData(["continentPage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
+                const newData = oldData;
+                newData.data?.unshift(continentDTO)
+                newData.data?.pop()
+                return newData
+            })
+        })
     }
 
-    const editContinent = async (id: number, name: string, shortDescription: string): Promise<void> => {
+    const editContinentMutation = useMutation({
+        mutationFn: (updateContinentData: IUpdateContinentData) => ContinentControllerService.updateContinent(updateContinentData.id, updateContinentData.continentDTO)
+    })
+
+    async function editContinent(id: number, name: string, shortDescription: string): Promise<void> {
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
             shortDescription: shortDescription
         }
-        return ContinentControllerService.updateContinent(id, entryDTO)
-            .then(() => {
-                updateContinent(id, entryDTO);
-            })
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+        return editContinentMutation.mutateAsync({ continentDTO: entryDTO, id: id }).then(_ => {
+            queryClient.setQueryData(["continentPage", props.pageNumber, props.pageSize],
+                (oldData: Page<EntryFullDTO>) => {
+                    if (props.resetFullContinentDTO) props.resetFullContinentDTO(entryDTO.name!)
+                    let newData = oldData
+                    newData.data = newData?.data?.map(continent => {
+                        if (continent.object?.id === entryDTO.id) {
+                            continent.object = entryDTO
+                        }
+                        return continent
+                    });
+                    return newData
+                })
+        })
     }
 
-    async function addNewDesctiptionToContinent(id: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            title: title,
-            text: text
-        }
-        return ContinentControllerService.saveDescriptionToContinent(id, descriptionDTO)
-            .then((res) => addNewStateContinentDescription(id, res))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
+    const deleteContinentMutation = useMutation({
+        mutationFn: ContinentControllerService.deleteContinent,
+    })
+
+    async function deleteContinent(id: number): Promise<void> {
+        return deleteContinentMutation.mutateAsync(id).then(() => {
+            queryClient.invalidateQueries({ queryKey: ["continentPage", props.pageNumber, props.pageSize] })
+        })
     }
 
-    async function updateContinentDescription(worldId: number, descriptionId: number, title: string, text: string) {
-        let descriptionDTO: DescriptionDTO = {
-            id: descriptionId,
-            title: title,
-            text: text
-        }
-        return updateDescription(worldId, descriptionId, descriptionDTO);
+    return {
+        saveContinent,
+        editContinent,
+        deleteContinent
     }
-
-    async function deleteDescriptionFromContinent(worldId: number, descriptionId: number) {
-        return ContinentControllerService.deleteDescriptionFromContinent(worldId, descriptionId)
-            .then((_) => removeStateContinentDescription(worldId, descriptionId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function saveImageToContinent(acceptedFiles: Blob, id: number) {
-        return ContinentControllerService.saveImageToContinent(id, { image: acceptedFiles })
-            .then((res) => addImageToContinent(res, id))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    async function deleteImageFromContinent(continentId: number, imageId: number): Promise<void> {
-        return ContinentControllerService.deleteImageFromContinent(continentId, imageId)
-            .then(() => removeImageFromContinent(imageId, continentId))
-            .catch((err: ApiError) => {
-                console.log("My Error: ", err);
-                throw err
-            });
-    }
-
-    return { deleteContinent, editContinent, saveImageToContinent, deleteImageFromContinent, addNewDesctiptionToContinent, deleteDescriptionFromContinent, updateContinentDescription };
 }
