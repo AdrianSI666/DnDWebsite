@@ -1,0 +1,11 @@
+.idea/
+*.iml
+*.iws
+.git
+.github
+.gitignore
+HELP.md
+desktop.ini
+DnDWebsite.iml
+.sonar/
+.sonarlint/
