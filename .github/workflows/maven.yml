@@ -41,7 +41,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: adriansi66666/ttrpg_website_cicd_tests
-          tags: adriansi66666/ttrpg_website_cicd_tests:backend.0.0.1
+          tags: backend.0.0.1
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -67,7 +67,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: adriansi66666/ttrpg_website_cicd_tests
-          tags: adriansi66666/ttrpg_website_cicd_tests:frontend.0.0.1
+          tags: frontend.0.0.1
           dockerfile: ./src/main/frontend/Dockerfile
           directory: ./src/main/frontend
           registry: docker.io
