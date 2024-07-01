@@ -1,5 +1,7 @@
-FROM node:18.17.0-alpine3.18
-COPY package.json .
+FROM node:20
+WORKDIR /usr/app
+COPY . /usr/app
+COPY package.json /usr/app/package.json
 RUN npm ci
 COPY . .
 EXPOSE 8093

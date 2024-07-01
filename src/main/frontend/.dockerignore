@@ -1,10 +1,3 @@
-**/node_modules/
-**/dist
-.git
-Dockerfile
-.dockerignore
-.gitignore
-npm-debug.log
-.coverage
-.coverage.*
+.vscode
 .env
+node_modules
