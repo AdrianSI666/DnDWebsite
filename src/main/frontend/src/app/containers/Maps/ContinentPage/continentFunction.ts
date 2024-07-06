@@ -31,7 +31,7 @@ export function ContinentFunction(props: IContinentFunction) {
             queryClient.setQueryData(["continentPage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(continentDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

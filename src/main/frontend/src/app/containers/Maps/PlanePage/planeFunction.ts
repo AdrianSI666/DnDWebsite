@@ -31,7 +31,7 @@ export function PlaneFunction(props: IPlaneFunction) {
             queryClient.setQueryData(["planePage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(planeDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

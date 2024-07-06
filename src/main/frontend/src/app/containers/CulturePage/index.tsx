@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ApiError, CultureControllerService } from "../../../services/openapi";
 import { AddNewEntryModal } from "../../components/modals/addNewEntryModal";
@@ -8,6 +8,7 @@ import { CultureFunction } from "./cultureFunction";
 import { Accordion } from "react-bootstrap";
 
 export function CulturePage() {
+    const queryClient = useQueryClient()
     const [pageSize, setPageSize] = useState(10);
     const [pageNumber, setPageNumber] = useState(1)
     const { saveCulture } = CultureFunction({ pageSize, pageNumber })
@@ -37,9 +38,11 @@ export function CulturePage() {
     const changeCulturePage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
         if (size && size !== pageSize) {
             setPageSize(size);
+            queryClient.invalidateQueries({ queryKey: ["culturePage", value, size] })
         }
         if (value && value !== pageNumber) {
             setPageNumber(value!);
+            queryClient.invalidateQueries({ queryKey: ["culturePage", value, size] })
         }
     }
 

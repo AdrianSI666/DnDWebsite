@@ -31,7 +31,7 @@ export function KingdomFunction(props: IKingdomFunction) {
             queryClient.setQueryData(["kingdomPage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(kingdomDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

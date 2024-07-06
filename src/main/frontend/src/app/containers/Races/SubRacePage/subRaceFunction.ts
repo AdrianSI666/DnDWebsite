@@ -32,7 +32,7 @@ export function SubRaceFunction(props: ISubRaceFunction) {
             queryClient.setQueryData(["subRacePage", props.pageNumber, props.pageSize], (oldData: Page<SubRaceDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(subRaceDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

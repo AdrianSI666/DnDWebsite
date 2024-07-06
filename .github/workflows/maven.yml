@@ -40,8 +40,8 @@ jobs:
       - name: Deploying backend to docker hub
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: adriansi66666/ttrpg_website_cicd_tests
-          tags: backend.0.0.1
+          image: adriansi66666/ttrpg_website_cicd_tests_backend
+          tags: 0.0.7
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -66,8 +66,8 @@ jobs:
       - name: Deploying frontend to docker hub
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: adriansi66666/ttrpg_website_cicd_tests
-          tags: frontend.0.0.1
+          image: adriansi66666/ttrpg_website_cicd_tests_frontend
+          tags: 0.0.7
           dockerfile: ./src/main/frontend/Dockerfile
           directory: ./src/main/frontend
           registry: docker.io

@@ -32,7 +32,10 @@ export function CultureFunction(props: ICultureFunction) {
             queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(entryFullDTO)
-                newData.data?.pop()
+                if (newData.data?.length! > props.pageSize) {
+                    newData.data?.pop()
+                    newData.totalPages!++
+                }
                 return newData
             })
         })

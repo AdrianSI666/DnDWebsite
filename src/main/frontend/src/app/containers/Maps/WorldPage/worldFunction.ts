@@ -31,7 +31,7 @@ export function WorldFunction(props: IWorldFunction) {
             queryClient.setQueryData(["worldPage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(worldDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

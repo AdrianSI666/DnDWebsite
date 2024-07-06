@@ -1,0 +1,5 @@
+Manifest-Version: 0.1
+Implementation-Title: Your Application Name
+Implementation-Version: 1.0.0
+Main-Class: com.as.dndwebsite.DnDWebsiteApplication
+Spring-Boot-Version: 3.2.2

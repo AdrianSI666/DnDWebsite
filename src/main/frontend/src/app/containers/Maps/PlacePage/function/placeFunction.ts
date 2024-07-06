@@ -31,7 +31,7 @@ export function PlaceFunction(props: IPlaceFunction) {
             queryClient.setQueryData(["placePage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(placeDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

@@ -2,6 +2,7 @@
 *.iml
 *.iws
 .git
+.env
 .github
 .gitignore
 HELP.md
@@ -9,3 +10,4 @@ desktop.ini
 DnDWebsite.iml
 .sonar/
 .sonarlint/
+./src/main/frontend/

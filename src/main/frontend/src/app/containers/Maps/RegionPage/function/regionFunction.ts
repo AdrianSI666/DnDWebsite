@@ -35,7 +35,7 @@ export function RegionFunction(props: IRegionFunction) {
             queryClient.setQueryData(["regionPage", props.pageNumber, props.pageSize], (oldData: Page<RegionDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(regionDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

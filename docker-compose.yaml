@@ -1,0 +1,34 @@
+services:
+  database:
+    image: my-postgres-image
+    container_name: database
+    ports:
+      - 5432:5432
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${DBUSERNAME}
+      POSTGRES_PASSWORD: ${DBPASSWORD}
+    volumes:
+      - /var/lib/postgres
+  backend:
+    image: backend:0.0.6
+    container_name: backend
+    ports:
+      - 8090:8090
+    environment:
+      DBUSERNAME: ${DBUSERNAME}
+      DBPASSWORD: ${DBPASSWORD}
+      DBURL: ${DBURL}
+      DBNAME: ${DBNAME}
+    depends_on:
+      - "database"
+  frontend:
+    image: frontend:0.0.6
+    container_name: frontend
+    ports:
+      - 8093:8093
+    depends_on:
+      - "backend"
+
