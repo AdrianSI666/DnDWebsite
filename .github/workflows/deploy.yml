@@ -1,18 +1,8 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: CI/CD Pipeline with Java x Maven and React x Node
+name: Deploying application to docker hub
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "deploy" ]
 
 jobs:
   backend:
@@ -33,7 +23,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Create env file
-        run: | 
+        run: |
           touch .env
           echo "DBUSERNAME=${{ secrets.POSTGRES_USERNAME }}" >> .env
           echo "DBPASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
@@ -50,7 +40,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: adriansi66666/ttrpg_website_cicd_tests_backend
-          tags: 0.0.7
+          tags: latest
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -68,15 +58,15 @@ jobs:
           cache: 'npm'
           cache-dependency-path: './src/main/frontend/package-lock.json'
       - name: Install dependencies
-        run: npm i
-    # - run: npm run test
+        run: npm ci
+      # - run: npm run test
       - name: Build application
         run: npm run build
       - name: Deploying frontend to docker hub
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: adriansi66666/ttrpg_website_cicd_tests_frontend
-          tags: 0.0.7
+          tags: latest
           dockerfile: ./src/main/frontend/Dockerfile
           directory: ./src/main/frontend
           registry: docker.io
