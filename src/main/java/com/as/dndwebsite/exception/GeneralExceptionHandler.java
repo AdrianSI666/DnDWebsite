@@ -19,7 +19,7 @@ public class GeneralExceptionHandler {
             errorStatus = HttpStatus.CONFLICT;
             message = "Your request violated unique constraint.";
         }
-        ApiException apiException = new ApiException(
+        ApiExceptionData apiException = new ApiExceptionData(
                 message,
                 errorStatus,
                 ZonedDateTime.now(ZoneId.of("Z"))

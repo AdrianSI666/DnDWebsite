@@ -14,7 +14,7 @@ public class NotFoundHandler {
     @ExceptionHandler(value = {NotFoundException.class})
     public ResponseEntity<Object> handleApiRequestException(NotFoundException e){
         HttpStatus badRequest = HttpStatus.NOT_FOUND;
-        ApiException apiException = new ApiException(
+        ApiExceptionData apiException = new ApiExceptionData(
                 e.getMessage(),
                 badRequest,
                 ZonedDateTime.now(ZoneId.of("Z"))

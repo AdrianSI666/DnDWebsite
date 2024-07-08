@@ -6,7 +6,7 @@ COPY tsconfig.json /usr/app/tsconfig.json
 COPY package.json /usr/app/package.json
 COPY package-lock.json /usr/app/package-lock.json
 COPY build /usr/app/build
-RUN npm ci
+RUN npm ci --ignore-scripts
 ENV PORT=8093
 EXPOSE 8093
 CMD ["npm", "start"]
