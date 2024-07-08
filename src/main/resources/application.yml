@@ -6,9 +6,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/dnd
-    username: postgres
-    password: projektanto
+    url: jdbc:postgresql://${DBURL}/${DBNAME}
+    username: ${DBUSERNAME}
+    password: ${DBPASSWORD}
     driverClassName: org.postgresql.Driver
   jpa:
     hibernate:
@@ -25,6 +25,8 @@ spring:
       max-file-size: 128MB
       max-request-size: 128MB
       enabled: true
+  config:
+    import: optional:file:.env[.properties]
 springdoc:
   api-docs:
     path: /api-docs

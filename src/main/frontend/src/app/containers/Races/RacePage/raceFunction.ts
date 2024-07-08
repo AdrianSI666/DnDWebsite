@@ -32,7 +32,7 @@ export function RaceFunction(props: IRaceFunction) {
             queryClient.setQueryData(["racePage", props.pageNumber, props.pageSize], (oldData: Page<RaceDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(raceDTO)
-                newData.data?.pop()
+                if(newData.data?.length! > props.pageSize) newData.data?.pop()
                 return newData
             })
         })

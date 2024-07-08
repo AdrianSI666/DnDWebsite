@@ -1,0 +1,17 @@
+Instruction to create a postgres image and use it in this project via cmd/cli:
+(You can skip this if you want just an empty database)
+
+1) To create a dump file in postgres use this command:
+    pg_dump -U username -F c database_name > backup.dump
+   (If pg_dump is not recognized as internal command you need to add bin file of postgres to path env variable)
+
+2) Either create a new docker image via provided Dockerfile with command ```docker build``` or copy by hand
+a dump file into docker image via this command:
+    docker cp backup.dump my_postgres_container:/backup.dump
+
+3) To restore postgres backup you need to open bash in running container via this command:
+    docker exec -it my_postgres_container bash
+   Then after you're in bash terminal you can restore the database by this command:
+    pg_restore -U username -d database_name /backup.dump
+   (If you put any data to specified database before using this command, any records in non-empty table won't be
+   recovered, so it's advisable to restore it to empty database)

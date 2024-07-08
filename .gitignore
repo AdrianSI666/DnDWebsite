@@ -34,3 +34,6 @@ build/
 /desktop.ini
 /.mvn/
 /out/
+/.env
+/src/main/frontend/.scannerwork/.sonar_lock
+/src/main/frontend/.scannerwork/report-task.txt
