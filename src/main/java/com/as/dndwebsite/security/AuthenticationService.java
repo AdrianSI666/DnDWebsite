@@ -7,7 +7,6 @@ import com.as.dndwebsite.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class AuthenticationService {
                 .email(registerRequest.email())
                 .password(passwordEncoder.encode(registerRequest.password()))
                 .role(Role.USER)
-                .blocked(false)
+                .blocked(true) //false is blocked
                 .enabled(true) //false till they verify email
                 .build();
         appUserRepository.save(appUser);

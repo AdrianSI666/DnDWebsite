@@ -2,7 +2,6 @@ package com.as.dndwebsite.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +14,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-@RequiredArgsConstructor
 @Service
 public class JwtService {
     private final Clock clock;
+    private final SecretKey key;
+
+    public JwtService(Clock clock) {
+        this.clock = clock;
+        this.key = Jwts.SIG.HS256.key().build();
+    }
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -36,7 +40,7 @@ public class JwtService {
                 .expiration(new Date(time.toEpochMilli() + TimeUnit.HOURS.toMillis(2)))
                 .add(extraClaims)
                 .and()
-                .signWith(getSigningKey(), Jwts.SIG.HS256)
+                .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -67,13 +71,10 @@ public class JwtService {
 
     private Claims extractAllClaims(String jws) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(key)
                 .build()
                 .parseSignedClaims(jws)
                 .getPayload();
     }
 
-    private SecretKey getSigningKey() {
-        return Jwts.SIG.HS256.key().build();
-    }
 }
