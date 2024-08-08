@@ -37,3 +37,4 @@ build/
 /.env
 /src/main/frontend/.scannerwork/.sonar_lock
 /src/main/frontend/.scannerwork/report-task.txt
+/src/main/frontend/.env

@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -7,6 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { AuthenticationResponse } from './models/AuthenticationResponse';
 export type { DescriptionDTO } from './models/DescriptionDTO';
 export type { EntryDTO } from './models/EntryDTO';
 export type { EntryFullDTO } from './models/EntryFullDTO';
@@ -15,8 +16,10 @@ export type { Page } from './models/Page';
 export type { PageInfo } from './models/PageInfo';
 export type { RaceDTO } from './models/RaceDTO';
 export type { RegionDTO } from './models/RegionDTO';
+export type { RegisterRequest } from './models/RegisterRequest';
 export type { SubRaceDTO } from './models/SubRaceDTO';
 
+export { AuthenticationControllerService } from './services/AuthenticationControllerService';
 export { ContinentControllerService } from './services/ContinentControllerService';
 export { ContinentKingdomControllerService } from './services/ContinentKingdomControllerService';
 export { CultureControllerService } from './services/CultureControllerService';

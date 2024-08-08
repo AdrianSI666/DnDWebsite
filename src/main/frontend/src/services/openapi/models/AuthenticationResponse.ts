@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PageInfo = {
-    number?: number;
-    size?: number;
+export type AuthenticationResponse = {
+    token?: string;
+    refreshToken?: string,
+    userId?: number
 };
 

@@ -1,5 +1,9 @@
 package com.as.dndwebsite.security;
 
+import com.as.dndwebsite.security.dto.AuthenticationResponse;
+import com.as.dndwebsite.security.dto.LoginRequest;
+import com.as.dndwebsite.security.dto.RegisterRequest;
+import com.as.dndwebsite.security.dto.TokenRefreshRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,5 +24,10 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authenticationService.login(loginRequest));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
+        return ResponseEntity.ok(authenticationService.refresh(request));
     }
 }

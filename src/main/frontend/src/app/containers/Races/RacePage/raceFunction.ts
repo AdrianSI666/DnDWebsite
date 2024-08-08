@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RaceControllerService, EntryDTO, RaceDTO, Page } from "../../../../services/openapi";
+import { RaceControllerService, EntryDTO, RaceDTO, Page, OpenAPI } from "../../../../services/openapi";
+import JWTMenager from "../../../../services/jwt/JWTMenager";
 
 interface IUpdateRaceData {
     id: number,
@@ -43,6 +44,8 @@ export function RaceFunction(props: IRaceFunction) {
     })
 
     async function editRace(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = JWTMenager.getToken();
+        console.log("Token:" + JWTMenager.getToken());
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

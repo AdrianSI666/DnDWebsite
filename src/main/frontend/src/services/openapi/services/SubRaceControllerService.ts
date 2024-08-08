@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -107,7 +107,7 @@ export class SubRaceControllerService {
      * @returns DescriptionDTO OK
      * @throws ApiError
      */
-    public static getDescriptionsOfRace1(
+    public static getDescriptionsOfSubRace(
         id: number,
     ): CancelablePromise<Array<DescriptionDTO>> {
         return __request(OpenAPI, {

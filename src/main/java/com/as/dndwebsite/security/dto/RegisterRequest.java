@@ -1,4 +1,4 @@
-package com.as.dndwebsite.security;
+package com.as.dndwebsite.security.dto;
 
 public record RegisterRequest(
         String name,

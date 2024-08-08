@@ -1,13 +1,15 @@
-package com.as.dndwebsite.security;
+package com.as.dndwebsite.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class JwtService {
     private final Clock clock;
     private final SecretKey key;
@@ -22,9 +25,12 @@ public class JwtService {
     public JwtService(Clock clock) {
         this.clock = clock;
         this.key = Jwts.SIG.HS256.key().build();
+        log.info(Arrays.toString(key.getEncoded()));
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(
+            UserDetails userDetails
+    ) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
@@ -37,7 +43,7 @@ public class JwtService {
                 .claims()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(time.toEpochMilli()))
-                .expiration(new Date(time.toEpochMilli() + TimeUnit.HOURS.toMillis(2)))
+                .expiration(new Date(time.toEpochMilli() + TimeUnit.MINUTES.toMillis(1)))
                 .add(extraClaims)
                 .and()
                 .signWith(key, Jwts.SIG.HS256)
@@ -59,10 +65,6 @@ public class JwtService {
     public String extractUsername(String jws) {
         return extractClaim(jws, Claims::getSubject);
     }
-
-//    public Date extractExpiration(String jws) {
-//        return extractClaim(jws, Claims::getExpiration);
-//    }
 
     public <T> T extractClaim(String jws, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(jws);

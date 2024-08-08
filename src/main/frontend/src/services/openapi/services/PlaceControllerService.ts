@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -107,7 +107,7 @@ export class PlaceControllerService {
      * @returns DescriptionDTO OK
      * @throws ApiError
      */
-    public static getDescriptionsOfRace5(
+    public static getDescriptionsOfPlace(
         id: number,
     ): CancelablePromise<Array<DescriptionDTO>> {
         return __request(OpenAPI, {

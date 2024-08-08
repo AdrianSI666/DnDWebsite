@@ -28,10 +28,9 @@ import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
 import { Root } from './app/containers/RootPage';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import AuthProvider from 'react-auth-kit';
-import createStore from 'react-auth-kit/createStore';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { LoginPage } from './app/containers/LoginPage';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -45,17 +44,10 @@ const queryClient = new QueryClient({
   }
 })
 
-const store = createStore({
-  authName:'_auth',
-  authType:'cookie',
-  //refresh: ,
-  cookieDomain: window.location.hostname,
-  cookieSecure: window.location.protocol === 'http:',
-});
+
 
 root.render(
   <React.StrictMode>
-    <AuthProvider store={store}>
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
@@ -80,12 +72,12 @@ root.render(
               <Route path={"regions/:name"} element={<OneRegion />} />
               <Route path={"places"} element={<PlacePage />} />
               <Route path={"places/:name"} element={<OnePlace />} />
+              <Route path={"login"} element={<LoginPage />} />
             </Route>
           </Routes>
         </Router>
         <ReactQueryDevtools initialIsOpen />
       </QueryClientProvider>
-    </AuthProvider>
   </React.StrictMode>
 );
 

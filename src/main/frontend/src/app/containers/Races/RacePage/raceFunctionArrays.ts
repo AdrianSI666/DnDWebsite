@@ -35,7 +35,6 @@ export function RaceFunctionArray(props: IRaceFunction) {
         }
         return saveDescriptionToRaceMutation.mutateAsync({ raceId: id, descriptionDTO })
             .then((res) => {
-                console.log(res)
                 queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
                     const newData = oldData;
                     newData.descriptions?.push(res)

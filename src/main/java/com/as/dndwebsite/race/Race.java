@@ -3,6 +3,7 @@ package com.as.dndwebsite.race;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
 import com.as.dndwebsite.race.subrace.SubRace;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
@@ -27,7 +28,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "race", schema = "public")
 public class Race extends Entry {
-    @OneToMany(mappedBy = "race", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "race", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private Set<SubRace> subRaces = new HashSet<>();
     @ManyToMany(mappedBy = "races")
     @ToString.Exclude

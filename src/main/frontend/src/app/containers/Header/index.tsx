@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.css'
 import { HeaderLink } from "./HeaderLink";
 import { NavDropdown } from "react-bootstrap";
+import JWTMenager from "../../../services/jwt/JWTMenager";
 
 export function Header() {
+    const [isDropdownOpenRace, setDropdownOpenRace] = useState(false);
+    const [isDropdownOpenMaps, setDropdownOpenMaps] = useState(false);
+    const handleSelect = () => {
+        setDropdownOpenRace(false);
+    };
+    const toggleDropdownRace = () => {
+        setDropdownOpenRace(!isDropdownOpenRace);
+    };
     return (
         <nav className="navbar navbar-expand-lg navbar-light, header">
             <div className="container-fluid">
@@ -21,10 +30,14 @@ export function Header() {
                             <HeaderLink name="cultures" />
                         </li>
                         <li className="nav-item">
-                            <NavDropdown title="Races" id="basic-nav-dropdown">
-                                <HeaderLink name="races" />
+                            <NavDropdown title="Races" id="basic-nav-dropdown"
+                            show={isDropdownOpenRace}
+                            onSelect={(ek, ev) => console.log("yes")} 
+                            onToggle={toggleDropdownRace}
+                            >
+                                <HeaderLink name="races" handleSelect={handleSelect} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="subraces" />
+                                <HeaderLink name="subraces" handleSelect={handleSelect} />
                             </NavDropdown>
                         </li>
                         <li className="nav-item">
@@ -42,6 +55,15 @@ export function Header() {
                                 <HeaderLink name="places" />
                             </NavDropdown>
                         </li>
+                        {(JWTMenager.getUser() === null) && (<><li className="nav-item">
+                            <HeaderLink name="login" />
+                        </li><li className="nav-item">
+                                <HeaderLink name="signup" />
+                            </li></>)}
+                        {(JWTMenager.getUser() != null) && (<li className="nav-item">
+                            <HeaderLink name="profile" />
+                        </li>)}
+
                     </ul>
                 </div>
             </div>
