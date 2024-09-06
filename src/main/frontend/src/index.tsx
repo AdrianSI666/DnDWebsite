@@ -30,7 +30,8 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { LoginPage } from './app/containers/LoginPage';
+import { LoginPage } from './app/containers/Authorization/login';
+import SignupPage from './app/containers/Authorization/signup';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -73,6 +74,7 @@ root.render(
               <Route path={"places"} element={<PlacePage />} />
               <Route path={"places/:name"} element={<OnePlace />} />
               <Route path={"login"} element={<LoginPage />} />
+              <Route path={"signup"} element={<SignupPage />} />
             </Route>
           </Routes>
         </Router>

@@ -1,6 +1,5 @@
 package com.as.dndwebsite.security;
 
-import com.as.dndwebsite.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +29,9 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/auth/**").permitAll();
+                    registry.requestMatchers("/auth/register").permitAll();
+                    registry.requestMatchers("/auth/authenticate").permitAll();
+                    registry.requestMatchers("/auth/refresh").permitAll();
                     registry.requestMatchers(HttpMethod.GET).permitAll();
                     registry.requestMatchers("/admin/**").hasRole("ADMIN");
                     registry.requestMatchers("/user/**").hasRole("USER");

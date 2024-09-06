@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SubRaceControllerService, EntryDTO, SubRaceDTO, Page } from "../../../../services/openapi";
+import { SubRaceControllerService, EntryDTO, SubRaceDTO, Page, OpenAPI } from "../../../../services/openapi";
+import useJWTManager from "../../../../services/jwt/JWTMenager";
 
 interface IUpdateSubRaceData {
     id: number,
@@ -21,6 +22,7 @@ export function SubRaceFunction(props: ISubRaceFunction) {
     })
 
     async function saveSubRace(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveSubRaceMutation.mutateAsync({ name, shortDescription }).then(res => {
             let subRaceDTO: SubRaceDTO = {
                 subRace: res,
@@ -43,6 +45,7 @@ export function SubRaceFunction(props: ISubRaceFunction) {
     })
 
     async function editSubRace(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -69,6 +72,7 @@ export function SubRaceFunction(props: ISubRaceFunction) {
     })
 
     async function deleteSubRace(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteSubRaceMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["subRacePage", props.pageNumber, props.pageSize] })
         })

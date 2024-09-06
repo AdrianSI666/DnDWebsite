@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DescriptionDTO, EntryFullDTO, KingdomControllerService } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryFullDTO, KingdomControllerService, OpenAPI } from "../../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     kingdomId: number,
@@ -29,6 +30,7 @@ export function KingdomFunctionArray(props: IKingdomFunction) {
     })
 
     async function addNewDesctiptionToKingdom(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -47,6 +49,7 @@ export function KingdomFunctionArray(props: IKingdomFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updateKingdomDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -68,6 +71,7 @@ export function KingdomFunctionArray(props: IKingdomFunction) {
     })
 
     async function deleteDescriptionFromKingdom(kingdomId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromKingdomMutation.mutateAsync({ kingdomId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["kingdom", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {
@@ -84,6 +88,7 @@ export function KingdomFunctionArray(props: IKingdomFunction) {
     })
 
     async function saveImageToKingdom(acceptedFiles: Blob, kingdomId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToKingdomMutation.mutateAsync({ kingdomId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["kingdom", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData;
@@ -98,6 +103,7 @@ export function KingdomFunctionArray(props: IKingdomFunction) {
     })
 
     async function deleteImageFromKingdom(kingdomId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromKingdomMutation.mutateAsync({ kingdomId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["kingdom", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

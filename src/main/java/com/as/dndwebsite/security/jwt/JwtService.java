@@ -1,6 +1,7 @@
 package com.as.dndwebsite.security.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,6 +59,14 @@ public class JwtService {
                 validDates;
     }
 
+    public boolean isTokenValidButExpired(String jws, UserDetails userDetails) {
+        final String username = extractUsername(jws);
+        boolean validDates = extractClaim(jws, Claims::getExpiration).after(extractClaim(jws, Claims::getIssuedAt));
+        return (username.equals(userDetails.getUsername())) &&
+                isTokenExpired(jws) &&
+                validDates;
+    }
+
     private boolean isTokenExpired(String jws) {
         return extractClaim(jws, Claims::getExpiration).before(new Date(clock.instant().toEpochMilli()));
     }
@@ -66,17 +75,25 @@ public class JwtService {
         return extractClaim(jws, Claims::getSubject);
     }
 
+    public Date extractExpirationTime(String jws) {
+        return extractClaim(jws, Claims::getExpiration);
+    }
+
     public <T> T extractClaim(String jws, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(jws);
         return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String jws) {
-        return Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(jws)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(jws)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
 }

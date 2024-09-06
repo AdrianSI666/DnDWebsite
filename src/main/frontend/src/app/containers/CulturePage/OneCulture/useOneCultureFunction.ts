@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { CultureControllerService, EntryDTO, EntryFullDTO } from "../../../../services/openapi"
+import { CultureControllerService, EntryDTO, EntryFullDTO, OpenAPI } from "../../../../services/openapi"
+import useJWTManager from "../../../../services/jwt/JWTMenager"
 
 interface IUpdateCultureData {
     id: number,
@@ -18,6 +19,7 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
     const location = useLocation();
 
     const removeCulture = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return CultureControllerService.deleteCulture(id)
             .then((_) => {
                 navigate("/cultures")
@@ -34,6 +36,7 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
     })
 
     async function editCulture(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

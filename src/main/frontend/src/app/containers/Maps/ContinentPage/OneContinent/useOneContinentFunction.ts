@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, EntryFullDTO, ContinentControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, ContinentControllerService, OpenAPI } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateContinentData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOneContinentFunction(props: IUseOneContinentFunction) {
     const location = useLocation();
 
     const removeContinent = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return ContinentControllerService.deleteContinent(id)
             .then((_) => {
                 navigate("/continents")
@@ -33,6 +35,7 @@ export function UseOneContinentFunction(props: IUseOneContinentFunction) {
     })
 
     async function editContinent(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RaceControllerService, DescriptionDTO, RaceDTO } from "../../../../services/openapi";
+import { RaceControllerService, DescriptionDTO, RaceDTO, OpenAPI } from "../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     raceId: number,
@@ -29,6 +30,7 @@ export function RaceFunctionArray(props: IRaceFunction) {
     })
 
     async function addNewDesctiptionToRace(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -46,6 +48,7 @@ export function RaceFunctionArray(props: IRaceFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updateRaceDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -67,6 +70,7 @@ export function RaceFunctionArray(props: IRaceFunction) {
     })
 
     async function deleteDescriptionFromRace(raceId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromRaceMutation.mutateAsync({ raceId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
                 const newData = oldData ? {
@@ -83,6 +87,7 @@ export function RaceFunctionArray(props: IRaceFunction) {
     })
 
     async function saveImageToRace(acceptedFiles: Blob, raceId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToRaceMutation.mutateAsync({ raceId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
                 const newData = oldData;
@@ -97,6 +102,7 @@ export function RaceFunctionArray(props: IRaceFunction) {
     })
 
     async function deleteImageFromRace(raceId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromRaceMutation.mutateAsync({ raceId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
                 const newData = oldData ? {

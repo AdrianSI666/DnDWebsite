@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, EntryFullDTO, Page, WorldControllerService } from "../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, OpenAPI, Page, WorldControllerService } from "../../../../services/openapi"
+import useJWTManager from "../../../../services/jwt/JWTMenager"
 
 interface IUpdateWorldData {
     id: number,
@@ -20,6 +21,7 @@ export function WorldFunction(props: IWorldFunction) {
     })
 
     async function saveWorld(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveWorldMutation.mutateAsync({ name, shortDescription }).then(res => {
             let worldDTO: EntryFullDTO = {
                 object: res,
@@ -42,6 +44,7 @@ export function WorldFunction(props: IWorldFunction) {
     })
 
     async function editWorld(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -68,6 +71,7 @@ export function WorldFunction(props: IWorldFunction) {
     })
 
     async function deleteWorld(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteWorldMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["worldPage", props.pageNumber, props.pageSize] })
         })

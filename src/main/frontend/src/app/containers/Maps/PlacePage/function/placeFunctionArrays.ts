@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DescriptionDTO, EntryFullDTO, PlaceControllerService } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryFullDTO, OpenAPI, PlaceControllerService } from "../../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     placeId: number,
@@ -28,6 +29,7 @@ export function PlaceFunctionArray(props: IPlaceFunction) {
     })
 
     async function addNewDesctiptionToPlace(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -46,6 +48,7 @@ export function PlaceFunctionArray(props: IPlaceFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updatePlaceDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -67,6 +70,7 @@ export function PlaceFunctionArray(props: IPlaceFunction) {
     })
 
     async function deleteDescriptionFromPlace(placeId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromPlaceMutation.mutateAsync({ placeId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["place", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {
@@ -83,6 +87,7 @@ export function PlaceFunctionArray(props: IPlaceFunction) {
     })
 
     async function saveImageToPlace(acceptedFiles: Blob, placeId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToPlaceMutation.mutateAsync({ placeId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["place", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData;
@@ -97,6 +102,7 @@ export function PlaceFunctionArray(props: IPlaceFunction) {
     })
 
     async function deleteImageFromPlace(placeId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromPlaceMutation.mutateAsync({ placeId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["place", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

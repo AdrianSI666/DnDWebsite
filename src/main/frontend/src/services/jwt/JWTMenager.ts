@@ -1,6 +1,7 @@
 import secureLocalStorage from "react-secure-storage";
 
 const JWTMenager = () => {
+
     const getToken = () => secureLocalStorage.getItem("accessToken")?.toString();
 
     const setToken = (token: string) => {
@@ -15,10 +16,10 @@ const JWTMenager = () => {
         return true;
     }
 
-    const getUser = () => secureLocalStorage.getItem("userId");
+    const getExpirationTime = () => Number(secureLocalStorage.getItem("expAt"));
 
-    const setUser = (userId: number) => {
-        secureLocalStorage.setItem("userId", userId)
+    const setExpirationTime = (expiration: number) => {
+        secureLocalStorage.setItem("expAt", expiration)
         return true;
     }
 
@@ -26,6 +27,7 @@ const JWTMenager = () => {
         secureLocalStorage.removeItem("accessToken")
         secureLocalStorage.removeItem("refreshToken")
         secureLocalStorage.removeItem("userId")
+        secureLocalStorage.removeItem("expAt")
         return true;
     };
 
@@ -35,8 +37,8 @@ const JWTMenager = () => {
         deleteTokens,
         getRefreshToken,
         setRefreshToken,
-        setUser,
-        getUser
+        getExpirationTime,
+        setExpirationTime
     };
 };
  

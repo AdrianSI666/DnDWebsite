@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DescriptionDTO, EntryFullDTO, RegionControllerService } from "../../../../../services/openapi";
+import { DescriptionDTO, EntryFullDTO, OpenAPI, RegionControllerService } from "../../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     regionId: number,
@@ -28,6 +29,7 @@ export function RegionFunctionArray(props: IRegionFunction) {
     })
 
     async function addNewDesctiptionToRegion(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -46,6 +48,7 @@ export function RegionFunctionArray(props: IRegionFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updateRegionDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -67,6 +70,7 @@ export function RegionFunctionArray(props: IRegionFunction) {
     })
 
     async function deleteDescriptionFromRegion(regionId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromRegionMutation.mutateAsync({ regionId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["region", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {
@@ -83,6 +87,7 @@ export function RegionFunctionArray(props: IRegionFunction) {
     })
 
     async function saveImageToRegion(acceptedFiles: Blob, regionId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToRegionMutation.mutateAsync({ regionId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["region", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData;
@@ -97,6 +102,7 @@ export function RegionFunctionArray(props: IRegionFunction) {
     })
 
     async function deleteImageFromRegion(regionId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromRegionMutation.mutateAsync({ regionId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["region", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

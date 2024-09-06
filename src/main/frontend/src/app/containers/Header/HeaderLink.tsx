@@ -7,7 +7,9 @@ interface IHeaderProps {
 }
 
 export function HeaderLink(props: Readonly<IHeaderProps>) {
-    return <Link className="nav-link" to={`/${props.name}`} style={{ textTransform: 'capitalize' }} onSelect={() => props.handleSelect!()}>
+    return <Link className="nav-link" to={`/${props.name}`} style={{ textTransform: 'capitalize' }} onClick={() => {
+        if(props.handleSelect) props.handleSelect()
+    }}>
         {props.name}
     </Link>
 }

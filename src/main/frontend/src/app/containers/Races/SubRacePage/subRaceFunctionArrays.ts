@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SubRaceControllerService, DescriptionDTO, SubRaceDTO } from "../../../../services/openapi";
+import { SubRaceControllerService, DescriptionDTO, SubRaceDTO, OpenAPI } from "../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     subRaceId: number,
@@ -28,6 +29,7 @@ export function SubRaceFunctionArray(props: ISubRaceFunction) {
     })
 
     async function addNewDesctiptionToSubRace(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -45,6 +47,7 @@ export function SubRaceFunctionArray(props: ISubRaceFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updateSubRaceDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -66,6 +69,7 @@ export function SubRaceFunctionArray(props: ISubRaceFunction) {
     })
 
     async function deleteDescriptionFromSubRace(subRaceId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromSubRaceMutation.mutateAsync({ subRaceId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["subRace", props.name], (oldData: SubRaceDTO) => {
                 const newData = oldData ? {
@@ -82,6 +86,7 @@ export function SubRaceFunctionArray(props: ISubRaceFunction) {
     })
 
     async function saveImageToSubRace(acceptedFiles: Blob, subRaceId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToSubRaceMutation.mutateAsync({ subRaceId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["subRace", props.name], (oldData: SubRaceDTO) => {
                 const newData = oldData;
@@ -96,6 +101,7 @@ export function SubRaceFunctionArray(props: ISubRaceFunction) {
     })
 
     async function deleteImageFromSubRace(subRaceId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromSubRaceMutation.mutateAsync({ subRaceId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["subRace", props.name], (oldData: SubRaceDTO) => {
                 const newData = oldData ? {

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, EntryFullDTO, WorldControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, OpenAPI, WorldControllerService } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateWorldData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOneWorldFunction(props: IUseOneWorldFunction) {
     const location = useLocation();
 
     const removeWorld = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return WorldControllerService.deleteWorld(id)
             .then((_) => {
                 navigate("/worlds")
@@ -33,6 +35,7 @@ export function UseOneWorldFunction(props: IUseOneWorldFunction) {
     })
 
     async function editWorld(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

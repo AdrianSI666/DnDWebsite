@@ -2,10 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type AuthenticationResponse = {
+export type TokenRefreshRequest = {
     token?: string;
     refreshToken?: string;
-    userId?: number;
-    expTime?: number;
 };
 

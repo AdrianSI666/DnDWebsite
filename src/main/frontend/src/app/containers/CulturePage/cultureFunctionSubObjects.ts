@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { EntryDTO, EntryFullDTO, RegionCultureControllerService } from "../../../services/openapi";
+import { EntryDTO, EntryFullDTO, OpenAPI, RegionCultureControllerService } from "../../../services/openapi";
 import { addExistingObjectToRelation } from "../../components/types";
+import useJWTManager from "../../../services/jwt/JWTMenager";
 
 interface IAddRegionPayload {
   cultureId: number,
@@ -24,6 +25,7 @@ export function CultureFunctionSubObjects(props: ICultureSubObjectsFunction) {
   })
 
   const saveNewRegionToCulture = async (cultureId: number, name: string, shortDescription: string): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: name,
       shortDescription: shortDescription
@@ -42,6 +44,7 @@ export function CultureFunctionSubObjects(props: ICultureSubObjectsFunction) {
   })
 
   const saveExistingRegionToCulture = async (args: addExistingObjectToRelation): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: args.objectName,
       shortDescription: args.objectDescription,
@@ -61,6 +64,7 @@ export function CultureFunctionSubObjects(props: ICultureSubObjectsFunction) {
   })
 
   const removeRegionFromCultureFunction = async (cultureId: number, regionId: number): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     return removeRegionFromCultureMutation.mutateAsync({ cultureId, regionId }).then(() => {
       queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
         const newData = oldData ? {

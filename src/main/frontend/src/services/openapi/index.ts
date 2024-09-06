@@ -12,12 +12,14 @@ export type { DescriptionDTO } from './models/DescriptionDTO';
 export type { EntryDTO } from './models/EntryDTO';
 export type { EntryFullDTO } from './models/EntryFullDTO';
 export type { ImageDTO } from './models/ImageDTO';
+export type { LoginRequest } from './models/LoginRequest';
 export type { Page } from './models/Page';
 export type { PageInfo } from './models/PageInfo';
 export type { RaceDTO } from './models/RaceDTO';
 export type { RegionDTO } from './models/RegionDTO';
 export type { RegisterRequest } from './models/RegisterRequest';
 export type { SubRaceDTO } from './models/SubRaceDTO';
+export type { TokenRefreshRequest } from './models/TokenRefreshRequest';
 
 export { AuthenticationControllerService } from './services/AuthenticationControllerService';
 export { ContinentControllerService } from './services/ContinentControllerService';

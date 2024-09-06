@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, RaceControllerService, RaceDTO } from "../../../../../services/openapi"
+import { EntryDTO, OpenAPI, RaceControllerService, RaceDTO } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateRaceData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOneRaceFunction(props: IUseOneRaceFunction) {
     const location = useLocation();
 
     const removeRace = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return RaceControllerService.deleteRace(id)
             .then((_) => {
                 navigate("/races")
@@ -33,6 +35,7 @@ export function UseOneRaceFunction(props: IUseOneRaceFunction) {
     })
 
     async function editRace(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

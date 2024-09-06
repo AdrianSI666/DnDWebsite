@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, EntryFullDTO, Page, PlaneControllerService } from "../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, OpenAPI, Page, PlaneControllerService } from "../../../../services/openapi"
+import useJWTManager from "../../../../services/jwt/JWTMenager"
 
 interface IUpdatePlaneData {
     id: number,
@@ -20,6 +21,7 @@ export function PlaneFunction(props: IPlaneFunction) {
     })
 
     async function savePlane(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return savePlaneMutation.mutateAsync({ name, shortDescription }).then(res => {
             let planeDTO: EntryFullDTO = {
                 object: res,
@@ -42,6 +44,7 @@ export function PlaneFunction(props: IPlaneFunction) {
     })
 
     async function editPlane(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -68,6 +71,7 @@ export function PlaneFunction(props: IPlaneFunction) {
     })
 
     async function deletePlane(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deletePlaneMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["planePage", props.pageNumber, props.pageSize] })
         })

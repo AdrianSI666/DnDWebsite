@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DescriptionDTO, EntryFullDTO, PlaneControllerService } from "../../../../services/openapi";
+import { DescriptionDTO, EntryFullDTO, OpenAPI, PlaneControllerService } from "../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     planeId: number,
@@ -28,6 +29,7 @@ export function PlaneFunctionArray(props: IPlaneFunction) {
     })
 
     async function addNewDesctiptionToPlane(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -46,6 +48,7 @@ export function PlaneFunctionArray(props: IPlaneFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updatePlaneDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -67,6 +70,7 @@ export function PlaneFunctionArray(props: IPlaneFunction) {
     })
 
     async function deleteDescriptionFromPlane(planeId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromPlaneMutation.mutateAsync({ planeId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["plane", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {
@@ -83,6 +87,7 @@ export function PlaneFunctionArray(props: IPlaneFunction) {
     })
 
     async function saveImageToPlane(acceptedFiles: Blob, planeId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToPlaneMutation.mutateAsync({ planeId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["plane", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData;
@@ -97,6 +102,7 @@ export function PlaneFunctionArray(props: IPlaneFunction) {
     })
 
     async function deleteImageFromPlane(planeId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromPlaneMutation.mutateAsync({ planeId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["plane", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

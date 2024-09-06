@@ -1,18 +1,29 @@
-import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Header.css'
-import { HeaderLink } from "./HeaderLink";
-import { NavDropdown } from "react-bootstrap";
+import { useState } from "react";
+import { Button, NavDropdown } from "react-bootstrap";
 import JWTMenager from "../../../services/jwt/JWTMenager";
+import { AuthenticationControllerService, OpenAPI } from "../../../services/openapi";
+import './Header.css';
+import { HeaderLink } from "./HeaderLink";
+import useUserState from '../../../services/storage/UserStorage';
+import toast from 'react-hot-toast';
 
 export function Header() {
+    const { userId } = useUserState();
+    const { resetUser } = useUserState();
     const [isDropdownOpenRace, setDropdownOpenRace] = useState(false);
     const [isDropdownOpenMaps, setDropdownOpenMaps] = useState(false);
-    const handleSelect = () => {
+    const handleSelectRaces = () => {
         setDropdownOpenRace(false);
     };
     const toggleDropdownRace = () => {
         setDropdownOpenRace(!isDropdownOpenRace);
+    };
+    const toggleDropdownMaps = () => {
+        setDropdownOpenMaps(!isDropdownOpenMaps)
+    }
+    const handleSelectMaps = () => {
+        setDropdownOpenMaps(false);
     };
     return (
         <nav className="navbar navbar-expand-lg navbar-light, header">
@@ -31,41 +42,63 @@ export function Header() {
                         </li>
                         <li className="nav-item">
                             <NavDropdown title="Races" id="basic-nav-dropdown"
-                            show={isDropdownOpenRace}
-                            onSelect={(ek, ev) => console.log("yes")} 
-                            onToggle={toggleDropdownRace}
+                                show={isDropdownOpenRace}
+                                onToggle={toggleDropdownRace}
                             >
-                                <HeaderLink name="races" handleSelect={handleSelect} />
+                                <HeaderLink name="races" handleSelect={handleSelectRaces} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="subraces" handleSelect={handleSelect} />
+                                <HeaderLink name="subraces" handleSelect={handleSelectRaces} />
                             </NavDropdown>
                         </li>
                         <li className="nav-item">
-                            <NavDropdown title="Places" id="basic-nav-dropdown">
-                                <HeaderLink name="worlds" />
+                            <NavDropdown title="Places" id="basic-nav-dropdown"
+                                show={isDropdownOpenMaps}
+                                onToggle={toggleDropdownMaps}
+                            >
+                                <HeaderLink name="worlds" handleSelect={handleSelectMaps} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="planes" />
+                                <HeaderLink name="planes" handleSelect={handleSelectMaps} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="continents" />
+                                <HeaderLink name="continents" handleSelect={handleSelectMaps} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="kingdoms" />
+                                <HeaderLink name="kingdoms" handleSelect={handleSelectMaps} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="regions" />
+                                <HeaderLink name="regions" handleSelect={handleSelectMaps} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="places" />
+                                <HeaderLink name="places" handleSelect={handleSelectMaps} />
                             </NavDropdown>
                         </li>
-                        {(JWTMenager.getUser() === null) && (<><li className="nav-item">
+                        {!userId ? <><li className="nav-item">
                             <HeaderLink name="login" />
                         </li><li className="nav-item">
                                 <HeaderLink name="signup" />
-                            </li></>)}
-                        {(JWTMenager.getUser() != null) && (<li className="nav-item">
-                            <HeaderLink name="profile" />
-                        </li>)}
+                            </li></> : null}
+                        {userId ? <>
+                            <li className="nav-item">
+                                <HeaderLink name="profile" />
+                            </li>
+                            <li>
+                                <Button onClick={() => {
+                                    OpenAPI.TOKEN = JWTMenager.getToken();
+                                    toast.promise(AuthenticationControllerService.signOut(userId)
+                                        .then((_) => {
+                                            resetUser()
+                                            JWTMenager.deleteTokens()
+                                        })
+                                        .catch((e) => {
+                                            resetUser()
+                                            JWTMenager.deleteTokens()
+                                        }), {
+                                        loading: 'Processing...',
+                                        success: `Logged out.`,
+                                        error: () => `There has been error on the server, please try again later.`
+                                    });
+                                }}>Sign out</Button>
+                            </li>
+                        </> : null}
 
                     </ul>
                 </div>
             </div>
-        </nav>);
+        </nav >);
 }

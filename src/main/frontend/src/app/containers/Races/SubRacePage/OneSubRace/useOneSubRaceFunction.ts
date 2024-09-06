@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, SubRaceControllerService, SubRaceDTO } from "../../../../../services/openapi"
+import { EntryDTO, OpenAPI, SubRaceControllerService, SubRaceDTO } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateSubRaceData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOneSubRaceFunction(props: IUseOneSubRaceFunction) {
     const location = useLocation();
 
     const removeSubRace = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return SubRaceControllerService.deleteSubRace(id)
             .then((_) => {
                 navigate("/subRaces")
@@ -33,6 +35,7 @@ export function UseOneSubRaceFunction(props: IUseOneSubRaceFunction) {
     })
 
     async function editSubRace(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

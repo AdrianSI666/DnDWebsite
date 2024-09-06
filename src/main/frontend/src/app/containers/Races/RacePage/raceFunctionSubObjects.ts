@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, RaceDTO, RaceSubRaceControllerService, RegionRaceControllerService } from "../../../../services/openapi"
+import { EntryDTO, OpenAPI, RaceDTO, RaceSubRaceControllerService, RegionRaceControllerService } from "../../../../services/openapi"
 import { addExistingObjectToRelation } from "../../../components/types"
+import useJWTManager from "../../../../services/jwt/JWTMenager"
 
 interface IAddSubObjectPayload {
   raceId: number,
@@ -32,6 +33,7 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
   })
 
   const saveNewSubRaceToRace = async (raceId: number, name: string, shortDescription: string): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: name,
       shortDescription: shortDescription
@@ -50,6 +52,7 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
   })
 
   const saveExistingSubRaceToRace = async (args: addExistingObjectToRelation): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: args.objectName,
       shortDescription: args.objectDescription,
@@ -70,6 +73,7 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
   })
 
   const removeSubRaceFromRaceFunction = async (raceId: number, subRaceId: number): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     return removeSubRaceFromRaceMutation.mutateAsync({ raceId, subObjectId: subRaceId }).then(_ => {
       queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
         const newData = oldData ? {
@@ -86,6 +90,7 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
   })
 
   const saveNewRegionToRace = async (raceId: number, name: string, shortDescription: string): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: name,
       shortDescription: shortDescription
@@ -104,6 +109,7 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
   })
 
   const saveExistingRegionToRace = async (args: addExistingObjectToRelation): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: args.objectName,
       shortDescription: args.objectDescription,
@@ -123,6 +129,7 @@ export function RaceFunctionSubObjects(props: IRaceSubObjectsFunction) {
   })
 
   const removeRegionFromRaceFunction = async (raceId: number, regionId: number): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     return removeRegionFromRaceMutation.mutateAsync({ raceId, subObjectId: regionId }).then(() => {
       queryClient.setQueryData(["race", props.name], (oldData: RaceDTO) => {
         const newData = oldData ? {
