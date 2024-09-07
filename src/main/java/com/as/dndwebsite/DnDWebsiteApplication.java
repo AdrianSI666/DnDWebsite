@@ -33,8 +33,7 @@ public class DnDWebsiteApplication {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:8093/");
-        config.addAllowedOrigin("http://localhost:3000/");
+        config.addAllowedOrigin("https://localhost:8093/");
         config.addAllowedHeader("*"); // this allows all headers
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("HEAD");

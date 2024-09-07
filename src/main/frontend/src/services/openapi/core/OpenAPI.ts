@@ -20,7 +20,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-    BASE: 'http://localhost:8090',
+    BASE: 'https://localhost:8443',
     VERSION: '0',
     WITH_CREDENTIALS: false,
     CREDENTIALS: 'include',
