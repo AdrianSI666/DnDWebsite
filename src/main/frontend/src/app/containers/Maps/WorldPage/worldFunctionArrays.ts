@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DescriptionDTO, EntryFullDTO, WorldControllerService } from "../../../../services/openapi";
+import { DescriptionDTO, EntryFullDTO, OpenAPI, WorldControllerService } from "../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     worldId: number,
@@ -29,6 +30,7 @@ export function WorldFunctionArray(props: IWorldFunction) {
     })
 
     async function addNewDesctiptionToWorld(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -47,6 +49,7 @@ export function WorldFunctionArray(props: IWorldFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updateWorldDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -68,6 +71,7 @@ export function WorldFunctionArray(props: IWorldFunction) {
     })
 
     async function deleteDescriptionFromWorld(worldId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromWorldMutation.mutateAsync({ worldId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["world", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {
@@ -84,6 +88,7 @@ export function WorldFunctionArray(props: IWorldFunction) {
     })
 
     async function saveImageToWorld(acceptedFiles: Blob, worldId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToWorldMutation.mutateAsync({ worldId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["world", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData;
@@ -98,6 +103,7 @@ export function WorldFunctionArray(props: IWorldFunction) {
     })
 
     async function deleteImageFromWorld(worldId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromWorldMutation.mutateAsync({ worldId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["world", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

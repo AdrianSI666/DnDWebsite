@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, EntryFullDTO, KingdomControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, KingdomControllerService, OpenAPI } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateKingdomData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOneKingdomFunction(props: IUseOneKingdomFunction) {
     const location = useLocation();
 
     const removeKingdom = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return KingdomControllerService.deleteKingdom(id)
             .then((_) => {
                 navigate("/kingdoms")
@@ -33,6 +35,7 @@ export function UseOneKingdomFunction(props: IUseOneKingdomFunction) {
     })
 
     async function editKingdom(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

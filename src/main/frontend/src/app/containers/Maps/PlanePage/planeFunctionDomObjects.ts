@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, WorldControllerService, WorldPlaneControllerService, EntryFullDTO } from "../../../../services/openapi"
+import { EntryDTO, WorldControllerService, WorldPlaneControllerService, EntryFullDTO, OpenAPI } from "../../../../services/openapi"
 import { addExistingObjectToRelation } from "../../../components/types"
+import useJWTManager from "../../../../services/jwt/JWTMenager"
 
 interface IAddDomObjectPayload {
     planeId: number,
@@ -33,6 +34,7 @@ export function PlaneFunctionDomObjects(props: IPlaneFunctionDomObjects) {
     })
 
     const setNewWorldToPlane = async (planeId: number, name: string, shortDescription: string): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             name: name,
             shortDescription: shortDescription
@@ -51,6 +53,7 @@ export function PlaneFunctionDomObjects(props: IPlaneFunctionDomObjects) {
     })
 
     const setExistingWorldToPlane = async (args: addExistingObjectToRelation): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             name: args.objectName,
             shortDescription: args.objectDescription,
@@ -72,6 +75,7 @@ export function PlaneFunctionDomObjects(props: IPlaneFunctionDomObjects) {
     })
 
     const removeWorldFromPlaneFunction = async (worldId: number, planeId: number): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return removeWorldFromPlaneMutation.mutateAsync({ planeId, subObjectId: worldId }).then(_ => {
             queryClient.setQueryData(["plane", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, EntryFullDTO, PlaceControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, OpenAPI, PlaceControllerService } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdatePlaceData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOnePlaceFunction(props: IUseOnePlaceFunction) {
     const location = useLocation();
 
     const removePlace = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return PlaceControllerService.deletePlace(id)
             .then((_) => {
                 navigate("/places")
@@ -33,6 +35,7 @@ export function UseOnePlaceFunction(props: IUseOnePlaceFunction) {
     })
 
     async function editPlace(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

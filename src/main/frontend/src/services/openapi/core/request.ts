@@ -1,13 +1,15 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import JWTMenager from '../../jwt/JWTMenager';
+import { AuthenticationControllerService } from '../services/AuthenticationControllerService';
 import { ApiError } from './ApiError';
 import type { ApiRequestOptions } from './ApiRequestOptions';
 import type { ApiResult } from './ApiResult';
-import { CancelablePromise } from './CancelablePromise';
 import type { OnCancel } from './CancelablePromise';
-import type { OpenAPIConfig } from './OpenAPI';
+import { CancelablePromise } from './CancelablePromise';
+import { OpenAPI, type OpenAPIConfig } from './OpenAPI';
 
 export const isDefined = <T>(value: T | null | undefined): value is Exclude<T, null | undefined> => {
     return value !== undefined && value !== null;
@@ -164,7 +166,7 @@ export const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptio
         headers['Authorization'] = `Basic ${credentials}`;
     }
 
-    if (options.body) {
+    if (options.body !== undefined) {
         if (options.mediaType) {
             headers['Content-Type'] = options.mediaType;
         } else if (isBlob(options.body)) {
@@ -215,8 +217,20 @@ export const sendRequest = async (
     }
 
     onCancel(() => controller.abort());
-
-    return await fetch(url, request);
+    if (config.TOKEN) {
+        if (Date.now() > JWTMenager.getExpirationTime()) {
+            OpenAPI.TOKEN = undefined
+            await AuthenticationControllerService.refreshToken({ token: JWTMenager.getToken(), refreshToken: JWTMenager.getRefreshToken() })
+                .then(res => {
+                    JWTMenager.setToken(res.token!);
+                    JWTMenager.setRefreshToken(res.refreshToken!);
+                    JWTMenager.setExpirationTime(res.expTime!)
+                    headers.set('Authorization', `Bearer ${res.token}`);
+                    request.headers = headers;
+                })
+        }
+    }
+    return await fetch(url, request).finally(() => OpenAPI.TOKEN = undefined);
 };
 
 export const getResponseHeader = (response: Response, responseHeader?: string): string | undefined => {

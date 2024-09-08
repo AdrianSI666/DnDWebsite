@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { EntryDTO, RegionDTO, RegionRaceControllerService, RaceControllerService } from "../../../../../services/openapi";
+import { EntryDTO, RegionDTO, RegionRaceControllerService, RaceControllerService, OpenAPI } from "../../../../../services/openapi";
 import { addExistingObjectToRelation } from "../../../../components/types";
+import useJWTManager from "../../../../../services/jwt/JWTMenager";
 
 interface IAddSubObjectPayload {
     regionId: number,
@@ -33,6 +34,7 @@ export function RegionFunctionRaces(props: IRegionFunctionRaces) {
     })
 
     const saveNewRaceToRegion = async (regionId: number, name: string, shortDescription: string): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             name: name,
             shortDescription: shortDescription
@@ -51,6 +53,7 @@ export function RegionFunctionRaces(props: IRegionFunctionRaces) {
     })
 
     const saveExistingRaceToRegion = async (args: addExistingObjectToRelation): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             name: args.objectName,
             shortDescription: args.objectDescription,
@@ -71,6 +74,7 @@ export function RegionFunctionRaces(props: IRegionFunctionRaces) {
     })
 
     const removeRaceFromRegionFunction = async (regionId: number, raceId: number): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return removeRaceFromRegionMutation.mutateAsync({ regionId, subObjectId: raceId }).then(_ => {
             queryClient.setQueryData(["region", props.name], (oldData: RegionDTO) => {
                 const newData = oldData ? {

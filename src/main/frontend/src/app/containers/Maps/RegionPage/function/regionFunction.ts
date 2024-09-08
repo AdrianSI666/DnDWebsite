@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RegionControllerService, EntryDTO, RegionDTO, Page } from "../../../../../services/openapi";
+import { RegionControllerService, EntryDTO, RegionDTO, Page, OpenAPI } from "../../../../../services/openapi";
+import useJWTManager from "../../../../../services/jwt/JWTMenager";
 
 interface IUpdateRegionData {
     id: number,
@@ -21,6 +22,7 @@ export function RegionFunction(props: IRegionFunction) {
     })
 
     async function saveRegion(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveRegionMutation.mutateAsync({ name, shortDescription }).then(res => {
             let regionDTO: RegionDTO = {
                 region: res,
@@ -46,6 +48,7 @@ export function RegionFunction(props: IRegionFunction) {
     })
 
     async function editRegion(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -72,6 +75,7 @@ export function RegionFunction(props: IRegionFunction) {
     })
 
     async function deleteRegion(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteRegionMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["regionPage", props.pageNumber, props.pageSize] })
         })

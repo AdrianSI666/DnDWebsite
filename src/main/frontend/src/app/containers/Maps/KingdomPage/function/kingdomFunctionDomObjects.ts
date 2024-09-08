@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, ContinentControllerService, ContinentKingdomControllerService, EntryFullDTO } from "../../../../../services/openapi"
+import { EntryDTO, ContinentControllerService, ContinentKingdomControllerService, EntryFullDTO, OpenAPI } from "../../../../../services/openapi"
 import { addExistingObjectToRelation } from "../../../../components/types"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IAddDomObjectPayload {
     kingdomId: number,
@@ -33,6 +34,7 @@ export function KingdomFunctionDomObjects(props: IKingdomFunctionDomObjects) {
     })
 
     const setNewContinentToKingdom = async (kingdomId: number, name: string, shortDescription: string): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             name: name,
             shortDescription: shortDescription
@@ -51,6 +53,7 @@ export function KingdomFunctionDomObjects(props: IKingdomFunctionDomObjects) {
     })
 
     const setExistingContinentToKingdom = async (args: addExistingObjectToRelation): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             name: args.objectName,
             shortDescription: args.objectDescription,
@@ -72,6 +75,7 @@ export function KingdomFunctionDomObjects(props: IKingdomFunctionDomObjects) {
     })
 
     const removeContinentFromKingdomFunction = async (continentId: number, kingdomId: number): Promise<void> => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return removeContinentFromKingdomMutation.mutateAsync({ kingdomId, subObjectId: continentId }).then(_ => {
             queryClient.setQueryData(["kingdom", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

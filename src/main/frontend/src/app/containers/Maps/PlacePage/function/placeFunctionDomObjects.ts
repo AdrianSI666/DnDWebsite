@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { EntryDTO, EntryFullDTO, RegionControllerService, RegionPlaceControllerService } from "../../../../../services/openapi";
+import { EntryDTO, EntryFullDTO, OpenAPI, RegionControllerService, RegionPlaceControllerService } from "../../../../../services/openapi";
 import { addExistingObjectToRelation } from "../../../../components/types";
+import useJWTManager from "../../../../../services/jwt/JWTMenager";
 
 interface IAddDomObjectPayload {
   placeId: number,
@@ -34,6 +35,7 @@ export function PlaceFunctionDomObjects(props: IPlaceFunctionDomObjects) {
   })
 
   const setNewRegionToPlace = async (placeId: number, name: string, shortDescription: string): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: name,
       shortDescription: shortDescription
@@ -52,15 +54,12 @@ export function PlaceFunctionDomObjects(props: IPlaceFunctionDomObjects) {
   })
 
   const setExistingRegionToPlace = async (args: addExistingObjectToRelation): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let regionDTO: EntryDTO = {
       name: args.objectName,
       shortDescription: args.objectDescription,
       id: args.objectToAddId
     }
-    console.log("function")
-    console.log("region", args.objectToAddId)
-    console.log("place", args.coreObjectId)
-    console.log("service")
     return setRegionToPlaceMutation.mutateAsync({ placeId: args.coreObjectId, subObjectId: args.objectToAddId }).then(_ => {
       queryClient.setQueryData(["place", props.name], (oldData: EntryFullDTO) => {
         const newData = oldData;
@@ -77,6 +76,7 @@ export function PlaceFunctionDomObjects(props: IPlaceFunctionDomObjects) {
   })
 
   const removeRegionFromPlaceFunction = async (regionId: number, placeId: number): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     return removeRegionFromPlaceMutation.mutateAsync({ placeId, subObjectId: regionId }).then(_ => {
       queryClient.setQueryData(["place", props.name], (oldData: EntryFullDTO) => {
         const newData = oldData ? {

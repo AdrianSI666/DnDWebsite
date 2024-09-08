@@ -37,3 +37,10 @@ build/
 /.env
 /src/main/frontend/.scannerwork/.sonar_lock
 /src/main/frontend/.scannerwork/report-task.txt
+/src/main/frontend/.env
+/keystore.p12
+/cert_config.cnf
+/certificate.pem
+/certificate.pfx
+/project.csr
+/project_key.pem

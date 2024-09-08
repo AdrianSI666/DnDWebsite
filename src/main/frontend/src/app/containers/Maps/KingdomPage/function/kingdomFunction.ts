@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, EntryFullDTO, Page, KingdomControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, Page, KingdomControllerService, OpenAPI } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateKingdomData {
     id: number,
@@ -20,6 +21,7 @@ export function KingdomFunction(props: IKingdomFunction) {
     })
 
     async function saveKingdom(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveKingdomMutation.mutateAsync({ name, shortDescription }).then(res => {
             let kingdomDTO: EntryFullDTO = {
                 object: res,
@@ -42,6 +44,7 @@ export function KingdomFunction(props: IKingdomFunction) {
     })
 
     async function editKingdom(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -68,6 +71,7 @@ export function KingdomFunction(props: IKingdomFunction) {
     })
 
     async function deleteKingdom(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteKingdomMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["kingdomPage", props.pageNumber, props.pageSize] })
         })

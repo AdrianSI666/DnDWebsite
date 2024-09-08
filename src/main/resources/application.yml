@@ -2,7 +2,13 @@ server:
   error:
     include-message: always
     include-binding-errors: always
-  port: 8090
+  port: 8443
+  ssl:
+    key-store: certificate.pfx
+    key-store-password: ${SSLPASSWORD}
+    keyStoreType: PKCS12
+    keyAlias: tomcat
+    enabled: true
 
 spring:
   datasource:

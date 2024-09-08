@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, EntryFullDTO, PlaneControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, OpenAPI, PlaneControllerService } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdatePlaneData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOnePlaneFunction(props: IUseOnePlaneFunction) {
     const location = useLocation();
 
     const removePlane = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return PlaneControllerService.deletePlane(id)
             .then((_) => {
                 navigate("/planes")
@@ -33,6 +35,7 @@ export function UseOnePlaneFunction(props: IUseOnePlaneFunction) {
     })
 
     async function editPlane(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

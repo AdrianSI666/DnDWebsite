@@ -7,6 +7,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.time.Clock;
+
 @SpringBootApplication
 public class DnDWebsiteApplication {
 
@@ -15,12 +17,16 @@ public class DnDWebsiteApplication {
     }
 
     @Bean
+    public Clock clock() {
+        return Clock.systemUTC();
+    }
+
+    @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:8093/");
-        config.addAllowedOrigin("http://localhost:3000/");
+        config.addAllowedOrigin("https://localhost:8093/");
         config.addAllowedHeader("*"); // this allows all headers
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("HEAD");

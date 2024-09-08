@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, EntryFullDTO, Page, PlaceControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, OpenAPI, Page, PlaceControllerService } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdatePlaceData {
     id: number,
@@ -20,6 +21,7 @@ export function PlaceFunction(props: IPlaceFunction) {
     })
 
     async function savePlace(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return savePlaceMutation.mutateAsync({ name, shortDescription }).then(res => {
             let placeDTO: EntryFullDTO = {
                 object: res,
@@ -42,6 +44,7 @@ export function PlaceFunction(props: IPlaceFunction) {
     })
 
     async function editPlace(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -68,6 +71,7 @@ export function PlaceFunction(props: IPlaceFunction) {
     })
 
     async function deletePlace(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deletePlaceMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["placePage", props.pageNumber, props.pageSize] })
         })

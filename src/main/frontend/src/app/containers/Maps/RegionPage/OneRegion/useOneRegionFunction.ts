@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, EntryFullDTO, RegionControllerService } from "../../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, OpenAPI, RegionControllerService } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateRegionData {
     id: number,
@@ -17,6 +18,7 @@ export function UseOneRegionFunction(props: IUseOneRegionFunction) {
     const location = useLocation();
 
     const removeRegion = async (id: number) => {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return RegionControllerService.deleteRegion(id)
             .then((_) => {
                 navigate("/regions")
@@ -33,6 +35,7 @@ export function UseOneRegionFunction(props: IUseOneRegionFunction) {
     })
 
     async function editRegion(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,

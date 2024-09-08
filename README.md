@@ -20,14 +20,24 @@ OR using Docker
 
 2. Create an .env file in main folder with specified values:
 - `DBUSERNAME=username` - name of user which have access to database you want to use 
-- `DBPASSWORD=password` - password used for specified user in database
+- `DBPASSWORD=yourpassword` - password used for specified user in database
 - `DBURL=name:port` - on which your database function,
 if you use docker this value should be a name given to container that runs your database,
 for example "database" as specified in docker-compose.yaml file at line 4.
 - `DBNAME=name` - name of created database, you need to create it before you can run the application. 
 Just an empty database is sufficient
-  
-3. To run this by hand:
+- If you want to use https (online hosting):
+  - `SSLPASSWORD=yourpassword` - password to ssl keystore containing private and public key certificate if you want to run it via internet in https.
+  To generate this keystore I recommend this tutorial https://medium.com/@mckinseydigital/expose-https-spring-endpoints-using-self-signed-certificate-and-configure-channels-to-verify-the-ed97d626cdea .
+
+3. Create second .env file for frontend folder in location "src/main/frontend/" with values:
+- `SECURE_LOCAL_STORAGE_HASH_KEY` - private hash key that's used to keep token on user site safe. It needs to be at least 128 bites long. 
+- If you want to use https (online hosting):
+  - `HTTPS="true"` - information to react to run server in https mode.
+  - `SSL_CRT_FILE` - localization of certification file (public key)
+  - `SSL_KEY_FILE` - localization of private key
+
+4. To run this by hand:
 - Open main folder in your IDE and run program from file located in src/main/java/com.as.dndwebsite/DnDWebsiteApplication .
 If you want to close it, just exit your IDE or stop it via options available in IDE.
 - Open in terminal frontend folder "DnDWebsite\src\main\frontend" and write to commands `npm install` and after all have been installed `npm start`.

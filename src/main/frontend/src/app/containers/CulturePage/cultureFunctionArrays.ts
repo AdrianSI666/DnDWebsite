@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CultureControllerService, DescriptionDTO, EntryFullDTO } from "../../../services/openapi";
+import { CultureControllerService, DescriptionDTO, EntryFullDTO, OpenAPI } from "../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     cultureId: number,
@@ -29,6 +30,7 @@ export function CultureFunctionArray(props: ICultureFunction) {
     })
 
     async function addNewDesctiptionToCulture(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -46,6 +48,7 @@ export function CultureFunctionArray(props: ICultureFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updateCultureDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -67,6 +70,7 @@ export function CultureFunctionArray(props: ICultureFunction) {
     })
 
     async function deleteDescriptionFromCulture(cultureId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromCultureMutation.mutateAsync({ cultureId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {
@@ -83,6 +87,7 @@ export function CultureFunctionArray(props: ICultureFunction) {
     })
 
     async function saveImageToCulture(acceptedFiles: Blob, cultureId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToCultureMutation.mutateAsync({ cultureId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData;
@@ -97,6 +102,7 @@ export function CultureFunctionArray(props: ICultureFunction) {
     })
 
     async function deleteImageFromCulture(cultureId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromCultureMutation.mutateAsync({ cultureId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

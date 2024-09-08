@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { EntryDTO, EntryFullDTO, KingdomRegionControllerService } from "../../../../../services/openapi";
+import { EntryDTO, EntryFullDTO, KingdomRegionControllerService, OpenAPI } from "../../../../../services/openapi";
 import { addExistingObjectToRelation } from "../../../../components/types";
+import useJWTManager from "../../../../../services/jwt/JWTMenager";
 
 interface IAddSubObjectPayload {
   kingdomId: number,
@@ -32,6 +33,7 @@ export function KingdomFunctionSubObjects(props: IKingdomFunctionSubObjects) {
   })
 
   const saveNewRegionToKingdom = async (kingdomId: number, name: string, shortDescription: string): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: name,
       shortDescription: shortDescription
@@ -50,6 +52,7 @@ export function KingdomFunctionSubObjects(props: IKingdomFunctionSubObjects) {
   })
 
   const saveExistingRegionToKingdom = async (args: addExistingObjectToRelation): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     let entryDTO: EntryDTO = {
       name: args.objectName,
       shortDescription: args.objectDescription,
@@ -70,6 +73,7 @@ export function KingdomFunctionSubObjects(props: IKingdomFunctionSubObjects) {
   })
 
   const removeRegionFromKingdomFunction = async (kingdomId: number, regionId: number): Promise<void> => {
+    OpenAPI.TOKEN = useJWTManager.getToken();
     return removeRegionFromKingdomMutation.mutateAsync({ kingdomId, subObjectId: regionId }).then(_ => {
       queryClient.setQueryData(["kingdom", props.name], (oldData: EntryFullDTO) => {
         const newData = oldData ? {

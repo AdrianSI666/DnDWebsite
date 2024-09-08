@@ -1,7 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DescriptionDTO, EntryFullDTO, ContinentControllerService } from "../../../../services/openapi";
+import { DescriptionDTO, EntryFullDTO, ContinentControllerService, OpenAPI } from "../../../../services/openapi";
 import { GlobalDescriptionFunction } from "../../../globalFunctions/GlobalDescriptionFunction";
+import useJWTManager from "../../../../services/jwt/JWTMenager";
 
 interface IAddDescriptionPayload {
     continentId: number,
@@ -30,6 +31,7 @@ export function ContinentFunctionArray(props: IContinentFunction) {
     })
 
     async function addNewDesctiptionToContinent(id: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             title: title,
             text: text
@@ -48,6 +50,7 @@ export function ContinentFunctionArray(props: IContinentFunction) {
     const { updateDescriptionMutation } = GlobalDescriptionFunction()
 
     async function updateContinentDescription(descriptionId: number, title: string, text: string) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let descriptionDTO: DescriptionDTO = {
             id: descriptionId,
             title: title,
@@ -70,6 +73,7 @@ export function ContinentFunctionArray(props: IContinentFunction) {
     })
 
     async function deleteDescriptionFromContinent(continentId: number, descriptionId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteDescriptionFromContinentMutation.mutateAsync({ continentId, subObjectId: descriptionId }).then(() => {
             queryClient.setQueryData(["continent", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {
@@ -87,6 +91,7 @@ export function ContinentFunctionArray(props: IContinentFunction) {
     })
 
     async function saveImageToContinent(acceptedFiles: Blob, continentId: number) {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveImageToContinentMutation.mutateAsync({ continentId, acceptedFiles }).then(res => {
             queryClient.setQueryData(["continent", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData;
@@ -102,6 +107,7 @@ export function ContinentFunctionArray(props: IContinentFunction) {
     })
 
     async function deleteImageFromContinent(continentId: number, imageId: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteImageFromContinentMutation.mutateAsync({ continentId, subObjectId: imageId }).then(() => {
             queryClient.setQueryData(["continent", props.name], (oldData: EntryFullDTO) => {
                 const newData = oldData ? {

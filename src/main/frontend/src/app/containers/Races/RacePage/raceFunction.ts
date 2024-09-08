@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { RaceControllerService, EntryDTO, RaceDTO, Page } from "../../../../services/openapi";
+import { RaceControllerService, EntryDTO, RaceDTO, Page, OpenAPI } from "../../../../services/openapi";
+import useJWTManager from "../../../../services/jwt/JWTMenager";
 
 interface IUpdateRaceData {
     id: number,
@@ -21,6 +22,7 @@ export function RaceFunction(props: IRaceFunction) {
     })
 
     async function saveRace(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveRaceMutation.mutateAsync({ name, shortDescription }).then(res => {
             let raceDTO: RaceDTO = {
                 race: res,
@@ -43,6 +45,7 @@ export function RaceFunction(props: IRaceFunction) {
     })
 
     async function editRace(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -69,6 +72,7 @@ export function RaceFunction(props: IRaceFunction) {
     })
 
     async function deleteRace(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteRaceMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["racePage", props.pageNumber, props.pageSize] })
         })

@@ -30,6 +30,8 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { LoginPage } from './app/containers/Authorization/login';
+import SignupPage from './app/containers/Authorization/signup';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -43,37 +45,41 @@ const queryClient = new QueryClient({
   }
 })
 
+
+
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path={"/"} element={<Root />}>
-            <Route index element={<Home />} />
-            <Route path={"home"} element={<Home />} />
-            <Route path={"cultures"} element={<CulturePage />} />
-            <Route path={"cultures/:name"} element={<OneCulture />} />
-            <Route path={"races"} element={<RacePage />} />
-            <Route path={"races/:name"} element={<OneRace />} />
-            <Route path={"subraces"} element={<SubRacePage />} />
-            <Route path={"subraces/:name"} element={<OneSubRace />} />
-            <Route path={"worlds"} element={<WorldPage />} />
-            <Route path={"worlds/:name"} element={<OneWorld />} />
-            <Route path={"planes"} element={<PlanePage />} />
-            <Route path={"planes/:name"} element={<OnePlane />} />
-            <Route path={"continents"} element={<ContinentPage />} />
-            <Route path={"continents/:name"} element={<OneContinent />} />
-            <Route path={"kingdoms"} element={<KingdomPage />} />
-            <Route path={"kingdoms/:name"} element={<OneKingdom />} />
-            <Route path={"regions"} element={<RegionPage />} />
-            <Route path={"regions/:name"} element={<OneRegion />} />
-            <Route path={"places"} element={<PlacePage />} />
-            <Route path={"places/:name"} element={<OnePlace />} />
-          </Route>
-        </Routes>
-      </Router>
-      <ReactQueryDevtools initialIsOpen />
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
+            <Route path={"/"} element={<Root />}>
+              <Route index element={<Home />} />
+              <Route path={"home"} element={<Home />} />
+              <Route path={"cultures"} element={<CulturePage />} />
+              <Route path={"cultures/:name"} element={<OneCulture />} />
+              <Route path={"races"} element={<RacePage />} />
+              <Route path={"races/:name"} element={<OneRace />} />
+              <Route path={"subraces"} element={<SubRacePage />} />
+              <Route path={"subraces/:name"} element={<OneSubRace />} />
+              <Route path={"worlds"} element={<WorldPage />} />
+              <Route path={"worlds/:name"} element={<OneWorld />} />
+              <Route path={"planes"} element={<PlanePage />} />
+              <Route path={"planes/:name"} element={<OnePlane />} />
+              <Route path={"continents"} element={<ContinentPage />} />
+              <Route path={"continents/:name"} element={<OneContinent />} />
+              <Route path={"kingdoms"} element={<KingdomPage />} />
+              <Route path={"kingdoms/:name"} element={<OneKingdom />} />
+              <Route path={"regions"} element={<RegionPage />} />
+              <Route path={"regions/:name"} element={<OneRegion />} />
+              <Route path={"places"} element={<PlacePage />} />
+              <Route path={"places/:name"} element={<OnePlace />} />
+              <Route path={"login"} element={<LoginPage />} />
+              <Route path={"signup"} element={<SignupPage />} />
+            </Route>
+          </Routes>
+        </Router>
+        <ReactQueryDevtools initialIsOpen />
+      </QueryClientProvider>
   </React.StrictMode>
 );
 

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { EntryDTO, EntryFullDTO, Page, ContinentControllerService } from "../../../../services/openapi"
+import { EntryDTO, EntryFullDTO, Page, ContinentControllerService, OpenAPI } from "../../../../services/openapi"
+import useJWTManager from "../../../../services/jwt/JWTMenager"
 
 interface IUpdateContinentData {
     id: number,
@@ -20,6 +21,7 @@ export function ContinentFunction(props: IContinentFunction) {
     })
 
     async function saveContinent(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveContinentMutation.mutateAsync({ name, shortDescription }).then(res => {
             let continentDTO: EntryFullDTO = {
                 object: res,
@@ -42,6 +44,7 @@ export function ContinentFunction(props: IContinentFunction) {
     })
 
     async function editContinent(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -68,6 +71,7 @@ export function ContinentFunction(props: IContinentFunction) {
     })
 
     async function deleteContinent(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteContinentMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["continentPage", props.pageNumber, props.pageSize] })
         })

@@ -1,6 +1,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CultureControllerService, EntryDTO, EntryFullDTO, Page } from "../../../services/openapi";
+import { CultureControllerService, EntryDTO, EntryFullDTO, OpenAPI, Page } from "../../../services/openapi";
+import useJWTManager from "../../../services/jwt/JWTMenager";
 
 interface IUpdateCultureData {
     id: number,
@@ -21,6 +22,7 @@ export function CultureFunction(props: ICultureFunction) {
     })
 
     async function saveCulture(name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return saveCultureMutation.mutateAsync({ name, shortDescription }).then(res => {
             let entryFullDTO: EntryFullDTO = {
                 object: res,
@@ -46,6 +48,7 @@ export function CultureFunction(props: ICultureFunction) {
     })
 
     async function editCulture(id: number, name: string, shortDescription: string): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         let entryDTO: EntryDTO = {
             id: id,
             name: name,
@@ -72,6 +75,7 @@ export function CultureFunction(props: ICultureFunction) {
     })
 
     async function deleteCulture(id: number): Promise<void> {
+        OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteCultureMutation.mutateAsync(id).then(() => {
             queryClient.invalidateQueries({ queryKey: ["culturePage", props.pageNumber, props.pageSize] })
         })
