@@ -1,14 +1,16 @@
 package com.as.dndwebsite.description;
 
+import com.as.dndwebsite.creatures.types.CreatureType;
+import com.as.dndwebsite.creatures.types.species.Species;
+import com.as.dndwebsite.creatures.types.species.subspecies.SubSpecies;
 import com.as.dndwebsite.culture.Culture;
-import com.as.dndwebsite.maps.World;
-import com.as.dndwebsite.maps.plane.Plane;
-import com.as.dndwebsite.maps.plane.continent.Continent;
-import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
-import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
-import com.as.dndwebsite.maps.plane.continent.kingdom.region.place.Place;
-import com.as.dndwebsite.race.Race;
-import com.as.dndwebsite.race.subrace.SubRace;
+import com.as.dndwebsite.geographic.plane.Plane;
+import com.as.dndwebsite.geographic.plane.continent.Continent;
+import com.as.dndwebsite.geographic.plane.continent.region.Region;
+import com.as.dndwebsite.geographic.plane.continent.region.place.Place;
+import com.as.dndwebsite.political.kingdom.Kingdom;
+import com.as.dndwebsite.political.kingdom.county.County;
+import com.as.dndwebsite.world.World;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,16 +47,21 @@ public class Description {
 
     @ManyToMany(mappedBy = "descriptions")
     @JsonBackReference
-    private Collection<Race> races;
+    private Collection<World> worlds;
     @ManyToMany(mappedBy = "descriptions")
     @JsonBackReference
-    private Collection<SubRace> subRaces;
+    private Collection<CreatureType> creatureTypes;
+    @ManyToMany(mappedBy = "descriptions")
+    @JsonBackReference
+    private Collection<Species> species;
+    @ManyToMany(mappedBy = "descriptions")
+    @JsonBackReference
+    private Collection<SubSpecies> subSpecies;
+
     @ManyToMany(mappedBy = "descriptions")
     @JsonBackReference
     private Collection<Culture> cultures;
-    @ManyToMany(mappedBy = "descriptions")
-    @JsonBackReference
-    private Collection<World> worlds;
+
     @ManyToMany(mappedBy = "descriptions")
     @JsonBackReference
     private Collection<Plane> planes;
@@ -63,13 +70,17 @@ public class Description {
     private Collection<Continent> continents;
     @ManyToMany(mappedBy = "descriptions")
     @JsonBackReference
-    private Collection<Kingdom> kingdoms;
-    @ManyToMany(mappedBy = "descriptions")
-    @JsonBackReference
     private Collection<Place> places;
     @ManyToMany(mappedBy = "descriptions")
     @JsonBackReference
     private Collection<Region> regions;
+
+    @ManyToMany(mappedBy = "descriptions")
+    @JsonBackReference
+    private Collection<Kingdom> kingdoms;
+    @ManyToMany(mappedBy = "descriptions")
+    @JsonBackReference
+    private Collection<County> counties;
 
     public Description(String title, String text) {
         this.title = title;

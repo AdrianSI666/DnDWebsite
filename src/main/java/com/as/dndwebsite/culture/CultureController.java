@@ -8,7 +8,6 @@ import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.mappers.IPageMapper;
-import com.as.dndwebsite.maps.plane.continent.kingdom.region.regionculture.IRegionCultureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -34,7 +33,6 @@ import java.util.List;
 public class CultureController {
     private final ICultureService cultureService;
     private final ICultureImagesService cultureImagesService;
-    private final IRegionCultureService regionCultureService;
     private final IPageMapper pageMapper;
     @Qualifier("cultureDescriptionService")
     private final IDescriptionEntryService cultureDescriptionService;
@@ -57,11 +55,7 @@ public class CultureController {
 
     @GetMapping("/{name}")
     public ResponseEntity<EntryFullDTO> getCultureByName(@PathVariable("name") String name) {
-        EntryDTO culture = cultureService.getCulture(name);
-        List<DescriptionDTO> descriptionDTOS = cultureDescriptionService.getDescriptionsOfEntry(culture.id());
-        List<ImageDTO> imageDTOS = cultureImagesService.getImagesOfCulture(culture.id());
-        List<EntryDTO> regions = regionCultureService.getRegionsRelatedToCulture(culture.id());
-        return ResponseEntity.ok().body(new EntryFullDTO(culture, null, regions, descriptionDTOS, imageDTOS));
+        return ResponseEntity.ok().body(cultureService.getCulture(name));
     }
 
     @PostMapping
@@ -79,7 +73,7 @@ public class CultureController {
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteCulture(@PathVariable("id") Long id) {
         cultureService.deleteCulture(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(path = "{id}/image",
@@ -94,7 +88,7 @@ public class CultureController {
     public ResponseEntity<HttpStatus> deleteImageFromCulture(@PathVariable("cultureId") Long cultureId,
                                                              @PathVariable("imageId") Long imageId) {
         cultureImagesService.deleteImageFromCulture(cultureId, imageId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(path = "{id}/description")
@@ -112,7 +106,7 @@ public class CultureController {
     public ResponseEntity<HttpStatus> deleteDescriptionFromCulture(@PathVariable("cultureId") Long cultureId,
                                                                    @PathVariable("descriptionId") Long imageId) {
         cultureDescriptionService.deleteDescriptionFromEntry(cultureId, imageId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 }

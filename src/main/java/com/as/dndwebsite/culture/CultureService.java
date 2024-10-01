@@ -2,9 +2,12 @@ package com.as.dndwebsite.culture;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
+import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.ImageMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,8 @@ public class CultureService implements ICultureService {
     public static final String CULTURE_NOT_FOUND_MSG =
             "culture with name %s not found";
     private final DomainMapper<Entry, EntryDTO> mapper;
+    private final DescriptionMapper descriptionMapper;
+    private final ImageMapper imageMapper;
 
     @Override
     public List<EntryDTO> getAllCultures() {
@@ -40,10 +45,15 @@ public class CultureService implements ICultureService {
     }
 
     @Override
-    public EntryDTO getCulture(String name) {
+    public EntryFullDTO getCulture(String name) {
         log.info("Getting Culture with name: {}", name);
-        return mapper.map(cultureRepository.findByName(name)
-                .orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, name))));
+        Culture culture = cultureRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundException(String.format(CULTURE_NOT_FOUND_MSG, name)));
+        return new EntryFullDTO(mapper.map(culture),
+                null,
+                culture.getRegions().stream().map(mapper::map).toList(),
+                culture.getDescriptions().stream().map(descriptionMapper::map).toList(),
+                culture.getImages().stream().map(imageMapper::map).toList());
     }
 
     @Override

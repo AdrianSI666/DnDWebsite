@@ -1,14 +1,16 @@
 package com.as.dndwebsite.image;
 
+import com.as.dndwebsite.creatures.types.CreatureType;
 import com.as.dndwebsite.culture.Culture;
-import com.as.dndwebsite.maps.World;
-import com.as.dndwebsite.maps.plane.Plane;
-import com.as.dndwebsite.maps.plane.continent.Continent;
-import com.as.dndwebsite.maps.plane.continent.kingdom.Kingdom;
-import com.as.dndwebsite.maps.plane.continent.kingdom.region.Region;
-import com.as.dndwebsite.maps.plane.continent.kingdom.region.place.Place;
-import com.as.dndwebsite.race.Race;
-import com.as.dndwebsite.race.subrace.SubRace;
+import com.as.dndwebsite.political.kingdom.county.County;
+import com.as.dndwebsite.world.World;
+import com.as.dndwebsite.geographic.plane.Plane;
+import com.as.dndwebsite.geographic.plane.continent.Continent;
+import com.as.dndwebsite.political.kingdom.Kingdom;
+import com.as.dndwebsite.geographic.plane.continent.region.Region;
+import com.as.dndwebsite.geographic.plane.continent.region.place.Place;
+import com.as.dndwebsite.creatures.types.species.Species;
+import com.as.dndwebsite.creatures.types.species.subspecies.SubSpecies;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,10 +46,13 @@ public class Image {
         private String name;
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
-        private Collection<Race> races;
+        private Collection<CreatureType> creatureTypes;
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
-        private Collection<SubRace> subRaces;
+        private Collection<Species> species;
+        @ManyToMany(mappedBy = "images")
+        @JsonBackReference
+        private Collection<SubSpecies> subSpecies;
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Culture> cultures;
@@ -62,13 +67,18 @@ public class Image {
         private Collection<Continent> continents;
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
-        private Collection<Kingdom> kingdoms;
-        @ManyToMany(mappedBy = "images")
-        @JsonBackReference
         private Collection<Place> places;
         @ManyToMany(mappedBy = "images")
         @JsonBackReference
         private Collection<Region> regions;
+
+        @ManyToMany(mappedBy = "images")
+        @JsonBackReference
+        private Collection<Kingdom> kingdoms;
+        @ManyToMany(mappedBy = "images")
+        @JsonBackReference
+        private Collection<County> counties;
+
 
         public Image(byte[] content, String name) {
                 this.content = content;
