@@ -5,9 +5,9 @@
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import type { ContinentDTO } from '../models/ContinentDTO';
 import type { DescriptionDTO } from '../models/DescriptionDTO';
 import type { EntryDTO } from '../models/EntryDTO';
-import type { EntryFullDTO } from '../models/EntryFullDTO';
 import type { ImageDTO } from '../models/ImageDTO';
 import { Page } from "../models/Page";
 import type { PageInfo } from '../models/PageInfo';
@@ -140,12 +140,12 @@ export class ContinentControllerService {
     }
     /**
      * @param name
-     * @returns EntryFullDTO OK
+     * @returns ContinentDTO OK
      * @throws ApiError
      */
     public static getContinentByName(
         name: string,
-    ): CancelablePromise<EntryFullDTO> {
+    ): CancelablePromise<ContinentDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/continents/{name}',

@@ -4,8 +4,8 @@
 /* eslint-disable */
 import type { DescriptionDTO } from '../models/DescriptionDTO';
 import type { EntryDTO } from '../models/EntryDTO';
-import type { EntryFullDTO } from '../models/EntryFullDTO';
 import type { ImageDTO } from '../models/ImageDTO';
+import type { KingdomDTO } from '../models/KingdomDTO';
 import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -140,12 +140,12 @@ export class KingdomControllerService {
     }
     /**
      * @param name
-     * @returns EntryFullDTO OK
+     * @returns KingdomDTO OK
      * @throws ApiError
      */
     public static getKingdomByName(
         name: string,
-    ): CancelablePromise<EntryFullDTO> {
+    ): CancelablePromise<KingdomDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/kingdoms/{name}',

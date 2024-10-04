@@ -5,9 +5,9 @@
 import type { DescriptionDTO } from './DescriptionDTO';
 import type { EntryDTO } from './EntryDTO';
 import type { ImageDTO } from './ImageDTO';
-export type SubRaceDTO = {
-    subRace?: EntryDTO;
-    race?: EntryDTO;
+export type SpeciesDTO = {
+    species?: EntryDTO;
+    subSpecies?: Array<EntryDTO>;
     descriptions?: Array<DescriptionDTO>;
     images?: Array<ImageDTO>;
     regions?: Array<EntryDTO>;

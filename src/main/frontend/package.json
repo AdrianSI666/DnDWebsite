@@ -44,7 +44,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "types:openapi": "openapi -i http://localhost:8090/api-docs -o src/services/openapi"
+    "types:openapi": "openapi -i http://localhost:8443/api-docs -o src/services/openapi"
   },
   "eslintConfig": {
     "extends": [

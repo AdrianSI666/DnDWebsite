@@ -4,9 +4,9 @@
 /* eslint-disable */
 import type { DescriptionDTO } from '../models/DescriptionDTO';
 import type { EntryDTO } from '../models/EntryDTO';
-import type { EntryFullDTO } from '../models/EntryFullDTO';
 import type { ImageDTO } from '../models/ImageDTO';
 import type { PageInfo } from '../models/PageInfo';
+import type { PlaneFullDTO } from '../models/PlaneFullDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -140,12 +140,12 @@ export class PlaneControllerService {
     }
     /**
      * @param name
-     * @returns EntryFullDTO OK
+     * @returns PlaneFullDTO OK
      * @throws ApiError
      */
     public static getPlaneByName(
         name: string,
-    ): CancelablePromise<EntryFullDTO> {
+    ): CancelablePromise<PlaneFullDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/planes/{name}',

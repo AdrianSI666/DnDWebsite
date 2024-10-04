@@ -5,11 +5,11 @@
 import type { DescriptionDTO } from './DescriptionDTO';
 import type { EntryDTO } from './EntryDTO';
 import type { ImageDTO } from './ImageDTO';
-export type RaceDTO = {
-    race?: EntryDTO;
-    subRaces?: Array<EntryDTO>;
+export type KingdomDTO = {
+    object?: EntryDTO;
+    counties?: Array<EntryDTO>;
+    continents?: Array<EntryDTO>;
     descriptions?: Array<DescriptionDTO>;
     images?: Array<ImageDTO>;
-    regions?: Array<EntryDTO>;
 };
 

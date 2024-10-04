@@ -5,15 +5,13 @@
 import type { DescriptionDTO } from './DescriptionDTO';
 import type { EntryDTO } from './EntryDTO';
 import type { ImageDTO } from './ImageDTO';
-export type RegionDTO = {
-    region?: EntryDTO;
-    continent?: EntryDTO;
-    places?: Array<EntryDTO>;
-    descriptions?: Array<DescriptionDTO>;
+export type PlaneFullDTO = {
+    id?: number;
+    name?: string;
+    shortDescription?: string;
+    world?: EntryDTO;
     images?: Array<ImageDTO>;
-    cultures?: Array<EntryDTO>;
-    species?: Array<EntryDTO>;
-    subSpecies?: Array<EntryDTO>;
-    counties?: Array<EntryDTO>;
+    descriptions?: Array<DescriptionDTO>;
+    continents?: Array<EntryDTO>;
 };
 
