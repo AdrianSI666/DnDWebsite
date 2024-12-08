@@ -42,7 +42,7 @@ public class SpeciesController {
 
     @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
     public ResponseEntity<List<EntryDTO>> getAllSpecies() {
-        return ResponseEntity.ok().body(speciesService.getAllSpeciess());
+        return ResponseEntity.ok().body(speciesService.getAllSpecies());
     }
 
     @GetMapping("/{name}")
@@ -50,9 +50,9 @@ public class SpeciesController {
         return ResponseEntity.ok().body(speciesService.getSpecies(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveSpecies(@RequestBody EntryDTO species) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(speciesService.saveSpecies(species));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveSpecies(@RequestBody EntryDTO species, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(speciesService.saveSpecies(species, worldId));
     }
 
     @PutMapping("/{id}")

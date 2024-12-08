@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { ApiError } from "../../../services/openapi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import JWTMenager from "../../../services/jwt/JWTMenager";
+import useUserState from "../../../services/storage/UserStorage";
 
 interface IEditEntryModals {
   updateFunction: (id: number, name: string, shortDescription: string) => Promise<void>,
@@ -12,12 +15,15 @@ interface IEditEntryModals {
 }
 
 export function EditEntryModal(props: Readonly<IEditEntryModals>) {
+  const navigate = useNavigate();
+  const { resetUser } = useUserState();
   const [modalShow, setModalShow] = useState(false);
   const [name, setName] = useState(props.name)
   const [shortDescription, setShortDescription] = useState(props.shortDescription)
   return (
     <div className="d-grid gap-2" onClick={(e) => {
-      e.stopPropagation();}}>
+      e.stopPropagation();
+    }}>
       <Button variant="success" onClick={(e) => {
         setModalShow(true);
       }}>
@@ -42,8 +48,16 @@ export function EditEntryModal(props: Readonly<IEditEntryModals>) {
               props.updateFunction(props.id!, name!, shortDescription!).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {
-                console.log(err)
-                let errorMessage = err.body.message;
+                let errorMessage = "Forbidden action";
+                if (err.status === 403) {
+                  setTimeout(function () {
+                    JWTMenager.deleteTokens()
+                    resetUser()
+                    navigate("/home")
+                  }, 3000);
+                  throw (errorMessage)
+                }
+                if (err.body?.message) errorMessage = err.body.message;
                 if (err.status === 409) errorMessage = `Name that you want to change to is already taken.`
                 throw (errorMessage)
               }), {

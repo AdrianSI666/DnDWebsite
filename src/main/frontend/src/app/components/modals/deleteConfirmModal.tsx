@@ -38,7 +38,7 @@ export function DeleteConfirmationModal(props: Readonly<ICultureModals>) {
         <Modal.Body>
           <Form onSubmit={(e) => {
             e.preventDefault()
-            if (props.deleteObject)  {
+            if (props.deleteObject) {
               toast.promise(props.deleteObject(props.id).then(() => {
                 setModalShow(false);
               }).catch((err: ApiError) => {

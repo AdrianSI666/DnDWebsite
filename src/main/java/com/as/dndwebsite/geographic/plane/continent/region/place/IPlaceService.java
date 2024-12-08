@@ -12,7 +12,7 @@ public interface IPlaceService {
 
     EntryFullDTO getPlace(String name);
 
-    EntryDTO savePlace(EntryDTO place);
+    EntryDTO savePlace(EntryDTO place, Long worldId);
 
     void updatePlace(EntryDTO place, Long id);
 

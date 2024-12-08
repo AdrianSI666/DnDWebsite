@@ -13,7 +13,7 @@ public interface ISubSpeciesService {
 
     SubSpeciesDTO getSubSpeciesByName(String name);
 
-    EntryDTO saveSubSpecies(EntryDTO entryDTO);
+    EntryDTO saveSubSpecies(EntryDTO entryDTO, Long worldId);
 
     void updateSubSpecies(EntryDTO entryDTO, Long id);
 

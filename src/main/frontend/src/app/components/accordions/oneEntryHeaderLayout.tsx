@@ -10,6 +10,7 @@ interface IOneEntryHeaderLayout {
     categoryName: string;
     entryFullDTO: EntryFullDTO,
     children: string | React.ReactNode
+    isAuthor?: boolean
 }
 
 export function OneEntryHeaderLayout(props: Readonly<IOneEntryHeaderLayout>) {
@@ -22,8 +23,10 @@ export function OneEntryHeaderLayout(props: Readonly<IOneEntryHeaderLayout>) {
                     <p>
                         {props.entryFullDTO.object?.shortDescription}
                     </p>
-                    <EditEntryModal updateFunction={props.updateEntry} categoryName={props.categoryName} id={props.entryFullDTO.object?.id!} name={props.entryFullDTO.object?.name!} shortDescription={props.entryFullDTO.object?.shortDescription!} />
-                    <DeleteConfirmationModal deleteButtonActionText={props.deleteMainObjectButtonActionText} deleteObject={props.deleteEntry} title={props.entryFullDTO.object?.name!} id={props.entryFullDTO.object?.id!} />
+                    {props.isAuthor ? <>
+                        <EditEntryModal updateFunction={props.updateEntry} categoryName={props.categoryName} id={props.entryFullDTO.object?.id!} name={props.entryFullDTO.object?.name!} shortDescription={props.entryFullDTO.object?.shortDescription!} />
+                        <DeleteConfirmationModal deleteButtonActionText={props.deleteMainObjectButtonActionText} deleteObject={props.deleteEntry} title={props.entryFullDTO.object?.name!} id={props.entryFullDTO.object?.id!} />
+                    </> : null}
                 </Col>
             </Row>
             <Row className="accordion-body oneEntryBody">

@@ -6,6 +6,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.political.kingdom.county.County;
 import com.as.dndwebsite.political.kingdom.county.CountyRepository;
 import com.as.dndwebsite.world.World;
@@ -33,7 +34,7 @@ public class WorldCountyService implements IWorldCountyService {
     private final WorldRepository worldRepository;
     private final CountyRepository countyRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
-
+    private final WorldMapper worldMapper;
     @Override
     public List<EntryDTO> getCountiesRelatedToWorld(Long worldId) {
         log.debug("Getting countys related to world with id {}", worldId);
@@ -71,7 +72,7 @@ public class WorldCountyService implements IWorldCountyService {
         County county = countyRepository.findById(countyId).orElseThrow(() -> new NotFoundException(String.format(COUNTY_NOT_FOUND_MSG, countyId)));
         World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), county));
         county.setWorld(newWorld);
-        return mapper.map(newWorld);
+        return worldMapper.map(newWorld);
     }
 
     @Override

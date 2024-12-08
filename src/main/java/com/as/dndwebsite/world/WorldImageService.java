@@ -31,12 +31,12 @@ public class WorldImageService implements IWorldImageService {
     @Override
     public ImageDTO saveImageToWorld(MultipartFile file, Long id) {
         World world = worldRepository.findById(id).orElseThrow(() -> new NotFoundException(WORLD_NOT_FOUND_MSG.formatted(id)));
-        return imageService.saveImageToEntry(file, world);
+        return imageService.saveImageToWorld(file, world);
     }
 
     @Override
     public void deleteImageFromWorld(Long worldId, Long imageId) {
         World world = worldRepository.findById(worldId).orElseThrow(() -> new NotFoundException(WORLD_NOT_FOUND_MSG.formatted(worldId)));
-        imageService.deleteImageFromEntry(world, worldId);
+        imageService.deleteImageFromWorld(world, imageId);
     }
 }

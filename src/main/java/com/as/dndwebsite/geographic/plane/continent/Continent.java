@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,36 +27,28 @@ import java.util.Set;
 @Table(name = "continent", schema = "public")
 public class Continent extends Entry {
     @ManyToMany(mappedBy = "continents")
-    private Set<Kingdom> kingdoms = new HashSet<>();
+    private Set<Kingdom> kingdoms;
     @OneToMany(mappedBy = "continent")
-    private Set<Region> regions = new HashSet<>();
+    private Set<Region> regions;
     @ManyToOne
     private Plane plane;
-    @ManyToOne
-    @ToString.Exclude
-    private World world;
 
-    public Continent(String name, String description) {
-        super(name, description);
+    public Continent(String name, String description, World world) {
+        super(name, description, world);
     }
 
     public Continent(String name, String description, Kingdom kingdom) {
-        super(name, description);
+        super(name, description, kingdom.getWorld());
         this.kingdoms.add(kingdom);
     }
 
     public Continent(String name, String description, Plane plane) {
-        super(name, description);
+        super(name, description, plane.getWorld());
         this.plane = plane;
     }
 
-    public Continent(String name, String description, World world) {
-        super(name, description);
-        this.world = world;
-    }
-
     public Continent(String name, String description, Region region) {
-        super(name, description);
+        super(name, description, region.getWorld());
         this.regions.add(region);
     }
 }

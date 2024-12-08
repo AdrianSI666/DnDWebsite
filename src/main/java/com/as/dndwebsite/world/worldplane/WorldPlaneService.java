@@ -5,6 +5,7 @@ import com.as.dndwebsite.dto.EntryDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
+import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.world.World;
 import com.as.dndwebsite.world.WorldRepository;
 import com.as.dndwebsite.geographic.plane.Plane;
@@ -33,7 +34,7 @@ public class WorldPlaneService implements IWorldPlaneService {
     private final WorldRepository worldRepository;
     private final PlaneRepository planeRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
-
+    private final WorldMapper worldMapper;
     @Override
     public List<EntryDTO> getPlanesRelatedToWorld(Long worldId) {
         log.debug("Getting planes related to world with id {}", worldId);
@@ -71,7 +72,7 @@ public class WorldPlaneService implements IWorldPlaneService {
         Plane plane = planeRepository.findById(planeId).orElseThrow(() -> new NotFoundException(String.format(PLANE_NOT_FOUND_MSG, planeId)));
         World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), plane));
         plane.setWorld(newWorld);
-        return mapper.map(newWorld);
+        return worldMapper.map(newWorld);
     }
 
     @Override

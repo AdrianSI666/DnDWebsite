@@ -20,6 +20,7 @@ interface IFullEntryAccordionBody {
 
     saveImageToEntry: (acceptedFiles: Blob, entryId: number) => Promise<void>;
     deleteImageFromEntry: (entryId: number, imageId: number) => Promise<void>;
+    isAuthor?: boolean
 }
 
 const breakpointColumnsObj = {
@@ -46,14 +47,14 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.entryFullDTO.descriptions?.length, props.entryFullDTO.descriptions])
-    
     return (
         <div>
             <h3>Description board</h3>
             <Container fluid className="noteBoard min-vw-10 min-vh-10">
-                <AddNewDescriptionModal id={props.entryFullDTO.object?.id!}
+                {props.isAuthor ? <AddNewDescriptionModal id={props.entryFullDTO.object?.id!}
                     addNewDescriptionToEntry={props.addNewDescriptionToEntry}
-                    addButtonActionText={"Add new description to this " + props.categoryName} />
+                    addButtonActionText={"Add new description to this " + props.categoryName} /> : null
+                }
                 {grid.rows.map(row => {
                     return (
                         <Row className="my-masonry-grid mt-1" key={row.number}>
@@ -67,8 +68,12 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
                                                 <Form.Control as="textarea" rows={Math.round(desc.size! / 5)} cols={desc.size} readOnly value={desc.text} />
                                             </Card.Body>
                                             <Card.Footer>
-                                                <EditDescriptionModal updateFunction={props.updateDescription} descriptionId={desc.id!} title={desc.title!} description={desc.text!} />
-                                                <DeleteConfirmationModal deleteButtonActionText={"Delete this note"} deleteObjectsInRelation={props.deleteDescriptionFromEntry} title={desc.title!} id={props.entryFullDTO.object?.id!} secondId={desc.id} />
+                                                {props.isAuthor ? <>
+                                                    <EditDescriptionModal updateFunction={props.updateDescription} descriptionId={desc.id!} title={desc.title!} description={desc.text!} />
+                                                    <DeleteConfirmationModal deleteButtonActionText={"Delete this note"} deleteObjectsInRelation={props.deleteDescriptionFromEntry} title={desc.title!} id={props.entryFullDTO.object?.id!} secondId={desc.id} />
+                                                </> :
+                                                    null}
+
                                             </Card.Footer>
                                         </Card>
                                     </Col>
@@ -81,12 +86,12 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
 
             </Container>
             <h3>Images</h3>
-            <Dropzone onDrop={(acceptedFiles: Blob) =>
+            {props.isAuthor ? <Dropzone onDrop={(acceptedFiles: Blob) =>
                 toast.promise(props.saveImageToEntry(acceptedFiles, props.entryFullDTO.object?.id!), {
                     loading: 'Saving...',
                     success: `Successfully added image.`,
                     error: (err) => `Operation failed.\n ${err}`,
-                })} />
+                })} /> : null}
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="my-masonry-grid"
@@ -99,7 +104,8 @@ export function FullEntryAccordionBody(props: Readonly<IFullEntryAccordionBody>)
                         <div key={oneImage.id}>
                             <h3>{imageName}</h3>
                             <img src={imageSrc} className="img-fluid" width="300px" alt={imageName} />
-                            <DeleteConfirmationModal deleteButtonActionText={props.deleteImageButtonActionText} deleteObjectsInRelation={props.deleteImageFromEntry} title={oneImage.name!} id={props.entryFullDTO.object?.id!} secondId={oneImage.id} />
+                            {props.isAuthor ? <DeleteConfirmationModal deleteButtonActionText={props.deleteImageButtonActionText} deleteObjectsInRelation={props.deleteImageFromEntry} title={oneImage.name!} id={props.entryFullDTO.object?.id!} secondId={oneImage.id} />
+                             : null}
                         </div>)
                 })}
 

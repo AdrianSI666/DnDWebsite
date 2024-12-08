@@ -9,22 +9,19 @@ import {
 import { CulturePage } from './app/containers/CulturePage';
 import { OneCulture } from './app/containers/CulturePage/OneCulture';
 import { Home } from './app/containers/HomePage';
-import { ContinentPage } from './app/containers/Maps/ContinentPage';
-import { OneContinent } from './app/containers/Maps/ContinentPage/OneContinent';
-import { KingdomPage } from './app/containers/Maps/KingdomPage';
-import { OneKingdom } from './app/containers/Maps/KingdomPage/OneKingdom';
-import { PlacePage } from './app/containers/Maps/PlacePage';
-import { OnePlace } from './app/containers/Maps/PlacePage/OnePlace';
-import { PlanePage } from './app/containers/Maps/PlanePage';
-import { OnePlane } from './app/containers/Maps/PlanePage/OnePlane';
-import { RegionPage } from './app/containers/Maps/RegionPage';
-import { OneRegion } from './app/containers/Maps/RegionPage/OneRegion';
-import { WorldPage } from './app/containers/Maps/WorldPage';
-import { OneWorld } from './app/containers/Maps/WorldPage/OneWorld';
-import { RacePage } from './app/containers/Races/RacePage';
-import { OneRace } from './app/containers/Races/RacePage/OneRace';
-import { SubRacePage } from './app/containers/Races/SubRacePage';
-import { OneSubRace } from './app/containers/Races/SubRacePage/OneSubRace';
+import { ContinentPage } from './app/containers/Geography/ContinentPage';
+import { OneContinent } from './app/containers/Geography/ContinentPage/OneContinent';
+import { KingdomPage } from './app/containers/Politics/KingdomPage';
+import { OneKingdom } from './app/containers/Politics/KingdomPage/OneKingdom';
+import { PlacePage } from './app/containers/Geography/PlacePage';
+import { OnePlace } from './app/containers/Geography/PlacePage/OnePlace';
+import { PlanePage } from './app/containers/Geography/PlanePage';
+import { OnePlane } from './app/containers/Geography/PlanePage/OnePlane';
+import { RegionPage } from './app/containers/Geography/RegionPage';
+import { OneRegion } from './app/containers/Geography/RegionPage/OneRegion';
+import { SpeciesPage } from './app/containers/Creatures/SpeciesPage';
+import { OneSpecies } from './app/containers/Creatures/SpeciesPage/OneSpecies';
+import { SubSpeciesPage } from './app/containers/Creatures/SubSpeciesPage';
 import { Root } from './app/containers/RootPage';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -32,6 +29,17 @@ import reportWebVitals from './reportWebVitals';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { LoginPage } from './app/containers/Authorization/login';
 import SignupPage from './app/containers/Authorization/signup';
+import { WorldPage } from './app/containers/WorldPage';
+import { OneSubSpecies } from './app/containers/Creatures/SubSpeciesPage/OneSubSpecies';
+import { TypePage } from './app/containers/Creatures/TypePage';
+import { OneType } from './app/containers/Creatures/TypePage/OneType';
+import { CountyPage } from './app/containers/Politics/CountyPage';
+import { OneCounty } from './app/containers/Politics/CountyPage/OneCounty';
+import { UserHomePage } from './app/containers/UserHomePage';
+import { WorldHomePage } from './app/containers/WorldExtensions';
+import { OneWorldHomePage } from './app/containers/WorldExtensions/OneWorldHomePage';
+import { CultureHomePage } from './app/containers/WorldExtensions/CultureHomePage';
+import { OneCultureHomePage } from './app/containers/WorldExtensions/CultureHomePage/OneCultureHomePage';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -40,7 +48,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60,
-      retry: 1
+      retry: 1,
+      retryDelay: 1000
     },
   }
 })
@@ -49,37 +58,52 @@ const queryClient = new QueryClient({
 
 root.render(
   <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <Routes>
-            <Route path={"/"} element={<Root />}>
-              <Route index element={<Home />} />
-              <Route path={"home"} element={<Home />} />
-              <Route path={"cultures"} element={<CulturePage />} />
-              <Route path={"cultures/:name"} element={<OneCulture />} />
-              <Route path={"races"} element={<RacePage />} />
-              <Route path={"races/:name"} element={<OneRace />} />
-              <Route path={"subraces"} element={<SubRacePage />} />
-              <Route path={"subraces/:name"} element={<OneSubRace />} />
-              <Route path={"worlds"} element={<WorldPage />} />
-              <Route path={"worlds/:name"} element={<OneWorld />} />
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route path={"/"} element={<Root />}>
+            <Route index element={<Home />} />
+            <Route path={"home"} element={<Home />} />
+            <Route path={"cultures"} element={<CulturePage />} />
+            <Route path={"cultures/:name"} element={<OneCulture />} />
+            <Route path={"creatures/"}>
+              <Route path={"types"} element={<TypePage />} />
+              <Route path={"types/:name"} element={<OneType />} />
+              <Route path={"species"} element={<SpeciesPage />} />
+              <Route path={"species/:name"} element={<OneSpecies />} />
+              <Route path={"subspecies"} element={<SubSpeciesPage />} />
+              <Route path={"subspecies/:name"} element={<OneSubSpecies />} />
+            </Route>
+            <Route path={"politics/"}>
+              <Route path={"kingdoms"} element={<KingdomPage />} />
+              <Route path={"kingdoms/:name"} element={<OneKingdom />} />
+              <Route path={"counties"} element={<CountyPage />} />
+              <Route path={"counties/:name"} element={<OneCounty />} />
+            </Route>
+            <Route path={"worlds"} element={<WorldPage />} />
+            <Route path={"worlds/home/"} element={<WorldHomePage />}>
+              <Route path={":name"} element={<OneWorldHomePage />} />
+              <Route path={":name/cultures"} element={<CultureHomePage />} />
+              <Route path={":name/cultures/:cultureName"} element={<OneCultureHomePage />} />
+            </Route>
+            <Route path={"geography/"}>
               <Route path={"planes"} element={<PlanePage />} />
               <Route path={"planes/:name"} element={<OnePlane />} />
               <Route path={"continents"} element={<ContinentPage />} />
               <Route path={"continents/:name"} element={<OneContinent />} />
-              <Route path={"kingdoms"} element={<KingdomPage />} />
-              <Route path={"kingdoms/:name"} element={<OneKingdom />} />
               <Route path={"regions"} element={<RegionPage />} />
               <Route path={"regions/:name"} element={<OneRegion />} />
               <Route path={"places"} element={<PlacePage />} />
               <Route path={"places/:name"} element={<OnePlace />} />
-              <Route path={"login"} element={<LoginPage />} />
-              <Route path={"signup"} element={<SignupPage />} />
             </Route>
-          </Routes>
-        </Router>
-        <ReactQueryDevtools initialIsOpen />
-      </QueryClientProvider>
+            <Route path={"user/home"} element={<UserHomePage />} />
+            <Route path={"login"} element={<LoginPage />} />
+            <Route path={"signup"} element={<SignupPage />} />
+          </Route>
+        </Routes>
+      </Router>
+      <ReactQueryDevtools initialIsOpen />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

@@ -9,6 +9,10 @@ import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.image.Image;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.WorldMapper;
+import com.as.dndwebsite.security.OwningSecurityFunctions;
+import com.as.dndwebsite.world.World;
+import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+
+import static com.as.dndwebsite.world.WorldService.WORLD_NOT_FOUND_MSG;
 
 @Service
 @Slf4j
@@ -26,12 +33,14 @@ import java.util.List;
 @Transactional
 public class PlaneService implements IPlaneService {
     private final PlaneRepository planeRepository;
+    private final WorldRepository worldRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
     private final DomainMapper<Description, DescriptionDTO> descriptionMapper;
     private final DomainMapper<Image, ImageDTO> imageMapper;
     public static final String PLANE_NOT_FOUND_MSG =
             "Plane with name %s not found";
-
+    private final WorldMapper worldMapper;
+    private final OwningSecurityFunctions owningSecurityFunctions;
     @Override
     public Page<EntryDTO> getPlanes(PageInfo page) {
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
@@ -49,17 +58,23 @@ public class PlaneService implements IPlaneService {
         log.info("Getting plane with name {}", name);
         Plane plane = planeRepository.findByName(name).orElseThrow(
                 () -> new NotFoundException(PLANE_NOT_FOUND_MSG.formatted(name)));
-        return new PlaneFullDTO(plane.getId(), plane.getName(), plane.getShortDescription(),
-                mapper.map(plane.getWorld()),
+        Optional<EntryDTO> world = Optional.of(new EntryDTO(0L, "null", "null"));
+        if(plane.getWorld() != null) world = Optional.of(worldMapper.map(plane.getWorld()));
+        return new PlaneFullDTO(mapper.map(plane),
+                world.get(),
                 plane.getImages().stream().map(imageMapper::map).toList(),
                 plane.getDescriptions().stream().map(descriptionMapper::map).toList(),
-                plane.getContinents().stream().map(mapper::map).toList());
+                plane.getContinents().stream().map(mapper::map).toList(),
+                plane.getCreatureTypes().stream().map(mapper::map).toList());
     }
 
     @Override
-    public EntryDTO savePlane(EntryDTO plane) {
+    public EntryDTO savePlane(EntryDTO plane, Long worldId) {
         log.info("Saving new plane {}", plane.name());
-        return mapper.map(planeRepository.save(new Plane(plane.name(), plane.shortDescription())));
+        World world = worldRepository.findById(worldId).orElseThrow(
+                () -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, worldId)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(world.getAuthor(), "Save new plane", world.getId());
+        return mapper.map(planeRepository.save(new Plane(plane.name(), plane.shortDescription(), world)));
     }
 
     @Override
@@ -67,6 +82,7 @@ public class PlaneService implements IPlaneService {
         log.info("Updating Plane {} with id {}", plane.name(), id);
         Plane oldPlane = planeRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(PLANE_NOT_FOUND_MSG.formatted(id)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(oldPlane.getWorld().getAuthor(), "Update plane", oldPlane.getId());
         oldPlane.setName(plane.name());
         oldPlane.setShortDescription(plane.shortDescription());
     }
@@ -75,6 +91,7 @@ public class PlaneService implements IPlaneService {
     public void deletePlane(Long id) {
         Plane plane = planeRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(PLANE_NOT_FOUND_MSG.formatted(id)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(plane.getWorld().getAuthor(), "Delete plane", plane.getId());
         log.info("Deleting Plane with id {}", id);
         planeRepository.delete(plane);
     }

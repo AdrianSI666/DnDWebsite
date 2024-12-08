@@ -8,6 +8,7 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DomainMapper;
 import com.as.dndwebsite.geographic.plane.continent.Continent;
 import com.as.dndwebsite.geographic.plane.continent.ContinentRepository;
+import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.world.World;
 import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class WorldContinentService implements IWorldContinentService {
     private final WorldRepository worldRepository;
     private final ContinentRepository continentRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
-
+    private final WorldMapper worldMapper;
     @Override
     public List<EntryDTO> getContinentsRelatedToWorld(Long worldId) {
         log.debug("Getting continents related to world with id {}", worldId);
@@ -71,7 +72,7 @@ public class WorldContinentService implements IWorldContinentService {
         Continent continent = continentRepository.findById(continentId).orElseThrow(() -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, continentId)));
         World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), continent));
         continent.setWorld(newWorld);
-        return mapper.map(newWorld);
+        return worldMapper.map(newWorld);
     }
 
     @Override

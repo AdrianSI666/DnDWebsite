@@ -11,11 +11,11 @@ public interface ISpeciesService {
 
     SpeciesDTO getSpecies(String name);
 
-    EntryDTO saveSpecies(EntryDTO species);
+    EntryDTO saveSpecies(EntryDTO species, Long worldId);
 
     void updateSpecies(EntryDTO species, Long id);
 
     void deleteSpecies(Long id);
 
-    List<EntryDTO> getAllSpeciess();
+    List<EntryDTO> getAllSpecies();
 }

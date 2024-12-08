@@ -11,7 +11,7 @@ public interface IPlaneService {
 
     PlaneFullDTO getPlane(String name);
 
-    EntryDTO savePlane(EntryDTO plane);
+    EntryDTO savePlane(EntryDTO plane, Long worldId);
 
     void updatePlane(EntryDTO plane, Long id);
 

@@ -9,5 +9,7 @@ export type WorldDTO = {
     world?: EntryDTO;
     descriptions?: Array<DescriptionDTO>;
     images?: Array<ImageDTO>;
+    authorId: Number,
+    authorName: String
 };
 

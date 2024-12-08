@@ -58,9 +58,9 @@ public class CultureController {
         return ResponseEntity.ok().body(cultureService.getCulture(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveCulture(@RequestBody EntryDTO culture) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(cultureService.saveCulture(culture));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveCulture(@RequestBody EntryDTO culture, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cultureService.saveCulture(culture, worldId));
     }
 
     @PutMapping("/{id}")

@@ -8,5 +8,7 @@ import java.util.List;
 
 public record WorldDTO(EntryDTO world,
                        List<DescriptionDTO> descriptions,
-                       List<ImageDTO> images) {
+                       List<ImageDTO> images,
+                       long authorId,
+                       String authorName) {
 }

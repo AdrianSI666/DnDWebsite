@@ -44,3 +44,4 @@ build/
 /certificate.pfx
 /project.csr
 /project_key.pem
+/database/.env

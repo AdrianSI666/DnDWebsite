@@ -14,7 +14,7 @@ public interface ICultureService {
 
     EntryFullDTO getCulture(String name);
 
-    EntryDTO saveCulture(EntryDTO culture);
+    EntryDTO saveCulture(EntryDTO culture, Long worldId);
 
     void updateCulture(EntryDTO culture, Long id);
 

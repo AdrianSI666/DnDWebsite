@@ -10,6 +10,7 @@ import com.as.dndwebsite.geographic.plane.continent.region.Region;
 import com.as.dndwebsite.geographic.plane.continent.region.place.Place;
 import com.as.dndwebsite.political.kingdom.Kingdom;
 import com.as.dndwebsite.political.kingdom.county.County;
+import com.as.dndwebsite.util.HiddenStatus;
 import com.as.dndwebsite.world.World;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
@@ -42,7 +43,7 @@ public class Description {
     @Column(columnDefinition = "TEXT")
     private String text;
 
-//    private HiddenStatus hiddenStatus;
+    private HiddenStatus hiddenStatus;
 // TODO this will be implemented with addition to accounts, security and group of users who can see it
 
     @ManyToMany(mappedBy = "descriptions")

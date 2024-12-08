@@ -6,6 +6,7 @@ import type { DescriptionDTO } from './DescriptionDTO';
 import type { EntryDTO } from './EntryDTO';
 import type { ImageDTO } from './ImageDTO';
 export type SpeciesDTO = {
+    creatureType?: EntryDTO;
     species?: EntryDTO;
     subSpecies?: Array<EntryDTO>;
     descriptions?: Array<DescriptionDTO>;

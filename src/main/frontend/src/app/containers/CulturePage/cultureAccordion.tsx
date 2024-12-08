@@ -39,11 +39,15 @@ export function CultureAccordion(props: Readonly<ICultureAccordion>) {
   if (props.status === "pending") return <div>Loading...</div>;
 
   return (<AccordionHeaderLayout categoryName={"culture"} updateEntry={editCulture}
-    deleteEntry={deleteCulture} deleteMainObjectButtonActionText={"Delete"}
-    entryFullDTO={props.culture} fetchFullValue={getFullCultureDTO} key={props.culture.object?.id}>
+  deleteEntry={deleteCulture} deleteMainObjectButtonActionText={"Delete"}
+  entryFullDTO={props.culture} fetchFullValue={getFullCultureDTO} key={props.culture.object?.id} mainEntryLink={"cultures"}>
     {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
     {data && <Accordion.Body>
-      <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={data!}
+      <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={{
+        object: data.object,
+        images: data.images,
+        descriptions: data.descriptions
+      }}
         saveImageToEntry={saveImageToCulture}
         deleteImageFromEntry={deleteImageFromCulture}
         deleteImageButtonActionText={"Delete image"}

@@ -3,6 +3,7 @@ package com.as.dndwebsite.world;
 import com.as.dndwebsite.dto.EntryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface WorldRepository extends JpaRepository<World, Long> {
@@ -47,4 +48,6 @@ public interface WorldRepository extends JpaRepository<World, Long> {
     Optional<EntryDTO> findBySubSpecies_Name(String name);
 
     Optional<EntryDTO> findBySubSpecies_Id(Long id);
+
+    List<EntryDTO> findAllByAuthor_IdOrderById(Long name);
 }

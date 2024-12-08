@@ -6,6 +6,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.political.kingdom.Kingdom;
 import com.as.dndwebsite.political.kingdom.KingdomRepository;
 import com.as.dndwebsite.world.World;
@@ -33,7 +34,7 @@ public class WorldKingdomService implements IWorldKingdomService {
     private final WorldRepository worldRepository;
     private final KingdomRepository kingdomRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
-
+    private final WorldMapper worldMapper;
     @Override
     public List<EntryDTO> getKingdomsRelatedToWorld(Long worldId) {
         log.debug("Getting kingdoms related to world with id {}", worldId);
@@ -71,7 +72,7 @@ public class WorldKingdomService implements IWorldKingdomService {
         Kingdom kingdom = kingdomRepository.findById(kingdomId).orElseThrow(() -> new NotFoundException(String.format(KINGDOM_NOT_FOUND_MSG, kingdomId)));
         World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), kingdom));
         kingdom.setWorld(newWorld);
-        return mapper.map(newWorld);
+        return worldMapper.map(newWorld);
     }
 
     @Override

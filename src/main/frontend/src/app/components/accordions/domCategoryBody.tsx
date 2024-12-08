@@ -23,7 +23,7 @@ interface ISubCategoryBody {
     setNewDomEntryToRelation: (id: number, name: string, description: string) => Promise<void>;
     addExistingObjectToRelation: (args: addExistingObjectToRelation) => Promise<void>;
     deleteSubObject: (id: number, secondId: number) => Promise<void>;
-
+    isAuthor?: boolean
 }
 
 export function DomCategoryBody(props: Readonly<ISubCategoryBody>) {
@@ -36,12 +36,14 @@ export function DomCategoryBody(props: Readonly<ISubCategoryBody>) {
             <h4>{header}</h4>
             {props.domObject && <>
                 <Link className="btn btn-outline-warning" to={`/${props.domCategoryLink}/${props.domObject?.name}`} state={props.mainEntryId}>Open description of {props.domObject?.name}</Link>
-                <DeleteConfirmationModal deleteButtonActionText={props.deleteButtonActionText} deleteObjectsInRelation={props.deleteSubObject} title={props.domObject?.name!} id={props.mainEntryId} secondId={props.domObject?.id}
-                /> </>
+                {props.isAuthor ?
+                    <DeleteConfirmationModal deleteButtonActionText={props.deleteButtonActionText} deleteObjectsInRelation={props.deleteSubObject} title={props.domObject?.name!} id={props.mainEntryId} secondId={props.domObject?.id} />
+                    : null} </>
             }
-            <AddNewEntryModal addButtonActionText={props.addButtonActionText} addNewSubEntryToRelation={props.setNewDomEntryToRelation} id={props.mainEntryId} />
-            <AddFromListModal addButtonActionText={props.addExistingButtonActionText} categoryName={`${props.categoryName}`} fillTheListWithSubObjects={props.fillTheListWithAllSubObjects} addExistingObjectToRelation={props.addExistingObjectToRelation} id={props.mainEntryId} />
-
+            {props.isAuthor ? <>
+                <AddNewEntryModal addButtonActionText={props.addButtonActionText} addNewSubEntryToRelation={props.setNewDomEntryToRelation} id={props.mainEntryId} />
+                <AddFromListModal addButtonActionText={props.addExistingButtonActionText} categoryName={`${props.categoryName}`} fillTheListWithSubObjects={props.fillTheListWithAllSubObjects} addExistingObjectToRelation={props.addExistingObjectToRelation} id={props.mainEntryId} />
+            </> : null}
         </>
     )
 }

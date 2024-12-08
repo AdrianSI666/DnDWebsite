@@ -8,6 +8,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.world.World;
 import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class WorldSubSpeciesService implements IWorldSubSpeciesService {
     private final WorldRepository worldRepository;
     private final SubSpeciesRepository subSpeciesRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
-
+    private final WorldMapper worldMapper;
     @Override
     public List<EntryDTO> getSubSpeciesRelatedToWorld(Long worldId) {
         log.debug("Getting subspecies related to world with id {}", worldId);
@@ -71,7 +72,7 @@ public class WorldSubSpeciesService implements IWorldSubSpeciesService {
         SubSpecies subSpecies = subSpeciesRepository.findById(subSpeciesId).orElseThrow(() -> new NotFoundException(String.format(SUB_SPECIES_NOT_FOUND_MSG, subSpeciesId)));
         World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), subSpecies));
         subSpecies.setWorld(newWorld);
-        return mapper.map(newWorld);
+        return worldMapper.map(newWorld);
     }
 
     @Override

@@ -50,9 +50,9 @@ public class CreatureTypeController {
         return ResponseEntity.ok().body(creatureTypeService.getCreatureType(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveCreatureType(@RequestBody EntryDTO creatureType) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(creatureTypeService.saveCreatureType(creatureType));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveCreatureType(@RequestBody EntryDTO creatureType, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(creatureTypeService.saveCreatureType(creatureType, worldId));
     }
 
     @PutMapping("/{id}")

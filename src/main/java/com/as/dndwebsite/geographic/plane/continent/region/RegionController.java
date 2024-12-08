@@ -50,9 +50,9 @@ public class RegionController {
         return ResponseEntity.ok().body(regionService.getRegion(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveRegion(@RequestBody EntryDTO region) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(regionService.saveRegion(region));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveRegion(@RequestBody EntryDTO region, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(regionService.saveRegion(region, worldId));
     }
 
     @PutMapping("/{id}")

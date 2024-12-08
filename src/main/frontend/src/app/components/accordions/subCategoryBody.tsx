@@ -20,16 +20,18 @@ interface ISubCategoryBody {
     addNewSubEntryToRelation: (id: number, name: string, description: string) => Promise<void>;
     addExistingObjectToRelation: (args: addExistingObjectToRelation) => Promise<void>;
     deleteSubObject: (id: number, secondId: number) => Promise<void>;
-
+    isAuthor?: boolean
 }
 
 export function SubCategoryBody(props: Readonly<ISubCategoryBody>) {
     return (
         <>
             <h3>{props.subCategoryTitle}</h3>
-            <AddNewEntryModal addButtonActionText={props.addButtonActionText} addNewSubEntryToRelation={props.addNewSubEntryToRelation} id={props.mainEntryId} />
-            <AddFromListModal addButtonActionText={props.addExistingButtonActionText} categoryName={props.subCategoryTitle} fillTheListWithSubObjects={props.fillTheListWithAllSubObjects} addExistingObjectToRelation={props.addExistingObjectToRelation} id={props.mainEntryId} />
-
+            {props.isAuthor ? <>
+                <AddNewEntryModal addButtonActionText={props.addButtonActionText} addNewSubEntryToRelation={props.addNewSubEntryToRelation} id={props.mainEntryId} />
+                <AddFromListModal addButtonActionText={props.addExistingButtonActionText} categoryName={props.subCategoryTitle} fillTheListWithSubObjects={props.fillTheListWithAllSubObjects} addExistingObjectToRelation={props.addExistingObjectToRelation} id={props.mainEntryId} />
+            </>
+                : null}
             <List className="p-1">
                 {props.subObjects!.map(subObject => {
                     return (
@@ -38,7 +40,9 @@ export function SubCategoryBody(props: Readonly<ISubCategoryBody>) {
                                 key={subObject.id}
                                 disableGutters
                                 secondaryAction={
+                                    props.isAuthor ?
                                     <DeleteConfirmationModal deleteButtonActionText={props.deleteButtonActionText} deleteObjectsInRelation={props.deleteSubObject} title={subObject.name!} id={props.mainEntryId} secondId={subObject.id} />
+                                    : null
                                 }
                             >
                                 <ListItemText

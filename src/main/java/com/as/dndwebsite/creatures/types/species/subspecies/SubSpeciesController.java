@@ -50,9 +50,9 @@ public class SubSpeciesController {
         return ResponseEntity.ok().body(subSpeciesService.getSubSpeciesByName(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveSubSpecies(@RequestBody EntryDTO subSpecies) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(subSpeciesService.saveSubSpecies(subSpecies));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveSubSpecies(@RequestBody EntryDTO subSpecies, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(subSpeciesService.saveSubSpecies(subSpecies, worldId));
     }
 
     @PutMapping("/{id}")

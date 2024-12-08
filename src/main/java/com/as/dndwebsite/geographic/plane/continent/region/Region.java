@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -34,56 +33,48 @@ public class Region extends Entry {
     @ManyToOne
     private Continent continent;
     @ManyToMany
-    private Set<County> counties = new HashSet<>();
+    private Set<County> counties;
     @OneToMany(mappedBy = "region")
-    private Set<Place> places = new HashSet<>();
+    private Set<Place> places;
     @ManyToMany
-    private Set<Culture> cultures = new HashSet<>();
+    private Set<Culture> cultures;
     @ManyToMany
-    private Set<Species> species = new HashSet<>();
+    private Set<Species> species;
     @ManyToMany
-    private Set<SubSpecies> subSpecies = new HashSet<>();
-    @ManyToOne
-    @ToString.Exclude
-    private World world;
+    private Set<SubSpecies> subSpecies;
 
-    public Region(String name, String description) {
-        super(name, description);
+    public Region(String name, String shortDescription, World world) {
+        super(name, shortDescription, world);
     }
 
     public Region(String name, String description, County county) {
-        super(name, description);
+        super(name, description, county.getWorld());
         this.counties.add(county);
     }
 
     public Region(String name, String description, Continent continent) {
-        super(name, description);
+        super(name, description, continent.getWorld());
         this.continent = continent;
     }
 
     public Region(String name, String description, Place place) {
-        super(name, description);
+        super(name, description, place.getWorld());
         this.places.add(place);
     }
 
     public Region(String name, String description, Culture culture) {
-        super(name, description);
+        super(name, description, culture.getWorld());
         this.cultures.add(culture);
     }
 
     public Region(String name, String description, Species species) {
-        super(name, description);
+        super(name, description, species.getWorld());
         this.species.add(species);
     }
 
     public Region(String name, String description, SubSpecies subSpecies) {
-        super(name, description);
+        super(name, description, subSpecies.getWorld());
         this.subSpecies.add(subSpecies);
-    }
-
-    public Region(String name, String shortDescription, World world) {
-        super(name, shortDescription);
-        this.world = world;
     }
 
     @PreRemove

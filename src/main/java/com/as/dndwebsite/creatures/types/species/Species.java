@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -32,37 +31,30 @@ import java.util.Set;
 @Table(name = "species", schema = "public")
 public class Species extends Entry {
     @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    private Set<SubSpecies> subSpecies = new HashSet<>();
+    private Set<SubSpecies> subSpecies;
     @ManyToMany(mappedBy = "species")
     @ToString.Exclude
-    private Set<Region> regions = new HashSet<>();
+    private Set<Region> regions;
     @ManyToOne
     private CreatureType creatureType;
-    @ManyToOne
-    @ToString.Exclude
-    private World world;
 
-    public Species(String name, String description) {
-        super(name, description);
+    public Species(String name, String description, World world) {
+        super(name, description, world);
     }
+
     public Species(String name, String description, Region region) {
-        super(name, description);
+        super(name, description, region.getWorld());
         this.regions.add(region);
     }
 
     public Species(String name, String description, SubSpecies subSpecies) {
-        super(name, description);
+        super(name, description, subSpecies.getWorld());
         this.subSpecies.add(subSpecies);
     }
 
     public Species(String name, String description, CreatureType creatureType) {
-        super(name, description);
+        super(name, description, creatureType.getWorld());
         this.creatureType = creatureType;
-    }
-
-    public Species(String name, String description, World world) {
-        super(name, description);
-        this.world = world;
     }
 
     @PreRemove

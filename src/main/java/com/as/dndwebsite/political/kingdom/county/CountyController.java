@@ -51,9 +51,9 @@ public class CountyController {
         return ResponseEntity.ok().body(countyService.getCounty(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveCounty(@RequestBody EntryDTO county) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(countyService.saveCounty(county));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveCounty(@RequestBody EntryDTO county, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(countyService.saveCounty(county, worldId));
     }
 
     @PutMapping("/{id}")

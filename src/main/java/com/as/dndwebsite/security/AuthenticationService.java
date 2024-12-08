@@ -90,7 +90,7 @@ public class AuthenticationService {
     public void signOut(Long userId, UserDetails userDetails) {
         AppUser appUser = appUserRepository.findById(userId).orElseThrow(() -> new NotFoundException("Couldn't find user to log out."));
         if (!appUser.getEmail().equals(userDetails.getUsername())) {
-            throw new ForbiddenException(userDetails, appUser);
+            throw new ForbiddenException(userDetails.getUsername(), appUser);
         }
         refreshTokenService.deleteByUserId(userId);
     }

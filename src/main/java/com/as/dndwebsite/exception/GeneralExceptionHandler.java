@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -119,5 +118,16 @@ public class GeneralExceptionHandler {
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
         return new ResponseEntity<>(apiException, forbidden);
+    }
+
+    @ExceptionHandler(value = UnAuthorizedException.class)
+    public ResponseEntity<Object> handleUnAuthorizedException(UnAuthorizedException e) {
+        HttpStatus unauthorized = HttpStatus.UNAUTHORIZED;
+        ApiExceptionData apiException = new ApiExceptionData(
+                "You need to log in to access this operation.",
+                unauthorized,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(apiException, unauthorized);
     }
 }

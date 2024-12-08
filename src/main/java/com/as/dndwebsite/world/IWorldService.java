@@ -11,6 +11,8 @@ public interface IWorldService {
 
     WorldDTO getWorld(String name);
 
+    List<EntryDTO> getWorldsByAuthor(Long id);
+
     EntryDTO saveWorld(EntryDTO world);
 
     void updateWorld(EntryDTO world, Long id);

@@ -9,22 +9,28 @@ import useUserState from '../../../services/storage/UserStorage';
 import toast from 'react-hot-toast';
 
 export function Header() {
-    const { userId } = useUserState();
-    const { resetUser } = useUserState();
+    const { userId, resetUser } = useUserState();
     const [isDropdownOpenRace, setDropdownOpenRace] = useState(false);
-    const [isDropdownOpenMaps, setDropdownOpenMaps] = useState(false);
+    const [isDropdownOpenGeograpy, setDropdownOpenGeograpy] = useState(false);
+    const [isDropdownOpenPolitics, setDropdownOpenPolitics] = useState(false);
     const handleSelectRaces = () => {
         setDropdownOpenRace(false);
     };
     const toggleDropdownRace = () => {
         setDropdownOpenRace(!isDropdownOpenRace);
     };
-    const toggleDropdownMaps = () => {
-        setDropdownOpenMaps(!isDropdownOpenMaps)
+    const toggleDropdownGeograpy = () => {
+        setDropdownOpenGeograpy(!isDropdownOpenGeograpy)
     }
-    const handleSelectMaps = () => {
-        setDropdownOpenMaps(false);
+    const handleSelectGeograpy = () => {
+        setDropdownOpenGeograpy(false);
     };
+    const handleSelectPolitics = () => {
+        setDropdownOpenPolitics(false);
+    };
+    const toggleDropdownPolitics = () => {
+        setDropdownOpenPolitics(!isDropdownOpenPolitics)
+    }
     return (
         <nav className="navbar navbar-expand-lg navbar-light, header">
             <div className="container-fluid">
@@ -35,47 +41,58 @@ export function Header() {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <HeaderLink name="home" />
+                            <HeaderLink name="home" link="/home" />
                         </li>
                         <li className="nav-item">
-                            <HeaderLink name="cultures" />
+                            <HeaderLink name="worlds" link='/worlds' handleSelect={handleSelectGeograpy} />
                         </li>
                         <li className="nav-item">
-                            <NavDropdown title="Races" id="basic-nav-dropdown"
+                            <NavDropdown title="Geography" id="basic-nav-dropdown"
+                                show={isDropdownOpenGeograpy}
+                                onToggle={toggleDropdownGeograpy}
+                            >
+                                <HeaderLink name="planes" link="/geography/planes" handleSelect={handleSelectGeograpy} />
+                                <NavDropdown.Divider />
+                                <HeaderLink name="continents" link="/geography/continents" handleSelect={handleSelectGeograpy} />
+                                <NavDropdown.Divider />
+                                <HeaderLink name="regions" link="/geography/regions" handleSelect={handleSelectGeograpy} />
+                                <NavDropdown.Divider />
+                                <HeaderLink name="places" link="/geography/places" handleSelect={handleSelectGeograpy} />
+                            </NavDropdown>
+                        </li>
+                        <li className="nav-item">
+                            <NavDropdown title="Politics" id="basic-nav-dropdown"
+                                show={isDropdownOpenPolitics}
+                                onToggle={toggleDropdownPolitics}
+                            >
+                                <HeaderLink name="kingdoms" link="/politics/kingdoms" handleSelect={handleSelectPolitics} />
+                                <NavDropdown.Divider />
+                                <HeaderLink name="counties" link="/politics/counties" handleSelect={handleSelectPolitics} />
+                            </NavDropdown>
+                        </li>
+                        <li className="nav-item">
+                            <HeaderLink name="cultures" link="/cultures" />
+                        </li>
+                        <li className="nav-item">
+                            <NavDropdown title="Creatures" id="basic-nav-dropdown"
                                 show={isDropdownOpenRace}
                                 onToggle={toggleDropdownRace}
                             >
-                                <HeaderLink name="races" handleSelect={handleSelectRaces} />
+                                <HeaderLink name="types" link="/creatures/types" handleSelect={handleSelectRaces} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="subraces" handleSelect={handleSelectRaces} />
-                            </NavDropdown>
-                        </li>
-                        <li className="nav-item">
-                            <NavDropdown title="Places" id="basic-nav-dropdown"
-                                show={isDropdownOpenMaps}
-                                onToggle={toggleDropdownMaps}
-                            >
-                                <HeaderLink name="worlds" handleSelect={handleSelectMaps} />
+                                <HeaderLink name="species" link="/creatures/species" handleSelect={handleSelectRaces} />
                                 <NavDropdown.Divider />
-                                <HeaderLink name="planes" handleSelect={handleSelectMaps} />
-                                <NavDropdown.Divider />
-                                <HeaderLink name="continents" handleSelect={handleSelectMaps} />
-                                <NavDropdown.Divider />
-                                <HeaderLink name="kingdoms" handleSelect={handleSelectMaps} />
-                                <NavDropdown.Divider />
-                                <HeaderLink name="regions" handleSelect={handleSelectMaps} />
-                                <NavDropdown.Divider />
-                                <HeaderLink name="places" handleSelect={handleSelectMaps} />
+                                <HeaderLink name="sub species" link="/creatures/subspecies" handleSelect={handleSelectRaces} />
                             </NavDropdown>
                         </li>
                         {!userId ? <><li className="nav-item">
-                            <HeaderLink name="login" />
+                            <HeaderLink name="login" link='/login' />
                         </li><li className="nav-item">
-                                <HeaderLink name="signup" />
+                                <HeaderLink name="signup" link='/signup' />
                             </li></> : null}
                         {userId ? <>
                             <li className="nav-item">
-                                <HeaderLink name="profile" />
+                                <HeaderLink name="profile" link='/user/home' />
                             </li>
                             <li>
                                 <Button onClick={() => {

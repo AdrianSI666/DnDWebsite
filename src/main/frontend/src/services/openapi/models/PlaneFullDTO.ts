@@ -6,12 +6,11 @@ import type { DescriptionDTO } from './DescriptionDTO';
 import type { EntryDTO } from './EntryDTO';
 import type { ImageDTO } from './ImageDTO';
 export type PlaneFullDTO = {
-    id?: number;
-    name?: string;
-    shortDescription?: string;
+    plane?: EntryDTO;
     world?: EntryDTO;
     images?: Array<ImageDTO>;
     descriptions?: Array<DescriptionDTO>;
     continents?: Array<EntryDTO>;
+    creatureTypes?: Array<EntryDTO>;
 };
 

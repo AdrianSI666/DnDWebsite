@@ -11,7 +11,7 @@ public interface IRegionService {
 
     RegionDTO getRegion(String name);
 
-    EntryDTO saveRegion(EntryDTO region);
+    EntryDTO saveRegion(EntryDTO region, Long worldId);
 
     void updateRegion(EntryDTO region, Long id);
 

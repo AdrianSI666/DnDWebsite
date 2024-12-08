@@ -2,9 +2,9 @@
 FROM postgres:14
 
 # Set environment variables
-ENV POSTGRES_DB=dnd
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=projektanto
+ENV POSTGRES_DB=${DBNAME}
+ENV POSTGRES_USER=${DBUSERNAME}
+ENV POSTGRES_PASSWORD=${DBPASSWORD}
 
 # Copy the backup file into the container
 COPY dndbackup.dump /docker-entrypoint-initdb.d/

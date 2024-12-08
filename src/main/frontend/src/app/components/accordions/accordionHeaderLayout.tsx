@@ -2,6 +2,7 @@ import { Accordion } from "react-bootstrap";
 import { EntryFullDTO } from "../../../services/openapi";
 import { DeleteConfirmationModal } from "../modals/deleteConfirmModal";
 import { EditEntryModal } from "../modals/editEntryModal";
+import { Link } from "react-router-dom";
 
 interface IAccordionHeaderLayout {
     deleteMainObjectButtonActionText: string;
@@ -10,7 +11,9 @@ interface IAccordionHeaderLayout {
     categoryName: string;
     entryFullDTO: EntryFullDTO,
     children: string | React.ReactNode,
-    fetchFullValue: (name: string) => Promise<void>
+    fetchFullValue: (name: string) => Promise<void>,
+    mainEntryLink: string,
+    isAuthor?: boolean
 }
 
 export function AccordionHeaderLayout(props: Readonly<IAccordionHeaderLayout>) {
@@ -29,14 +32,14 @@ export function AccordionHeaderLayout(props: Readonly<IAccordionHeaderLayout>) {
                     <tbody>
                         <tr>
                             <td className="w-50"><h5><b>
-                                <a href={props.categoryName + "s/" + props.entryFullDTO.object?.name} onClick={e => e.stopPropagation()}>
+                                <Link to={`/${props.mainEntryLink}/${props.entryFullDTO.object?.name}`} onClick={e => e.stopPropagation()}>
                                     {props.entryFullDTO.object?.name}
-                                </a></b></h5></td>
+                                </Link></b></h5></td>
                             <td rowSpan={3} className="w-10 ps-3 pt-auto pb-auto pe-2" style={{ width: "10%" }}>
-                                <EditEntryModal updateFunction={props.updateEntry} categoryName={props.categoryName} id={props.entryFullDTO.object?.id!} name={props.entryFullDTO.object?.name!} shortDescription={props.entryFullDTO.object?.shortDescription!} />
+                                {props.isAuthor ? <EditEntryModal updateFunction={props.updateEntry} categoryName={props.categoryName} id={props.entryFullDTO.object?.id!} name={props.entryFullDTO.object?.name!} shortDescription={props.entryFullDTO.object?.shortDescription!} /> : null}
                             </td>
                             <td rowSpan={3} className="w-10 ps-3 pt-auto pb-auto pe-3" style={{ width: "10%" }}>
-                                <DeleteConfirmationModal deleteButtonActionText={props.deleteMainObjectButtonActionText} deleteObject={props.deleteEntry} title={props.entryFullDTO.object?.name!} id={props.entryFullDTO.object?.id!} />
+                                {props.isAuthor ? <DeleteConfirmationModal deleteButtonActionText={props.deleteMainObjectButtonActionText} deleteObject={props.deleteEntry} title={props.entryFullDTO.object?.name!} id={props.entryFullDTO.object?.id!} /> : null}
                             </td>
                         </tr>
                         <tr>

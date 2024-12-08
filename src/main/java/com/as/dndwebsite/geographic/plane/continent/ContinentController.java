@@ -50,9 +50,9 @@ public class ContinentController {
         return ResponseEntity.ok().body(continentService.getContinent(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveContinent(@RequestBody EntryDTO continent) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(continentService.saveContinent(continent));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveContinent(@RequestBody EntryDTO continent, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(continentService.saveContinent(continent, worldId));
     }
 
     @PutMapping("/{id}")

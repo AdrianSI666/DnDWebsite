@@ -8,6 +8,7 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DomainMapper;
 import com.as.dndwebsite.geographic.plane.continent.region.place.Place;
 import com.as.dndwebsite.geographic.plane.continent.region.place.PlaceRepository;
+import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.world.World;
 import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class WorldPlaceService implements IWorldPlaceService {
     private final WorldRepository worldRepository;
     private final PlaceRepository placeRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
-
+    private final WorldMapper worldMapper;
     @Override
     public List<EntryDTO> getPlacesRelatedToWorld(Long worldId) {
         log.debug("Getting places related to world with id {}", worldId);
@@ -71,7 +72,7 @@ public class WorldPlaceService implements IWorldPlaceService {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new NotFoundException(String.format(PLACE_NOT_FOUND_MSG, placeId)));
         World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), place));
         place.setWorld(newWorld);
-        return mapper.map(newWorld);
+        return worldMapper.map(newWorld);
     }
 
     @Override

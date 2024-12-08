@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,12 @@ public class WorldController {
     @GetMapping("/{name}")
     public ResponseEntity<WorldDTO> getWorldByName(@PathVariable("name") String name) {
         return ResponseEntity.ok().body(worldService.getWorld(name));
+    }
+
+    @GetMapping("/author/{id}")
+    @Secured({"USER","ADMIN"})
+    public ResponseEntity<List<EntryDTO>> getWorldsByAuthor(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(worldService.getWorldsByAuthor(id));
     }
 
     @PostMapping
@@ -101,8 +108,8 @@ public class WorldController {
 
     @DeleteMapping(path = "/{worldId}/description/{descriptionId}")
     public ResponseEntity<HttpStatus> deleteDescriptionFromWorld(@PathVariable("worldId") Long worldId,
-                                                                 @PathVariable("descriptionId") Long imageId) {
-        worldDescriptionService.deleteDescriptionFromEntry(worldId, imageId);
+                                                                 @PathVariable("descriptionId") Long descriptionId) {
+        worldDescriptionService.deleteDescriptionFromEntry(worldId, descriptionId);
         return ResponseEntity.noContent().build();
     }
 }

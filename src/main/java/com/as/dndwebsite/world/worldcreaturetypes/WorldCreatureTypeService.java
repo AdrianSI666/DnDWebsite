@@ -8,6 +8,7 @@ import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.BadRequestException;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.world.World;
 import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class WorldCreatureTypeService implements IWorldCreatureTypeService {
     private final WorldRepository worldRepository;
     private final CreatureTypeRepository creatureTypeRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
-
+    private final WorldMapper worldMapper;
     @Override
     public List<EntryDTO> getCreatureTypesRelatedToWorld(Long worldId) {
         log.debug("Getting creatureTypes related to world with id {}", worldId);
@@ -71,7 +72,7 @@ public class WorldCreatureTypeService implements IWorldCreatureTypeService {
         CreatureType creatureType = creatureTypeRepository.findById(creatureTypeId).orElseThrow(() -> new NotFoundException(String.format(CREATURE_TYPE_NOT_FOUND_MSG, creatureTypeId)));
         World newWorld = worldRepository.save(new World(world.name(), world.shortDescription(), creatureType));
         creatureType.setWorld(newWorld);
-        return mapper.map(newWorld);
+        return worldMapper.map(newWorld);
     }
 
     @Override

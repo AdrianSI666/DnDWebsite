@@ -11,7 +11,7 @@ public interface IKingdomService {
 
     KingdomDTO getKingdom(String name);
 
-    EntryDTO saveKingdom(EntryDTO kingdom);
+    EntryDTO saveKingdom(EntryDTO kingdom, Long worldId);
 
     void updateKingdom(EntryDTO kingdom, Long kingdomId);
 

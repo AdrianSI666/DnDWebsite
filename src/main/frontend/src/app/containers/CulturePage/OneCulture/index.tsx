@@ -29,8 +29,16 @@ export function OneCulture() {
     return <OneEntryHeaderLayout
         deleteMainObjectButtonActionText={"Delete this culture"}
         deleteEntry={removeCulture}
-        updateEntry={editCulture} categoryName={"Culture"} entryFullDTO={culture}>
-        <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={culture}
+        updateEntry={editCulture} categoryName={"Culture"} entryFullDTO={{
+            object: culture.object,
+            images: culture.images,
+            descriptions: culture.descriptions
+        }}>
+        <FullEntryAccordionBody categoryName={"culture"} entryFullDTO={{
+            object: culture.object,
+            images: culture.images,
+            descriptions: culture.descriptions
+        }}
             saveImageToEntry={saveImageToCulture}
             deleteImageFromEntry={deleteImageFromCulture}
             deleteImageButtonActionText={"Delete image"}

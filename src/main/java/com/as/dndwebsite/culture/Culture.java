@@ -5,7 +5,6 @@ import com.as.dndwebsite.geographic.plane.continent.region.Region;
 import com.as.dndwebsite.world.World;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -27,23 +25,15 @@ import java.util.Set;
 public class Culture extends Entry {
     @ManyToMany(mappedBy = "cultures")
     @ToString.Exclude
-    private Set<Region> regions = new HashSet<>();
-    @ManyToOne
-    @ToString.Exclude
-    private World world;
+    private Set<Region> regions;
 
-    public Culture(String name, String description) {
-        super(name, description);
+    public Culture(String name, String shortDescription, World world) {
+        super(name, shortDescription, world);
     }
 
     public Culture(String name, String description, Region region) {
-        super(name, description);
+        super(name, description, region.getWorld());
         regions.add(region);
-    }
-
-    public Culture(String name, String shortDescription, World world) {
-        super(name, shortDescription);
-        this.world = world;
     }
 
     @PreRemove

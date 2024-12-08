@@ -50,9 +50,9 @@ public class PlaneController {
         return ResponseEntity.ok().body(planeService.getPlane(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> savePlane(@RequestBody EntryDTO plane) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(planeService.savePlane(plane));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> savePlane(@RequestBody EntryDTO plane, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(planeService.savePlane(plane, worldId));
     }
 
     @PutMapping("/{id}")

@@ -12,7 +12,7 @@ public interface ICountyService {
 
     EntryFullDTO getCounty(String name);
 
-    EntryDTO saveCounty(EntryDTO county);
+    EntryDTO saveCounty(EntryDTO county, Long worldId);
 
     void updateCounty(EntryDTO county, Long countyId);
 

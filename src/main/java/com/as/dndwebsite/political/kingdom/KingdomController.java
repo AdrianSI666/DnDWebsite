@@ -50,9 +50,9 @@ public class KingdomController {
         return ResponseEntity.ok().body(kingdomService.getKingdom(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> saveKingdom(@RequestBody EntryDTO kingdom) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(kingdomService.saveKingdom(kingdom));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> saveKingdom(@RequestBody EntryDTO kingdom, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(kingdomService.saveKingdom(kingdom, worldId));
     }
 
     @PutMapping("/{id}")

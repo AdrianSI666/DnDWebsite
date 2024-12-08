@@ -22,22 +22,13 @@ import lombok.ToString;
 public class Place extends Entry {
     @ManyToOne
     private Region region;
-    @ManyToOne
-    @ToString.Exclude
-    private World world;
 
-
-    public Place(String name, String description) {
-        super(name, description);
+    public Place(String name, String description, World world) {
+        super(name, description, world);
     }
 
     public Place(String name, String description, Region region) {
-        super(name, description);
+        super(name, description, region.getWorld());
         this.region = region;
-    }
-
-    public Place(String name, String description, World world) {
-        super(name, description);
-        this.world = world;
     }
 }

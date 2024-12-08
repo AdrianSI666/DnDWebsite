@@ -11,7 +11,7 @@ public interface ICreatureTypeService {
 
     CreatureTypeDTO getCreatureType(String name);
 
-    EntryDTO saveCreatureType(EntryDTO creatureType);
+    EntryDTO saveCreatureType(EntryDTO creatureType, Long worldId);
 
     void updateCreatureType(EntryDTO creatureType, Long id);
 

@@ -7,6 +7,9 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
+import com.as.dndwebsite.security.OwningSecurityFunctions;
+import com.as.dndwebsite.world.World;
+import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,17 +21,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.as.dndwebsite.world.WorldService.WORLD_NOT_FOUND_MSG;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class CreatureTypeService implements ICreatureTypeService {
     private final CreatureTypeRepository creatureTypeRepository;
+    private final WorldRepository worldRepository;
     public static final String CREATURE_TYPE_NOT_FOUND_MSG = "creatureType with name %s not found";
     private final DomainMapper<Entry, EntryDTO> mapper;
     private final DescriptionMapper descriptionMapper;
     private final ImageMapper imageMapper;
-
+    private final OwningSecurityFunctions owningSecurityFunctions;
     @Override
     public Page<EntryDTO> getCreatureTypes(PageInfo page) {
         log.info("Getting creatureTypes");
@@ -50,9 +56,12 @@ public class CreatureTypeService implements ICreatureTypeService {
     }
 
     @Override
-    public EntryDTO saveCreatureType(EntryDTO creatureType) {
+    public EntryDTO saveCreatureType(EntryDTO creatureType, Long worldId) {
         log.info("Saving new creatureType {}", creatureType.name());
-        CreatureType savedCreatureType = creatureTypeRepository.save(new CreatureType(creatureType.name(), creatureType.shortDescription()));
+        World world = worldRepository.findById(worldId).orElseThrow(
+                () -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, worldId)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(world.getAuthor(), "Save new creature type", world.getId());
+        CreatureType savedCreatureType = creatureTypeRepository.save(new CreatureType(creatureType.name(), creatureType.shortDescription(), world));
         return mapper.map(savedCreatureType);
     }
 
@@ -61,6 +70,7 @@ public class CreatureTypeService implements ICreatureTypeService {
         log.info("Updating CreatureType {} with id {}", creatureType.name(), id);
         CreatureType oldCreatureType = creatureTypeRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(CREATURE_TYPE_NOT_FOUND_MSG, id)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(oldCreatureType.getWorld().getAuthor(), "Update creature type", oldCreatureType.getId());
         oldCreatureType.setName(creatureType.name());
         oldCreatureType.setShortDescription(creatureType.shortDescription());
     }
@@ -69,6 +79,7 @@ public class CreatureTypeService implements ICreatureTypeService {
     public void deleteCreatureType(long id) {
         CreatureType creatureType = creatureTypeRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(CREATURE_TYPE_NOT_FOUND_MSG, id)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(creatureType.getWorld().getAuthor(), "Delete creature type", creatureType.getId());
         log.info("Deleting CreatureType with id {}", id);
         creatureTypeRepository.delete(creatureType);
     }

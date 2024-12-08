@@ -1,18 +1,26 @@
 package com.as.dndwebsite.world;
 
 import com.as.dndwebsite.creatures.types.CreatureType;
-import com.as.dndwebsite.culture.Culture;
-import com.as.dndwebsite.domain.Entry;
-import com.as.dndwebsite.geographic.plane.Plane;
-import com.as.dndwebsite.geographic.plane.continent.Continent;
-import com.as.dndwebsite.political.kingdom.Kingdom;
-import com.as.dndwebsite.geographic.plane.continent.region.Region;
-import com.as.dndwebsite.geographic.plane.continent.region.place.Place;
-import com.as.dndwebsite.political.kingdom.county.County;
 import com.as.dndwebsite.creatures.types.species.Species;
 import com.as.dndwebsite.creatures.types.species.subspecies.SubSpecies;
+import com.as.dndwebsite.culture.Culture;
+import com.as.dndwebsite.description.Description;
+import com.as.dndwebsite.geographic.plane.Plane;
+import com.as.dndwebsite.geographic.plane.continent.Continent;
+import com.as.dndwebsite.geographic.plane.continent.region.Region;
+import com.as.dndwebsite.geographic.plane.continent.region.place.Place;
+import com.as.dndwebsite.image.Image;
+import com.as.dndwebsite.political.kingdom.Kingdom;
+import com.as.dndwebsite.political.kingdom.county.County;
 import com.as.dndwebsite.user.AppUser;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -22,8 +30,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,81 +40,103 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "world", schema = "public")
-public class World extends Entry {
+public class World {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
+    private String name;
+    private String shortDescription;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Collection<Description> descriptions;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Collection<Image> images;
     @OneToMany(mappedBy = "world")
-    private Collection<Culture> cultures = new ArrayList<>();
+    private Set<Culture> cultures;
     @OneToMany(mappedBy = "world")
-    private Collection<CreatureType> creatureTypes = new ArrayList<>();
+    private Set<CreatureType> creatureTypes;
     @OneToMany(mappedBy = "world")
-    private Collection<Species> species = new ArrayList<>();
+    private Set<Species> species;
     @OneToMany(mappedBy = "world")
-    private Collection<SubSpecies> subSpecies = new ArrayList<>();
+    private Set<SubSpecies> subSpecies;
     @OneToMany(mappedBy = "world")
-    private Collection<Plane> planes = new ArrayList<>();
+    private Set<Plane> planes;
     @OneToMany(mappedBy = "world")
-    private Collection<Continent> continents = new ArrayList<>();
+    private Set<Continent> continents;
     @OneToMany(mappedBy = "world")
-    private Collection<Kingdom> kingdoms = new ArrayList<>();
+    private Set<Kingdom> kingdoms;
     @OneToMany(mappedBy = "world")
-    private Collection<County> counties = new ArrayList<>();
+    private Set<County> counties;
     @OneToMany(mappedBy = "world")
-    private Collection<Region> regions = new ArrayList<>();
+    private Set<Region> regions;
     @OneToMany(mappedBy = "world")
-    private Collection<Place> places = new ArrayList<>();
+    private Set<Place> places;
     @ManyToOne
     private AppUser author;
 
-    public World(String name, String description) {
-        super(name, description);
+    public World(String name, String description, AppUser appUser) {
+        this.name = name;
+        this.shortDescription = description;
+        this.author = appUser;
     }
 
     public World(String name, String description, Plane plane) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.planes.add(plane);
     }
 
     public World(String name, String description, Culture culture) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.cultures.add(culture);
     }
 
     public World(String name, String description, Continent continent) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.continents.add(continent);
     }
 
     public World(String name, String description, Region region) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.regions.add(region);
     }
 
     public World(String name, String description, Place place) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.places.add(place);
     }
 
     public World(String name, String description, Kingdom kingdom) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.kingdoms.add(kingdom);
     }
 
     public World(String name, String description, County county) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.counties.add(county);
     }
 
     public World(String name, String description, Species species) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.species.add(species);
     }
 
     public World(String name, String description, CreatureType creatureType) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.creatureTypes.add(creatureType);
     }
 
     public World(String name, String description, SubSpecies subSpecies) {
-        super(name, description);
+        this.name = name;
+        this.shortDescription = description;
         this.subSpecies.add(subSpecies);
     }
 }

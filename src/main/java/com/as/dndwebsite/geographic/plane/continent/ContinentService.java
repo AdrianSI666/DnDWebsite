@@ -7,6 +7,9 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
+import com.as.dndwebsite.security.OwningSecurityFunctions;
+import com.as.dndwebsite.world.World;
+import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,19 +22,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.as.dndwebsite.world.WorldService.WORLD_NOT_FOUND_MSG;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class ContinentService implements IContinentService {
     private final ContinentRepository continentRepository;
-
+    private final WorldRepository worldRepository;
     private final DomainMapper<Entry, EntryDTO> mapper;
     private final DescriptionMapper descriptionMapper;
     private final ImageMapper imageMapper;
     public static final String CONTINENT_NOT_FOUND_MSG =
             "Continent with name %s not found";
-
+    private final OwningSecurityFunctions owningSecurityFunctions;
     @Override
     public Page<EntryDTO> getContinents(PageInfo page) {
         log.info("Getting Continents");
@@ -61,9 +66,12 @@ public class ContinentService implements IContinentService {
     }
 
     @Override
-    public EntryDTO saveContinent(EntryDTO continent) {
+    public EntryDTO saveContinent(EntryDTO continent, Long worldId) {
         log.info("Saving new Continent {}", continent.name());
-        return mapper.map(continentRepository.save(new Continent(continent.name(), continent.shortDescription())));
+        World world = worldRepository.findById(worldId).orElseThrow(
+                () -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, worldId)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(world.getAuthor(), "Save new continent", world.getId());
+        return mapper.map(continentRepository.save(new Continent(continent.name(), continent.shortDescription(), world)));
     }
 
     @Override
@@ -71,6 +79,7 @@ public class ContinentService implements IContinentService {
         Continent oldContinent = continentRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, id)));
         log.info("Updating continent {} with id {}", oldContinent.getName(), id);
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(oldContinent.getWorld().getAuthor(), "Update continent", oldContinent.getId());
         oldContinent.setShortDescription(continent.shortDescription());
         oldContinent.setName(continent.name());
     }
@@ -78,7 +87,10 @@ public class ContinentService implements IContinentService {
     @Override
     public void deleteContinent(Long id) {
         log.info("Deleting continent with id: " + id);
-        continentRepository.deleteById(id);
+        Continent continent = continentRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format(CONTINENT_NOT_FOUND_MSG, id)));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(continent.getWorld().getAuthor(), "Delete continent", continent.getId());
+        continentRepository.delete(continent);
     }
 
 }

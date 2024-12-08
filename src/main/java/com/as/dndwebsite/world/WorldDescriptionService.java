@@ -33,12 +33,12 @@ public class WorldDescriptionService implements IDescriptionEntryService {
     @Override
     public DescriptionDTO saveDescriptionToEntry(DescriptionDTO descriptionDTO, Long id) {
         World world = worldRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, id)));
-        return descriptionService.saveDescriptionToEntry(descriptionDTO, world);
+        return descriptionService.saveDescriptionToWorld(descriptionDTO, world);
     }
 
     @Override
     public void deleteDescriptionFromEntry(Long entryId, Long descriptionId) {
         World world = worldRepository.findById(entryId).orElseThrow(() -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, entryId)));
-        descriptionService.deleteDescriptionFromEntry(world, descriptionId);
+        descriptionService.deleteDescriptionFromWorld(world, descriptionId);
     }
 }

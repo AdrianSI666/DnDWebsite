@@ -51,9 +51,9 @@ public class PlaceController {
         return ResponseEntity.ok().body(placeService.getPlace(name));
     }
 
-    @PostMapping
-    public ResponseEntity<EntryDTO> savePlace(@RequestBody EntryDTO place) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(placeService.savePlace(place));
+    @PostMapping("/{worldId}")
+    public ResponseEntity<EntryDTO> savePlace(@RequestBody EntryDTO place, @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(placeService.savePlace(place, worldId));
     }
 
     @PutMapping("/{id}")

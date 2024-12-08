@@ -15,8 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -28,30 +27,22 @@ import java.util.Collection;
 public class County extends Entry {
     @ManyToMany(mappedBy = "counties")
     @ToStringExclude
-    private Collection<Region> regions = new ArrayList<>();
+    private Set<Region> regions;
     @ManyToOne
     @ToString.Exclude
     private Kingdom kingdom;
-    @ManyToOne
-    @ToString.Exclude
-    private World world;
 
-    public County(String name, String description) {
-        super(name, description);
+    public County(String name, String description, World world) {
+        super(name, description, world);
     }
 
     public County(String name, String description, Kingdom kingdom) {
-        super(name, description);
+        super(name, description, kingdom.getWorld());
         this.kingdom = kingdom;
     }
 
     public County(String name, String description, Region region) {
-        super(name, description);
+        super(name, description, region.getWorld());
         this.regions.add(region);
-    }
-
-    public County(String name, String description, World world) {
-        super(name, description);
-        this.world = world;
     }
 }

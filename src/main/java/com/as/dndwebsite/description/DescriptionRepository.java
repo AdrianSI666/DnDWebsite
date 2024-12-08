@@ -1,6 +1,7 @@
 package com.as.dndwebsite.description;
 
 import com.as.dndwebsite.dto.DescriptionDTO;
+import com.as.dndwebsite.util.HiddenStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface DescriptionRepository extends JpaRepository<Description, Long> 
     List<DescriptionDTO> findAllBySpecies_IdOrderById(long id);
 
     List<DescriptionDTO> findAllBySubSpecies_IdOrderById(long id);
+
+    List<DescriptionDTO> findAllByWorlds_IdAndHiddenStatusOrderById(Long id, HiddenStatus hiddenStatus);
 }

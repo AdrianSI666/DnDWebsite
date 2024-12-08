@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class DescriptionController {
     private final IDescriptionService descriptionService;
 
-    @PutMapping(path = "{id}")
+    @PutMapping("{id}/world/{worldId}")
     public ResponseEntity<DescriptionDTO> updateDescription(@PathVariable("id") Long id,
-                                                            @RequestBody DescriptionDTO descriptionDTO) {
-        return ResponseEntity.ok().body(descriptionService.updateDescription(descriptionDTO, id));
+                                                            @RequestBody DescriptionDTO descriptionDTO,
+                                                            @PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(descriptionService.updateDescription(descriptionDTO, id, worldId));
     }
 }
