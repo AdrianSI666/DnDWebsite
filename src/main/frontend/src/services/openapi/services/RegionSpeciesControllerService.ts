@@ -90,7 +90,7 @@ export class RegionSpeciesControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns PageDTOEntryDTO OK
+     * @returns Page<EntryDTO> OK
      * @throws ApiError
      */
     public static getSpeciesRelatedToRegion(
@@ -112,7 +112,7 @@ export class RegionSpeciesControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns PageDTOEntryDTO OK
+     * @returns Page<EntryDTO> OK
      * @throws ApiError
      */
     public static getRegionsRelatedToSpecies(

@@ -2,15 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
 import type { ContinentDTO } from '../models/ContinentDTO';
 import type { DescriptionDTO } from '../models/DescriptionDTO';
 import type { EntryDTO } from '../models/EntryDTO';
 import type { ImageDTO } from '../models/ImageDTO';
 import { Page } from "../models/Page";
 import type { PageInfo } from '../models/PageInfo';
+import type { CancelablePromise } from '../core/CancelablePromise';
+import { OpenAPI } from '../core/OpenAPI';
+import { request as __request } from '../core/request';
 export class ContinentControllerService {
     /**
      * @param id
@@ -49,33 +49,21 @@ export class ContinentControllerService {
         });
     }
     /**
-     * @param pageInfo
-     * @returns Page<EntryDTO> OK
-     * @throws ApiError
-     */
-    public static getContinents(
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/continents',
-            query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
-            },
-        });
-    }
-    /**
+     * @param worldId
      * @param requestBody
      * @returns EntryDTO OK
      * @throws ApiError
      */
     public static saveContinent(
+        worldId: number,
         requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/continents',
+            url: '/continents/{worldId}',
+            path: {
+                'worldId': worldId,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -136,6 +124,23 @@ export class ContinentControllerService {
             },
             formData: formData,
             mediaType: 'multipart/form-data',
+        });
+    }
+    /**
+     * @param pageInfo
+     * @returns PageDTOEntryDTO OK
+     * @throws ApiError
+     */
+    public static getContinents(
+        pageInfo: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/continents',
+            query: {
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
+            },
         });
     }
     /**

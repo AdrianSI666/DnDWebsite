@@ -49,33 +49,21 @@ export class RegionControllerService {
         });
     }
     /**
-     * @param pageInfo
-     * @returns Page<EntryDTO> OK
-     * @throws ApiError
-     */
-    public static getRegions(
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/regions',
-            query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
-            },
-        });
-    }
-    /**
+     * @param worldId
      * @param requestBody
      * @returns EntryDTO OK
      * @throws ApiError
      */
     public static saveRegion(
+        worldId: number,
         requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/regions',
+            url: '/regions/{worldId}',
+            path: {
+                'worldId': worldId,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -136,6 +124,23 @@ export class RegionControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param pageInfo
+     * @returns PageDTOEntryDTO OK
+     * @throws ApiError
+     */
+    public static getRegions(
+        pageInfo: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/regions',
+            query: {
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
+            },
         });
     }
     /**

@@ -49,33 +49,21 @@ export class PlaneControllerService {
         });
     }
     /**
-     * @param pageInfo
-     * @returns Page<EntryDTO> OK
-     * @throws ApiError
-     */
-    public static getPlanes(
-        pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/planes',
-            query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
-            },
-        });
-    }
-    /**
+     * @param worldId
      * @param requestBody
      * @returns EntryDTO OK
      * @throws ApiError
      */
     public static savePlane(
+        worldId: number,
         requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/planes',
+            url: '/planes/{worldId}',
+            path: {
+                'worldId': worldId,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -136,6 +124,23 @@ export class PlaneControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param pageInfo
+     * @returns PageDTOEntryDTO OK
+     * @throws ApiError
+     */
+    public static getPlanes(
+        pageInfo: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/planes',
+            query: {
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
+            },
         });
     }
     /**

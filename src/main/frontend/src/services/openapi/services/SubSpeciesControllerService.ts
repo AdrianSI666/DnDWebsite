@@ -49,33 +49,21 @@ export class SubSpeciesControllerService {
         });
     }
     /**
-     * @param pageInfo
-     * @returns PageDTOEntryDTO OK
-     * @throws ApiError
-     */
-    public static getSubSpecies(
-        pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/subSpecies',
-            query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
-            },
-        });
-    }
-    /**
+     * @param worldId
      * @param requestBody
      * @returns EntryDTO OK
      * @throws ApiError
      */
     public static saveSubSpecies(
+        worldId: number,
         requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/subSpecies',
+            url: '/subSpecies/{worldId}',
+            path: {
+                'worldId': worldId,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -136,6 +124,23 @@ export class SubSpeciesControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param pageInfo
+     * @returns Page<EntryDTO> OK
+     * @throws ApiError
+     */
+    public static getSubSpecies(
+        pageInfo: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/subSpecies',
+            query: {
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
+            },
         });
     }
     /**

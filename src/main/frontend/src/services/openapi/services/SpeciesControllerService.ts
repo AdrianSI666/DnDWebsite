@@ -49,33 +49,21 @@ export class SpeciesControllerService {
         });
     }
     /**
-     * @param pageInfo
-     * @returns PageDTOEntryDTO OK
-     * @throws ApiError
-     */
-    public static getSpecies(
-        pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/species',
-            query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
-            },
-        });
-    }
-    /**
+     * @param worldId
      * @param requestBody
      * @returns EntryDTO OK
      * @throws ApiError
      */
     public static saveSpecies(
+        worldId: number,
         requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/species',
+            url: '/species/{worldId}',
+            path: {
+                'worldId': worldId,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -136,6 +124,23 @@ export class SpeciesControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param pageInfo
+     * @returns Page<EntryDTO> OK
+     * @throws ApiError
+     */
+    public static getSpecies(
+        pageInfo: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/species',
+            query: {
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
+            },
         });
     }
     /**

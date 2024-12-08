@@ -9,19 +9,22 @@ import { request as __request } from '../core/request';
 export class DescriptionControllerService {
     /**
      * @param id
+     * @param worldId
      * @param requestBody
      * @returns DescriptionDTO OK
      * @throws ApiError
      */
     public static updateDescription(
         id: number,
+        worldId: number,
         requestBody: DescriptionDTO,
     ): CancelablePromise<DescriptionDTO> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/descriptions/{id}',
+            url: '/descriptions/{id}/world/{worldId}',
             path: {
                 'id': id,
+                'worldId': worldId,
             },
             body: requestBody,
             mediaType: 'application/json',

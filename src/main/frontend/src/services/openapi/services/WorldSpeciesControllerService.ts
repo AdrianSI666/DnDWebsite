@@ -71,7 +71,7 @@ export class WorldSpeciesControllerService {
     /**
      * @param name
      * @param pageInfo
-     * @returns PageDTOEntryDTO OK
+     * @returns Page<EntryDTO> OK
      * @throws ApiError
      */
     public static getSpeciesWithRelationToWorld(

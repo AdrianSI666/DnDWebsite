@@ -49,33 +49,21 @@ export class CreatureTypeControllerService {
         });
     }
     /**
-     * @param pageInfo
-     * @returns PageDTOEntryDTO OK
-     * @throws ApiError
-     */
-    public static getCreatureTypes(
-        pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/creatureTypes',
-            query: {
-                'number': pageInfo?.number,
-                'size': pageInfo?.size
-            },
-        });
-    }
-    /**
+     * @param worldId
      * @param requestBody
      * @returns EntryDTO OK
      * @throws ApiError
      */
     public static saveCreatureType(
+        worldId: number,
         requestBody: EntryDTO,
     ): CancelablePromise<EntryDTO> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/creatureTypes',
+            url: '/creatureTypes/{worldId}',
+            path: {
+                'worldId': worldId,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -136,6 +124,23 @@ export class CreatureTypeControllerService {
             },
             formData: formData,
             mediaType: 'multipart/form-data',
+        });
+    }
+    /**
+     * @param pageInfo
+     * @returns PageDTOEntryDTO OK
+     * @throws ApiError
+     */
+    public static getCreatureTypes(
+        pageInfo: PageInfo,
+    ): CancelablePromise<Page<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/creatureTypes',
+            query: {
+                'number': pageInfo?.number,
+                'size': pageInfo?.size
+            },
         });
     }
     /**

@@ -156,22 +156,6 @@ export class WorldControllerService {
     }
     /**
      * @param id
-     * @returns EntryDTO OK
-     * @throws ApiError
-     */
-    public static getWorldsByAuthor(
-        id: number,
-    ): CancelablePromise<Array<EntryDTO>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/worlds/author/{id}',
-            path: {
-                'id': id,
-            },
-        });
-    }
-    /**
-     * @param id
      * @returns ImageDTO OK
      * @throws ApiError
      */
@@ -181,6 +165,22 @@ export class WorldControllerService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/worlds/{id}/images',
+            path: {
+                'id': id,
+            },
+        });
+    }
+    /**
+     * @param id
+     * @returns EntryDTO OK
+     * @throws ApiError
+     */
+    public static getWorldsByAuthor(
+        id: number,
+    ): CancelablePromise<Array<EntryDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/worlds/author/{id}',
             path: {
                 'id': id,
             },
