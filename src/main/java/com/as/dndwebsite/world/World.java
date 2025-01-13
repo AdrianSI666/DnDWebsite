@@ -31,6 +31,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -52,25 +53,25 @@ public class World {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collection<Image> images;
     @OneToMany(mappedBy = "world")
-    private Set<Culture> cultures;
+    private Set<Culture> cultures = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<CreatureType> creatureTypes;
+    private Set<CreatureType> creatureTypes = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<Species> species;
+    private Set<Species> species = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<SubSpecies> subSpecies;
+    private Set<SubSpecies> subSpecies = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<Plane> planes;
+    private Set<Plane> planes = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<Continent> continents;
+    private Set<Continent> continents = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<Kingdom> kingdoms;
+    private Set<Kingdom> kingdoms = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<County> counties;
+    private Set<County> counties = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<Region> regions;
+    private Set<Region> regions = new HashSet<>();
     @OneToMany(mappedBy = "world")
-    private Set<Place> places;
+    private Set<Place> places = new HashSet<>();
     @ManyToOne
     private AppUser author;
 

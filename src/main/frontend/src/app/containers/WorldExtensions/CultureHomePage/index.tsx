@@ -2,14 +2,13 @@ import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-quer
 import { useState } from "react";
 import { Accordion, Col, Container, Row } from "react-bootstrap";
 import { useOutletContext, useParams } from "react-router-dom";
-import { ApiError, CultureControllerService, WorldCultureControllerService, WorldDTO } from "../../../../services/openapi";
+import { ApiError, WorldCultureControllerService, WorldDTO } from "../../../../services/openapi";
 import useUserState from "../../../../services/storage/UserStorage";
 import { AddNewEntryModal } from "../../../components/modals/addNewEntryModal";
 import { DeleteConfirmationModal } from "../../../components/modals/deleteConfirmModal";
 import { EditEntryModal } from "../../../components/modals/editEntryModal";
 import { CustomPagination } from "../../../components/pagination/pagination";
 import { CultureFunction } from "../../CulturePage/cultureFunction";
-import { UseOneCultureFunction } from "../../CulturePage/OneCulture/useOneCultureFunction";
 import { HeaderLink } from "../../Header/HeaderLink";
 
 
@@ -22,8 +21,7 @@ export function CultureHomePage() {
     const queryClient = useQueryClient()
     const [pageSize, setPageSize] = useState(10);
     const [pageNumber, setPageNumber] = useState(1)
-    const { saveCulture } = CultureFunction({ pageSize, pageNumber })
-
+    const { deleteCulture, editCulture, saveCulture } = CultureFunction({pageNumber: pageNumber, pageSize: pageSize, worldId: world.world?.id!, worldName: name!})
     const { status, data: culturePage, error } = useQuery({
         queryKey: ["culturePageByWorldName", pageNumber, pageSize, name],
         queryFn: async () => WorldCultureControllerService.getCulturesWithRelationToWorld(name!, { number: pageNumber, size: pageSize })
@@ -56,9 +54,6 @@ export function CultureHomePage() {
             queryClient.invalidateQueries({ queryKey: ["culturePage", value, size] })
         }
     }
-
-    const { editCulture } = UseOneCultureFunction({ name: name! })
-    const { deleteCulture } = CultureFunction({pageNumber: pageNumber, pageSize: pageSize})
 
     if (status === "pending") return <div>Loading...</div>;
     if (error) return <div>

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,9 +26,9 @@ import java.util.Set;
 @Table(name = "plane", schema = "public")
 public class Plane extends Entry {
     @OneToMany(mappedBy = "plane")
-    private Set<Continent> continents;
+    private Set<Continent> continents = new HashSet<>();
     @ManyToMany
-    private Set<CreatureType> creatureTypes;
+    private Set<CreatureType> creatureTypes = new HashSet<>();
 
     public Plane(String name, String description, World world) {
         super(name, description, world);

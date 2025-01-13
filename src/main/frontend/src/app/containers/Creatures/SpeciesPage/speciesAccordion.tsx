@@ -5,7 +5,7 @@ import { Accordion } from "react-bootstrap";
 import '../../../styles/masonary.css';
 import "../../../styles/subObjects.css";
 import { EntryFullDTO, SpeciesControllerService, SpeciesDTO } from "../../../../services/openapi";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
 import { getAllRegions } from "../../../globalFunctions/RegionHooks";
@@ -50,7 +50,7 @@ export function SpeciesAccordion(props: Readonly<ISpeciesAccordion>) {
     descriptions: [],
     images: []
   }
-  return (<AccordionHeaderLayout categoryName={"species"} updateEntry={editSpecies}
+  return (<BrowsingListLayout categoryName={"species"} updateEntry={editSpecies}
   deleteEntry={deleteSpecies} deleteMainObjectButtonActionText={"Delete"}
   entryFullDTO={entryFullDTO} fetchFullValue={getFullSpeciesDTO} key={props.species.species?.id} mainEntryLink={"creatures/species"}>
     {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -105,6 +105,6 @@ export function SpeciesAccordion(props: Readonly<ISpeciesAccordion>) {
         subCategoryLinkText={"region"} />
     </Accordion.Body>}
 
-  </AccordionHeaderLayout>
+  </BrowsingListLayout>
   )
 }

@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,10 +29,10 @@ import java.util.Set;
 @Table(name = "creature_type", schema = "public")
 public class CreatureType extends Entry {
     @OneToMany(mappedBy = "creatureType", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    private Set<Species> species;
+    private Set<Species> species = new HashSet<>();
     @ManyToMany(mappedBy = "creatureTypes")
     @ToString.Exclude
-    private Set<Plane> planes;
+    private Set<Plane> planes = new HashSet<>();
 
     public CreatureType(String name, String description, World world) {
         super(name, description, world);

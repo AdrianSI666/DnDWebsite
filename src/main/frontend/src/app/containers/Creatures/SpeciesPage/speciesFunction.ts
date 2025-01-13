@@ -11,14 +11,16 @@ interface IUpdateSpeciesData {
 interface ISpeciesFunction {
     pageNumber: number,
     pageSize: number,
-    resetFullSpeciesDTO?: (name: string) => Promise<void>
+    resetFullSpeciesDTO?: (name: string) => Promise<void>,
+    worldId: number,
+    worldName: string
 }
 
 export function SpeciesFunction(props: ISpeciesFunction) {
     const queryClient = useQueryClient()
 
     const saveSpeciesMutation = useMutation({
-        mutationFn: SpeciesControllerService.saveSpecies,
+        mutationFn: (entryDTO: EntryDTO) => SpeciesControllerService.saveSpecies(props.worldId, entryDTO),
     })
 
     async function saveSpecies(name: string, shortDescription: string): Promise<void> {
@@ -31,7 +33,7 @@ export function SpeciesFunction(props: ISpeciesFunction) {
                 regions: [],
                 descriptions: []
             }
-            queryClient.setQueryData(["speciesPage", props.pageNumber, props.pageSize], (oldData: Page<SpeciesDTO>) => {
+            queryClient.setQueryData(["speciePageByWorldName", props.pageNumber, props.pageSize, props.worldName], (oldData: Page<SpeciesDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(speciesDTO)
                 if(newData.data?.length! > props.pageSize) newData.data?.pop()
@@ -52,7 +54,7 @@ export function SpeciesFunction(props: ISpeciesFunction) {
             shortDescription: shortDescription
         }
         return editSpeciesMutation.mutateAsync({ speciesDTO: entryDTO, id: id }).then(_ => {
-            queryClient.setQueryData(["speciesPage", props.pageNumber, props.pageSize],
+            queryClient.setQueryData(["speciePageByWorldName", props.pageNumber, props.pageSize, props.worldName],
                 (oldData: Page<SpeciesDTO>) => {
                     if(props.resetFullSpeciesDTO)props.resetFullSpeciesDTO(entryDTO.name!)
                     let newData = oldData
@@ -74,7 +76,7 @@ export function SpeciesFunction(props: ISpeciesFunction) {
     async function deleteSpecies(id: number): Promise<void> {
         OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteSpeciesMutation.mutateAsync(id).then(() => {
-            queryClient.invalidateQueries({ queryKey: ["speciesPage", props.pageNumber, props.pageSize] })
+            queryClient.invalidateQueries({ queryKey: ["speciePageByWorldName", props.pageNumber, props.pageSize, props.worldName] })
         })
     }
 

@@ -6,7 +6,7 @@ import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntry
 import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
 import { TypeFunctionArray } from "../typeFunctionArrays";
 import { TypeFunctionSubObjects } from "../typeFunctionSubObjects";
-import { UseOneTypeFunction } from "./useOneTypeFunction";
+import { UseOneTypeFunction } from "../../../WorldExtensions/CreatureHomePage/TypeHomePage/OneTypeHomePage/useOneTypeFunction";
 
 export function OneType() {
     let { name } = useParams<string>();

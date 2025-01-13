@@ -11,14 +11,16 @@ interface IUpdateTypeData {
 interface ITypeFunction {
     pageNumber: number,
     pageSize: number,
-    resetFullEntryDTO?: (name: string) => Promise<void>
+    resetFullEntryDTO?: (name: string) => Promise<void>,
+    worldId: number,
+    worldName: string
 }
 
 export function TypeFunction(props: ITypeFunction) {
     const queryClient = useQueryClient()
 
     const saveTypeMutation = useMutation({
-        mutationFn: CreatureTypeControllerService.saveCreatureType,
+        mutationFn: (entryDTO: EntryDTO) => CreatureTypeControllerService.saveCreatureType(props.worldId, entryDTO),
     })
 
     async function saveType(name: string, shortDescription: string): Promise<void> {
@@ -31,7 +33,7 @@ export function TypeFunction(props: ITypeFunction) {
                 subObjects: [],
                 descriptions: []
             }
-            queryClient.setQueryData(["typePage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
+            queryClient.setQueryData(["typePageByWorldName", props.pageNumber, props.pageSize, props.worldName], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(entryFullDTO)
                 if (newData.data?.length! > props.pageSize) {
@@ -55,7 +57,7 @@ export function TypeFunction(props: ITypeFunction) {
             shortDescription: shortDescription
         }
         return editTypeMutation.mutateAsync({ typeDTO: entryDTO, id: id }).then(_ => {
-            queryClient.setQueryData(["typePage", props.pageNumber, props.pageSize],
+            queryClient.setQueryData(["typePageByWorldName", props.pageNumber, props.pageSize, props.worldName],
                 (oldData: Page<EntryFullDTO>) => {
                     if (props.resetFullEntryDTO) props.resetFullEntryDTO(entryDTO.name!)
                     let newData = oldData
@@ -77,7 +79,7 @@ export function TypeFunction(props: ITypeFunction) {
     async function deleteType(id: number): Promise<void> {
         OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteTypeMutation.mutateAsync(id).then(() => {
-            queryClient.invalidateQueries({ queryKey: ["typePage", props.pageNumber, props.pageSize] })
+            queryClient.invalidateQueries({ queryKey: ["typePageByWorldName", props.pageNumber, props.pageSize, props.worldName] })
         })
     }
 

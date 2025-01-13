@@ -39,13 +39,13 @@ export function WorldNaviagtionTab(props: Readonly<IWorldNaviagtionTab>) {
                         show={isDropdownOpenGeograpy}
                         onToggle={toggleDropdownGeograpy}
                     >
-                        <HeaderLink name="planes" link={"/worlds/home/" + props.worldName + "/planes"} handleSelect={handleSelectGeograpy} />
+                        <HeaderLink name="planes" link={"/worlds/home/" + props.worldName + "/geograpy/planes"} handleSelect={handleSelectGeograpy} />
                         <NavDropdown.Divider />
-                        <HeaderLink name="continents" link={"/worlds/home/" + props.worldName + "/continents"} handleSelect={handleSelectGeograpy} />
+                        <HeaderLink name="continents" link={"/worlds/home/" + props.worldName + "/geograpy/continents"} handleSelect={handleSelectGeograpy} />
                         <NavDropdown.Divider />
-                        <HeaderLink name="regions" link={"/worlds/home/" + props.worldName + "/regions"} handleSelect={handleSelectGeograpy} />
+                        <HeaderLink name="regions" link={"/worlds/home/" + props.worldName + "/geograpy/regions"} handleSelect={handleSelectGeograpy} />
                         <NavDropdown.Divider />
-                        <HeaderLink name="places" link={"/worlds/home/" + props.worldName + "/places"} handleSelect={handleSelectGeograpy} />
+                        <HeaderLink name="places" link={"/worlds/home/" + props.worldName + "/geograpy/places"} handleSelect={handleSelectGeograpy} />
                     </NavDropdown>
                 </li>
                 <li className="nav-item">
@@ -53,9 +53,9 @@ export function WorldNaviagtionTab(props: Readonly<IWorldNaviagtionTab>) {
                         show={isDropdownOpenPolitics}
                         onToggle={toggleDropdownPolitics}
                     >
-                        <HeaderLink name="kingdoms" link={"/worlds/home/" + props.worldName + "/kingdoms"} handleSelect={handleSelectPolitics} />
+                        <HeaderLink name="kingdoms" link={"/worlds/home/" + props.worldName + "/politics/kingdoms"} handleSelect={handleSelectPolitics} />
                         <NavDropdown.Divider />
-                        <HeaderLink name="counties" link={"/worlds/home/" + props.worldName + "/counties"} handleSelect={handleSelectPolitics} />
+                        <HeaderLink name="counties" link={"/worlds/home/" + props.worldName + "/politics/counties"} handleSelect={handleSelectPolitics} />
                     </NavDropdown>
                 </li>
                 <li className="nav-item">
@@ -66,11 +66,11 @@ export function WorldNaviagtionTab(props: Readonly<IWorldNaviagtionTab>) {
                         show={isDropdownOpenRace}
                         onToggle={toggleDropdownRace}
                     >
-                        <HeaderLink name="types" link={"/worlds/home/" + props.worldName + "/types"} handleSelect={handleSelectRaces} />
+                        <HeaderLink name="types" link={"/worlds/home/" + props.worldName + "/creatures/types"} handleSelect={handleSelectRaces} />
                         <NavDropdown.Divider />
-                        <HeaderLink name="species" link={"/worlds/home/" + props.worldName + "/species"} handleSelect={handleSelectRaces} />
+                        <HeaderLink name="species" link={"/worlds/home/" + props.worldName + "/creatures/species"} handleSelect={handleSelectRaces} />
                         <NavDropdown.Divider />
-                        <HeaderLink name="sub species" link={"/worlds/home/" + props.worldName + "/subspecies"} handleSelect={handleSelectRaces} />
+                        <HeaderLink name="sub species" link={"/worlds/home/" + props.worldName + "/creatures/subspecies"} handleSelect={handleSelectRaces} />
                     </NavDropdown>
                 </li>
             </ul>

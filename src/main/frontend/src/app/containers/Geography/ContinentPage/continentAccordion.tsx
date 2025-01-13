@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Accordion } from "react-bootstrap";
 import { ContinentControllerService, EntryFullDTO } from "../../../../services/openapi";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
@@ -43,7 +43,7 @@ export function ContinentAccordion(props: Readonly<IContinentAccordionBody>) {
 
 
     if (props.status === "pending") return <div>Loading...</div>;
-    return (<AccordionHeaderLayout categoryName={"continent"} updateEntry={editContinent}
+    return (<BrowsingListLayout categoryName={"continent"} updateEntry={editContinent}
         deleteEntry={deleteContinent} deleteMainObjectButtonActionText={"Delete"}
         entryFullDTO={props.continent} fetchFullValue={getFullContinentDTO} key={props.continent.object?.id} mainEntryLink={"geography/continents"}>
         {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -94,6 +94,6 @@ export function ContinentAccordion(props: Readonly<IContinentAccordionBody>) {
                 subCategoryLinkText={"politics/kingdoms"} />
         </Accordion.Body>
         }
-    </AccordionHeaderLayout>
+    </BrowsingListLayout>
     )
 }

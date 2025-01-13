@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Accordion } from "react-bootstrap";
 import { EntryFullDTO, CountyControllerService } from "../../../../services/openapi";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
@@ -41,7 +41,7 @@ export function CountyAccordion(props: Readonly<ICountyAccordionBody>) {
 
 
     if (props.status === "pending") return <div>Loading...</div>;
-    return (<AccordionHeaderLayout categoryName={"county"} updateEntry={editCounty}
+    return (<BrowsingListLayout categoryName={"county"} updateEntry={editCounty}
         deleteEntry={deleteCounty} deleteMainObjectButtonActionText={"Delete"}
         entryFullDTO={props.county} fetchFullValue={getFullCountyDTO} key={props.county.object?.id} mainEntryLink={"politics/county"}>
         {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -82,6 +82,6 @@ export function CountyAccordion(props: Readonly<ICountyAccordionBody>) {
                     subCategoryLinkText={"region"} />
             </Accordion.Body>
         }
-    </AccordionHeaderLayout>
+    </BrowsingListLayout>
     )
 }

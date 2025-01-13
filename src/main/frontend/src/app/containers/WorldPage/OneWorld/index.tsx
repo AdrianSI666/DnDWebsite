@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { WorldFunctionArray } from "../worldFunctionArrays";
-import { UseOneWorldFunction } from "./useOneWorldFunction";
+import { UseOneWorldFunction } from "../../WorldExtensions/OneWorldHomePage/useOneWorldFunction";
 import { WorldControllerService } from "../../../../services/openapi";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../components/accordions/oneEntryHeaderLayout";

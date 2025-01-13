@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, OpenAPI, SubSpeciesControllerService, SubSpeciesDTO } from "../../../../../services/openapi"
-import useJWTManager from "../../../../../services/jwt/JWTMenager"
+import { EntryDTO, OpenAPI, SubSpeciesControllerService, SubSpeciesDTO } from "../../../../../../services/openapi"
+import useJWTManager from "../../../../../../services/jwt/JWTMenager"
 
 interface IUpdateSubSpeciesData {
     id: number,
@@ -9,7 +9,8 @@ interface IUpdateSubSpeciesData {
 }
 
 interface IUseOneSubSpeciesFunction {
-    name: string
+    name: string,
+    worldName: string
 }
 
 export function UseOneSubSpeciesFunction(props: IUseOneSubSpeciesFunction) {
@@ -21,8 +22,8 @@ export function UseOneSubSpeciesFunction(props: IUseOneSubSpeciesFunction) {
         OpenAPI.TOKEN = useJWTManager.getToken();
         return SubSpeciesControllerService.deleteSubSpecies(id)
             .then((_) => {
-                navigate("/creatures/subSpecies")
-                queryClient.removeQueries({ queryKey: ["subSpecies", props.name] })
+                navigate("/worlds/home/" + props.worldName + "/creatures/subspecies")
+                queryClient.removeQueries({ queryKey: ["subspecies", props.name] })
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -42,9 +43,9 @@ export function UseOneSubSpeciesFunction(props: IUseOneSubSpeciesFunction) {
             shortDescription: shortDescription
         }
         return editSubSpeciesMutation.mutateAsync({ subSpeciesDTO: entryDTO, id: id }).then(_ => {
-            if (location.pathname !== "/creatures/subspecies/" + name) {
-                navigate('/creatures/subspecies/' + name);
-                queryClient.removeQueries({ queryKey: ["subSpecies", location.pathname] })
+            if (location.pathname !== "/worlds/home/" + props.worldName + "/creatures/subspecies/" + name) {
+                navigate("/worlds/home/" + props.worldName + "/creatures/subspecies")
+                queryClient.removeQueries({ queryKey: ["subspecies", props.name] })
             } else {
                 queryClient.setQueryData(["subSpecies", props.name], (oldData: SubSpeciesDTO) => {
                     let newData = oldData

@@ -15,6 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -27,7 +28,7 @@ import java.util.Set;
 public class County extends Entry {
     @ManyToMany(mappedBy = "counties")
     @ToStringExclude
-    private Set<Region> regions;
+    private Set<Region> regions = new HashSet<>();
     @ManyToOne
     @ToString.Exclude
     private Kingdom kingdom;

@@ -8,7 +8,7 @@ import { PlaneFunction } from "./planeFunction";
 import { PlaneFunctionSubObjects } from "./planeFunctionSubObjects";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 import { PlaneFunctionArray } from "./planeFunctionArrays";
 // import { PlaneFunctionDomObjects } from "./planeFunctionDomObjects";
 
@@ -41,7 +41,7 @@ export function PlaneAccordion(props: Readonly<IPlaneAccordion>) {
 
 
     if (props.status === "pending") return <div>Loading...</div>;
-    return (<AccordionHeaderLayout categoryName={"plane"} updateEntry={editPlane}
+    return (<BrowsingListLayout categoryName={"plane"} updateEntry={editPlane}
     deleteEntry={deletePlane} deleteMainObjectButtonActionText={"Delete"}
     entryFullDTO={props.plane} fetchFullValue={getFullPlaneDTO} key={props.plane.object?.id} mainEntryLink={"geography/planes"}>
         {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -93,6 +93,6 @@ export function PlaneAccordion(props: Readonly<IPlaneAccordion>) {
                     subCategoryLinkText={"creature type"} />
             </Accordion.Body>
         }
-    </AccordionHeaderLayout>
+    </BrowsingListLayout>
     )
 }

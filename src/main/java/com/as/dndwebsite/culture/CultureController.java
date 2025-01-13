@@ -3,6 +3,7 @@ package com.as.dndwebsite.culture;
 import com.as.dndwebsite.description.IDescriptionEntryService;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
@@ -10,7 +11,6 @@ import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.mappers.IPageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +38,8 @@ public class CultureController {
     private final IDescriptionEntryService cultureDescriptionService;
 
     @GetMapping
-    public ResponseEntity<PageDTO<EntryDTO>> getCultures(PageInfo pageInfo) {
-        Page<EntryDTO> dataToSend = cultureService.getCultures(pageInfo);
-        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(dataToSend));
+    public ResponseEntity<PageDTO<EntryDTOnWorldData>> getCultures(PageInfo pageInfo) {
+        return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(cultureService.getCultures(pageInfo)));
     }
 
     @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to

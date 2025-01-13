@@ -2,11 +2,13 @@ package com.as.dndwebsite.culture;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -37,17 +39,18 @@ public class CultureService implements ICultureService {
     private final DescriptionMapper descriptionMapper;
     private final ImageMapper imageMapper;
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
     public List<EntryDTO> getAllCultures() {
         return cultureRepository.findAll().stream().map(mapper::map).toList();
     }
 
     @Override
-    public Page<EntryDTO> getCultures(PageInfo page) {
+    public Page<EntryDTOnWorldData> getCultures(PageInfo page) {
         log.info("Getting Cultures");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<Culture> culturePage = cultureRepository.findAll(paging);
-        return culturePage.map(mapper::map);
+        return culturePage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override

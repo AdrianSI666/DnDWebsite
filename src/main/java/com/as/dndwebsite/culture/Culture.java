@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,7 +26,7 @@ import java.util.Set;
 public class Culture extends Entry {
     @ManyToMany(mappedBy = "cultures")
     @ToString.Exclude
-    private Set<Region> regions;
+    private Set<Region> regions = new HashSet<>();
 
     public Culture(String name, String shortDescription, World world) {
         super(name, shortDescription, world);

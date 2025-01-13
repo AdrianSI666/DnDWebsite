@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { EntryDTO, OpenAPI, SpeciesControllerService, SpeciesDTO } from "../../../../../services/openapi"
-import useJWTManager from "../../../../../services/jwt/JWTMenager"
+import { EntryDTO, OpenAPI, SpeciesControllerService, SpeciesDTO } from "../../../../../../services/openapi"
+import useJWTManager from "../../../../../../services/jwt/JWTMenager"
 
 interface IUpdateSpeciesData {
     id: number,
@@ -9,7 +9,8 @@ interface IUpdateSpeciesData {
 }
 
 interface IUseOneSpeciesFunction {
-    name: string
+    name: string,
+    worldName: string
 }
 
 export function UseOneSpeciesFunction(props: IUseOneSpeciesFunction) {
@@ -21,7 +22,7 @@ export function UseOneSpeciesFunction(props: IUseOneSpeciesFunction) {
         OpenAPI.TOKEN = useJWTManager.getToken();
         return SpeciesControllerService.deleteSpecies(id)
             .then((_) => {
-                navigate("/creatures/species")
+                navigate("/worlds/home/" + props.worldName + "/creatures/species")
                 queryClient.removeQueries({ queryKey: ["species", props.name] })
             })
             .catch((err) => {
@@ -42,9 +43,9 @@ export function UseOneSpeciesFunction(props: IUseOneSpeciesFunction) {
             shortDescription: shortDescription
         }
         return editSpeciesMutation.mutateAsync({ speciesDTO: entryDTO, id: id }).then(_ => {
-            if (location.pathname !== "/creatures/species/" + name) {
-                navigate('/creatures/species/' + name);
-                queryClient.removeQueries({ queryKey: ["species", location.pathname] })
+            if (location.pathname !== "/worlds/home/" + props.worldName + "/creatures/species/" + name) {
+                navigate("/worlds/home/" + name + "/creatures/species")
+                queryClient.removeQueries({ queryKey: ["species", props.name] })
             } else {
                 queryClient.setQueryData(["species", props.name], (oldData: SpeciesDTO) => {
                     let newData = oldData

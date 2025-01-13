@@ -8,7 +8,7 @@ import { SubCategoryBody } from "../../../../components/accordions/subCategoryBo
 import { getAllRegions } from "../../../../globalFunctions/RegionHooks";
 import { CultureFunctionArray } from "../../../CulturePage/cultureFunctionArrays";
 import { CultureFunctionSubObjects } from "../../../CulturePage/cultureFunctionSubObjects";
-import { UseOneCultureFunction } from "../../../CulturePage/OneCulture/useOneCultureFunction";
+import { UseOneCultureFunction } from "./useOneCultureFunction";
 
 
 export function OneCultureHomePage() {
@@ -20,7 +20,7 @@ export function OneCultureHomePage() {
         queryKey: ["culture", cultureName],
         queryFn: async () => CultureControllerService.getCultureByName(cultureName!)
     })
-    const { removeCulture, editCulture } = UseOneCultureFunction({ name: cultureName! })
+    const { removeCulture, editCulture } = UseOneCultureFunction({ name: cultureName!, worldName: world.world?.name! })
     const { saveImageToCulture, deleteImageFromCulture,
         addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture } = CultureFunctionArray({ name: cultureName! })
     const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = CultureFunctionSubObjects({ name: cultureName! })
@@ -50,10 +50,10 @@ export function OneCultureHomePage() {
             deleteImageButtonActionText={"Delete image"}
             addNewDescriptionToEntry={addNewDesctiptionToCulture}
             updateDescription={updateCultureDescription}
-            deleteDescriptionFromEntry={deleteDescriptionFromCulture} isAuthor={isAuthor}/>
+            deleteDescriptionFromEntry={deleteDescriptionFromCulture} isAuthor={isAuthor} />
         <SubCategoryBody mainEntryId={culture.object?.id!}
             subObjects={culture.subObjects}
-            subCategoryTitle={"Region"} subCategoryLink={"regions"}
+            subCategoryTitle={"Region"} subCategoryLink={"geograpy/regions"}
             fillTheListWithAllSubObjects={getAllRegions}
             addNewSubEntryToRelation={saveNewRegionToCulture}
             addExistingObjectToRelation={saveExistingRegionToCulture}
@@ -61,6 +61,6 @@ export function OneCultureHomePage() {
             addButtonActionText={"Add new region that use this culture"}
             addExistingButtonActionText={"Link existing region from list to this culture"}
             deleteButtonActionText={`Unlink this region from ${culture.object?.name}`}
-            subCategoryLinkText={"region"} isAuthor={isAuthor}/>
+            subCategoryLinkText={"region"} isAuthor={isAuthor} worldName={world.world?.name!} />
     </OneEntryHeaderLayout>
 }

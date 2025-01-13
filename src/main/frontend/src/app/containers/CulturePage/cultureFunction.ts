@@ -11,14 +11,16 @@ interface IUpdateCultureData {
 interface ICultureFunction {
     pageNumber: number,
     pageSize: number,
-    resetFullEntryDTO?: (name: string) => Promise<void>
+    resetFullEntryDTO?: (name: string) => Promise<void>,
+    worldId: number,
+    worldName: string
 }
 
 export function CultureFunction(props: ICultureFunction) {
     const queryClient = useQueryClient()
 
     const saveCultureMutation = useMutation({
-        mutationFn: CultureControllerService.saveCulture,
+        mutationFn: (entryDTO: EntryDTO) => CultureControllerService.saveCulture(props.worldId, entryDTO),
     })
 
     async function saveCulture(name: string, shortDescription: string): Promise<void> {
@@ -31,7 +33,7 @@ export function CultureFunction(props: ICultureFunction) {
                 subObjects: [],
                 descriptions: []
             }
-            queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize], (oldData: Page<EntryFullDTO>) => {
+            queryClient.setQueryData(["culturePageByWorldName", props.pageNumber, props.pageSize, props.worldName], (oldData: Page<EntryFullDTO>) => {
                 const newData = oldData;
                 newData.data?.unshift(entryFullDTO)
                 if (newData.data?.length! > props.pageSize) {
@@ -55,7 +57,7 @@ export function CultureFunction(props: ICultureFunction) {
             shortDescription: shortDescription
         }
         return editCultureMutation.mutateAsync({ cultureDTO: entryDTO, id: id }).then(_ => {
-            queryClient.setQueryData(["culturePage", props.pageNumber, props.pageSize],
+            queryClient.setQueryData(["culturePageByWorldName", props.pageNumber, props.pageSize, props.worldName],
                 (oldData: Page<EntryFullDTO>) => {
                     if (props.resetFullEntryDTO) props.resetFullEntryDTO(entryDTO.name!)
                     let newData = oldData
@@ -77,7 +79,7 @@ export function CultureFunction(props: ICultureFunction) {
     async function deleteCulture(id: number): Promise<void> {
         OpenAPI.TOKEN = useJWTManager.getToken();
         return deleteCultureMutation.mutateAsync(id).then(() => {
-            queryClient.invalidateQueries({ queryKey: ["culturePage", props.pageNumber, props.pageSize] })
+            queryClient.invalidateQueries({ queryKey: ["culturePageByWorldName", props.pageNumber, props.pageSize, props.worldName] })
         })
     }
 

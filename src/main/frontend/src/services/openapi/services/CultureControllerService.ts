@@ -11,6 +11,7 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 import { Page } from '../models/Page';
+import { EntryDTOnWorldData } from '../models/EntryDTOnWorldData';
 export class CultureControllerService {
     /**
      * @param id
@@ -133,7 +134,7 @@ export class CultureControllerService {
      */
     public static getCultures(
         pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+    ): CancelablePromise<Page<EntryDTOnWorldData>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/cultures',

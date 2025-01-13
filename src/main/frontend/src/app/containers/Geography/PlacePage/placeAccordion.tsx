@@ -9,7 +9,7 @@ import "../../../styles/subObjects.css";
 import { PlaceFunction } from "./function/placeFunction";
 import { PlaceFunctionArray } from "./function/placeFunctionArrays";
 import { PlaceFunctionDomObjects } from "./function/placeFunctionDomObjects";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 
 
 interface IPlaceAccordion {
@@ -37,7 +37,7 @@ export function PlaceAccordion(props: Readonly<IPlaceAccordion>) {
     const { setNewRegionToPlace, setExistingRegionToPlace, removeRegionFromPlaceFunction, getAllRegions } = PlaceFunctionDomObjects({ name: props.place!.object!.name! });
 
     if (props.status === "pending") return <div>Loading...</div>;
-    return (<AccordionHeaderLayout categoryName={"place"} updateEntry={editPlace}
+    return (<BrowsingListLayout categoryName={"place"} updateEntry={editPlace}
         deleteEntry={deletePlace} deleteMainObjectButtonActionText={"Delete"}
         entryFullDTO={props.place} fetchFullValue={getFullPlaceDTO} key={props.place.object?.id} mainEntryLink={"geography/places"}>
         {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -67,6 +67,6 @@ export function PlaceAccordion(props: Readonly<IPlaceAccordion>) {
                     deleteDescriptionFromEntry={deleteDescriptionFromPlace} />
             </Accordion.Body>
         }
-    </AccordionHeaderLayout>
+    </BrowsingListLayout>
     )
 }

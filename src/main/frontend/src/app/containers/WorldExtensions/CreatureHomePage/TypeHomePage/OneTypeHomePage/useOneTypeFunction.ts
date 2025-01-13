@@ -1,8 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import useJWTManager from "../../../../../services/jwt/JWTMenager"
-import { EntryDTO, OpenAPI, CreatureTypeDTO, CreatureTypeControllerService } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../../services/jwt/JWTMenager"
+import { EntryDTO, OpenAPI, CreatureTypeDTO, CreatureTypeControllerService } from "../../../../../../services/openapi"
 
 interface IUpdateTypeData {
     id: number,
@@ -10,7 +10,8 @@ interface IUpdateTypeData {
 }
 
 interface IUseOneTypeFunction {
-    name: string
+    name: string,
+    worldName: string,
 }
 
 export function UseOneTypeFunction(props: IUseOneTypeFunction) {
@@ -22,7 +23,7 @@ export function UseOneTypeFunction(props: IUseOneTypeFunction) {
         OpenAPI.TOKEN = useJWTManager.getToken();
         return CreatureTypeControllerService.deleteCreatureType(id)
             .then((_) => {
-                navigate("/creatures/types")
+                navigate("/worlds/home/" + props.worldName + "/creatures/types")
                 queryClient.removeQueries({ queryKey: ["creatureType", props.name] })
             })
             .catch((err) => {
@@ -43,9 +44,9 @@ export function UseOneTypeFunction(props: IUseOneTypeFunction) {
             shortDescription: shortDescription
         }
         return editTypeMutation.mutateAsync({ typeDTO: entryDTO, id: id }).then(_ => {
-            if (location.pathname !== "/creatures/types/" + name) {
-                navigate('/creatures/types/' + name);
-                queryClient.removeQueries({ queryKey: ["creatureType", location.pathname] })
+            if (location.pathname !== "/worlds/home/" + props.worldName + "/creatures/types/" + name) {
+                navigate("/worlds/home/" + props.worldName + '/creatures/types/' + name);
+                queryClient.removeQueries({ queryKey: ["creatureType", props.name] })
             } else {
                 queryClient.setQueryData(["type", props.name], (oldData: CreatureTypeDTO) => {
                     let newData = oldData

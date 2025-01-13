@@ -1,5 +1,4 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface IHeaderProps {
     name: string,
@@ -8,9 +7,9 @@ interface IHeaderProps {
 }
 
 export function HeaderLink(props: Readonly<IHeaderProps>) {
-    return <Link className="nav-link" to={props.link} style={{ textTransform: 'capitalize' }} onClick={() => {
+    return <NavLink className="nav-link" to={props.link} style={{ textTransform: 'capitalize' }} onClick={() => {
         if(props.handleSelect) props.handleSelect()
     }}>
         {props.name}
-    </Link>
+    </NavLink>
 }

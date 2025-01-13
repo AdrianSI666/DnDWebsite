@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -32,7 +33,7 @@ public class SubSpecies extends Entry {
     private Species species;
     @ManyToMany(mappedBy = "subSpecies")
     @ToString.Exclude
-    private Set<Region> regions;
+    private Set<Region> regions = new HashSet<>();
 
     public SubSpecies(String name, String description, World world) {
         super(name, description, world);

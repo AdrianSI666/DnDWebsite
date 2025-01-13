@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -31,11 +32,12 @@ import java.util.Set;
 @Table(name = "species", schema = "public")
 public class Species extends Entry {
     @OneToMany(mappedBy = "species", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    private Set<SubSpecies> subSpecies;
+    private Set<SubSpecies> subSpecies = new HashSet<>();
     @ManyToMany(mappedBy = "species")
     @ToString.Exclude
-    private Set<Region> regions;
+    private Set<Region> regions = new HashSet<>();
     @ManyToOne
+    @ToString.Exclude
     private CreatureType creatureType;
 
     public Species(String name, String description, World world) {

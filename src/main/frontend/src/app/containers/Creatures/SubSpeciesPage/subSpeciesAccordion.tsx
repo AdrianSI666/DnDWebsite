@@ -6,7 +6,7 @@ import { SubCategoryBody } from "../../../components/accordions/subCategoryBody"
 import { getAllRegions } from "../../../globalFunctions/RegionHooks";
 import '../../../styles/masonary.css';
 import "../../../styles/subObjects.css";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SubSpeciesFunction } from "./subSpeciesFunction";
@@ -48,7 +48,7 @@ export function SubSpeciesAccordion(props: Readonly<ISubSpeciesAccordionBody>) {
         descriptions: [],
         images: []
     }
-    return (<AccordionHeaderLayout categoryName={"Subspecies"} updateEntry={editSubSpecies}
+    return (<BrowsingListLayout categoryName={"Subspecies"} updateEntry={editSubSpecies}
     deleteEntry={deleteSubSpecies} deleteMainObjectButtonActionText={"Delete"}
     entryFullDTO={entryFullDTO} fetchFullValue={getFullSubSpeciesDTO} key={props.subSpecies.subSpecies?.id} mainEntryLink={"creatures/subspecies"}>
         {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -90,6 +90,6 @@ export function SubSpeciesAccordion(props: Readonly<ISubSpeciesAccordionBody>) {
                 addExistingButtonActionText={"Add region from the list in which this subspecies is present"}
                 subCategoryLinkText={"region"} />
         </Accordion.Body>}
-    </AccordionHeaderLayout>
+    </BrowsingListLayout>
     )
 }

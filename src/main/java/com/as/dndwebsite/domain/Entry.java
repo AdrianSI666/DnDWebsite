@@ -23,7 +23,6 @@ import java.util.Collection;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
@@ -47,5 +46,16 @@ public abstract class Entry {
         this.name = name;
         this.shortDescription = shortDescription;
         this.world = world;
+    }
+
+    @Override
+    public String toString() {
+        return "Entry{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", descriptions=" + descriptions +
+                ", images=" + images +
+                '}';
     }
 }

@@ -1,17 +1,16 @@
-import { EntryDTO } from "../../../services/openapi";
-import { DeleteConfirmationModal } from "../modals/deleteConfirmModal";
-import { AddNewEntryModal } from "../modals/addNewEntryModal";
 import { List, ListItem, ListItemText } from "@mui/material";
-import { Link } from "react-router-dom";
+import { EntryDTO } from "../../../services/openapi";
 import { AddFromListModal } from "../modals/addFromListModal";
+import { AddNewEntryModal } from "../modals/addNewEntryModal";
+import { DeleteConfirmationModal } from "../modals/deleteConfirmModal";
 import { addExistingObjectToRelation } from "../types";
 
 interface ISubCategoryBody {
     mainEntryId: number,
+    worldName: string;
     addButtonActionText: string;
     addExistingButtonActionText: string;
     deleteButtonActionText: string;
-
     subObjects?: EntryDTO[]
     subCategoryTitle: string;
     subCategoryLinkText: string;
@@ -41,20 +40,17 @@ export function SubCategoryBody(props: Readonly<ISubCategoryBody>) {
                                 disableGutters
                                 secondaryAction={
                                     props.isAuthor ?
-                                    <DeleteConfirmationModal deleteButtonActionText={props.deleteButtonActionText} deleteObjectsInRelation={props.deleteSubObject} title={subObject.name!} id={props.mainEntryId} secondId={subObject.id} />
-                                    : null
+                                        <DeleteConfirmationModal deleteButtonActionText={props.deleteButtonActionText} deleteObjectsInRelation={props.deleteSubObject} title={subObject.name!} id={props.mainEntryId} secondId={subObject.id} />
+                                        : null
                                 }
                             >
                                 <ListItemText
                                     primary={
                                         <>
-                                            <div>{subObject.name}</div>
+                                            <a href={`/worlds/home/${props.worldName}/${props.subCategoryLink}/${subObject.name}`}>{subObject.name}</a>
                                             <div>{subObject.shortDescription}</div>
                                         </>
-                                    }
-                                    secondary={
-                                        <Link className="btn btn-outline-warning" to={`/${props.subCategoryLink}/${subObject.name}`} state={props.mainEntryId}>Go to this {props.subCategoryLinkText}</Link>
-                                    } />
+                                    }/>
                             </ListItem>
                         </div>)
                 })}

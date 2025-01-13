@@ -10,7 +10,7 @@ import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntry
 import { SubSpeciesFunctionArray } from "../subSpeciesFunctionArrays";
 import { SubSpeciesFunctionDomObjects } from "../subSpeciesFunctionDomObjects";
 import { SubSpeciesFunctionSubObjects } from "../subSpeciesFunctionSubObjects";
-import { UseOneSubSpeciesFunction } from "./useOneSubSpeciesFunction";
+import { UseOneSubSpeciesFunction } from "../../../WorldExtensions/CreatureHomePage/SubSpeciesHomePage/OneSubSpeciesHomePage/useOneSubSpeciesFunction";
 
 export function OneSubSpecies() {
     let { name } = useParams();

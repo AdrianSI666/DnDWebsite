@@ -45,3 +45,4 @@ build/
 /project.csr
 /project_key.pem
 /database/.env
+/src/main/frontend/notatki/

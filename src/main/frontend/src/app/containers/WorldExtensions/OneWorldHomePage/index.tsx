@@ -6,7 +6,7 @@ import useUserState from "../../../../services/storage/UserStorage";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { DeleteConfirmationModal } from "../../../components/modals/deleteConfirmModal";
 import { EditEntryModal } from "../../../components/modals/editEntryModal";
-import { UseOneWorldFunction } from "../../WorldPage/OneWorld/useOneWorldFunction";
+import { UseOneWorldFunction } from "./useOneWorldFunction";
 import { WorldFunctionArray } from "../../WorldPage/worldFunctionArrays";
 
 export function OneWorldHomePage() {

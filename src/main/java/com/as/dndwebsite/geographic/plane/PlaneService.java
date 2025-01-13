@@ -58,10 +58,8 @@ public class PlaneService implements IPlaneService {
         log.info("Getting plane with name {}", name);
         Plane plane = planeRepository.findByName(name).orElseThrow(
                 () -> new NotFoundException(PLANE_NOT_FOUND_MSG.formatted(name)));
-        Optional<EntryDTO> world = Optional.of(new EntryDTO(0L, "null", "null"));
-        if(plane.getWorld() != null) world = Optional.of(worldMapper.map(plane.getWorld()));
         return new PlaneFullDTO(mapper.map(plane),
-                world.get(),
+                worldMapper.map(plane.getWorld()),
                 plane.getImages().stream().map(imageMapper::map).toList(),
                 plane.getDescriptions().stream().map(descriptionMapper::map).toList(),
                 plane.getContinents().stream().map(mapper::map).toList(),

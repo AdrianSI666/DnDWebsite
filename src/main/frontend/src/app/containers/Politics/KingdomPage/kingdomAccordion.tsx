@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Accordion } from "react-bootstrap";
 import { EntryFullDTO, KingdomControllerService } from "../../../../services/openapi";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
 import '../../../styles/masonary.css';
@@ -39,7 +39,7 @@ export function KingdomAccordion(props: Readonly<IKingdomAccordionBody>) {
 
 
     if (props.status === "pending") return <div>Loading...</div>;
-    return (<AccordionHeaderLayout categoryName={"kingdom"} updateEntry={editKingdom}
+    return (<BrowsingListLayout categoryName={"kingdom"} updateEntry={editKingdom}
         deleteEntry={deleteKingdom} deleteMainObjectButtonActionText={"Delete"}
         entryFullDTO={props.kingdom} fetchFullValue={getFullKingdomDTO} key={props.kingdom.object?.id} mainEntryLink={"politics/kingdom"}>
         {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -80,6 +80,6 @@ export function KingdomAccordion(props: Readonly<IKingdomAccordionBody>) {
                     subCategoryLinkText={"continent"} />
             </Accordion.Body>
         }
-    </AccordionHeaderLayout>
+    </BrowsingListLayout>
     )
 }

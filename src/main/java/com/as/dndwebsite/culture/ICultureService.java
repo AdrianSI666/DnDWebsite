@@ -1,6 +1,7 @@
 package com.as.dndwebsite.culture;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface ICultureService {
     List<EntryDTO> getAllCultures();
 
-    Page<EntryDTO> getCultures(PageInfo page);
+    Page<EntryDTOnWorldData> getCultures(PageInfo page);
 
     EntryFullDTO getCulture(String name);
 

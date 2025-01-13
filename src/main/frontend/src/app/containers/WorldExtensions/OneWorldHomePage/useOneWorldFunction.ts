@@ -22,8 +22,7 @@ export function UseOneWorldFunction(props: IUseOneWorldFunction) {
         return WorldControllerService.deleteWorld(id)
             .then((_) => {
                 queryClient.removeQueries({ queryKey: ["world", props.name] })
-                queryClient.invalidateQueries({ queryKey: ["worldPage", 1, 10] })
-                navigate("/worlds")
+                navigate("/user/home")
             })
             .catch((err) => {
                 console.log("My Error: ", err);
@@ -43,9 +42,9 @@ export function UseOneWorldFunction(props: IUseOneWorldFunction) {
             shortDescription: shortDescription
         }
         return editWorldMutation.mutateAsync({ entryFullDTO: entryDTO, id: id }).then(_ => {
-            if (location.pathname !== "/worlds/" + name) {
-                navigate('/worlds/' + name);
-                queryClient.removeQueries({ queryKey: ["world", location.pathname] })
+            if (location.pathname !== "/worlds/home/" + name) {
+                navigate('/worlds/home' + name);
+                queryClient.removeQueries({ queryKey: ["world", props.name] })
             } else {
                 queryClient.setQueryData(["world", props.name], (oldData: WorldDTO) => {
                     const newData: WorldDTO = oldData

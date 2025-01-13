@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Accordion } from "react-bootstrap";
 import { RegionControllerService, RegionDTO } from "../../../../services/openapi";
-import { AccordionHeaderLayout } from "../../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../../components/accordions/browsingListLayout";
 import { DomCategoryBody } from "../../../components/accordions/domCategoryBody";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { SubCategoryBody } from "../../../components/accordions/subCategoryBody";
@@ -56,7 +56,7 @@ export function RegionAccordion(props: Readonly<IRegionAccordion>) {
 
     if (props.status === "pending") return <div>Loading...</div>;
     return (
-        <AccordionHeaderLayout categoryName={"region"} updateEntry={editRegion}
+        <BrowsingListLayout categoryName={"region"} updateEntry={editRegion}
             deleteEntry={deleteRegion} deleteMainObjectButtonActionText={"Delete"}
             entryFullDTO={{
                 object: props.region.region,
@@ -149,6 +149,6 @@ export function RegionAccordion(props: Readonly<IRegionAccordion>) {
                         subCategoryLinkText={"politics/counties"} />
                 </Accordion.Body>
             }
-        </AccordionHeaderLayout>
+        </BrowsingListLayout>
     )
 }

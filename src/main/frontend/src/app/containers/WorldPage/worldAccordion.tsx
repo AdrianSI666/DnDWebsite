@@ -6,7 +6,7 @@ import "../../styles/subObjects.css";
 import { WorldFunction } from "../UserHomePage/worldFunction";
 import { WorldFunctionArray } from "./worldFunctionArrays";
 import { EntryFullDTO, WorldControllerService } from "../../../services/openapi";
-import { AccordionHeaderLayout } from "../../components/accordions/accordionHeaderLayout";
+import { BrowsingListLayout } from "../../components/accordions/browsingListLayout";
 import { FullEntryAccordionBody } from "../../components/accordions/fullEntryAccordionBody";
 
 interface IWorldAccordion {
@@ -31,7 +31,7 @@ export function WorldAccordion(props: Readonly<IWorldAccordion>) {
   }
 
   if (props.status === "pending") return <div>Loading...</div>;
-  return (<AccordionHeaderLayout categoryName={"world"} updateEntry={editWorld}
+  return (<BrowsingListLayout categoryName={"world"} updateEntry={editWorld}
   deleteEntry={deleteWorld} deleteMainObjectButtonActionText={"Delete"}
   entryFullDTO={props.world} fetchFullValue={getFullWorldDTO} key={props.world.object?.id} mainEntryLink={"worlds"}>
     {status === "pending" && <Accordion.Body>Loading...</Accordion.Body>}
@@ -49,6 +49,6 @@ export function WorldAccordion(props: Readonly<IWorldAccordion>) {
         deleteDescriptionFromEntry={deleteDescriptionFromWorld} />
     </Accordion.Body>
     }
-  </AccordionHeaderLayout>
+  </BrowsingListLayout>
   )
 }

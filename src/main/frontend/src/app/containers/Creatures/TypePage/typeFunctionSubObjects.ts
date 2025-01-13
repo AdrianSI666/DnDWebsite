@@ -95,7 +95,7 @@ export function TypeFunctionSubObjects(props: ITypesubObjectsFunction) {
       shortDescription: shortDescription
     }
     return saveNewPlaneToCreatureTypeMutation.mutateAsync({ creaturetypeId: creatureTypeId, subObjectDTO: entryDTO }).then(res => {
-      queryClient.setQueryData(["creaturetype", props.name], (oldData: CreatureTypeDTO) => {
+      queryClient.setQueryData(["creatureType", props.name], (oldData: CreatureTypeDTO) => {
         const newData = oldData;
         newData.planes?.push(res)
         return newData
@@ -115,7 +115,7 @@ export function TypeFunctionSubObjects(props: ITypesubObjectsFunction) {
       id: args.objectToAddId
     }
     return savePlaneToCreatureTypeMutation.mutateAsync({ creaturetypeId: args.coreObjectId, subObjectId: args.objectToAddId }).then(_ => {
-      queryClient.setQueryData(["creaturetype", props.name], (oldData: CreatureTypeDTO) => {
+      queryClient.setQueryData(["creatureType", props.name], (oldData: CreatureTypeDTO) => {
         const newData = oldData;
         newData.planes?.push(entryDTO)
         return newData
@@ -130,7 +130,7 @@ export function TypeFunctionSubObjects(props: ITypesubObjectsFunction) {
   const removePlaneFromCreatureTypeFunction = async (creaturetypeId: number, planeId: number): Promise<void> => {
     OpenAPI.TOKEN = useJWTManager.getToken();
     return removePlaneFromCreatureTypeMutation.mutateAsync({ creaturetypeId, subObjectId: planeId }).then(() => {
-      queryClient.setQueryData(["creaturetype", props.name], (oldData: CreatureTypeDTO) => {
+      queryClient.setQueryData(["creatureType", props.name], (oldData: CreatureTypeDTO) => {
         const newData = oldData ? {
           ...oldData,
           subObjects: oldData.planes?.filter(plane => plane.id !== planeId)

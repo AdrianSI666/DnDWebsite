@@ -4,7 +4,7 @@ import { FullEntryAccordionBody } from "../../../../components/accordions/fullEn
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
 import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
 import { getAllRegions } from "../../../../globalFunctions/RegionHooks";
-import { UseOneSpeciesFunction } from "./useOneSpeciesFunction";
+import { UseOneSpeciesFunction } from "../../../WorldExtensions/CreatureHomePage/SpeciesHomePage/OneSpeciesHomePage/useOneSpeciesFunction";
 import { SpeciesControllerService } from "../../../../../services/openapi";
 import { SpeciesFunctionArray } from "../speciesFunctionArrays";
 import { SpeciesFunctionSubObjects } from "../speciesFunctionSubObjects";

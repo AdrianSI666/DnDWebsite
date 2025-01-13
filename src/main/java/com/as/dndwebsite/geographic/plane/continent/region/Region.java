@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -33,15 +34,15 @@ public class Region extends Entry {
     @ManyToOne
     private Continent continent;
     @ManyToMany
-    private Set<County> counties;
+    private Set<County> counties = new HashSet<>();
     @OneToMany(mappedBy = "region")
-    private Set<Place> places;
+    private Set<Place> places = new HashSet<>();
     @ManyToMany
-    private Set<Culture> cultures;
+    private Set<Culture> cultures = new HashSet<>();
     @ManyToMany
-    private Set<Species> species;
+    private Set<Species> species = new HashSet<>();
     @ManyToMany
-    private Set<SubSpecies> subSpecies;
+    private Set<SubSpecies> subSpecies = new HashSet<>();
 
     public Region(String name, String shortDescription, World world) {
         super(name, shortDescription, world);

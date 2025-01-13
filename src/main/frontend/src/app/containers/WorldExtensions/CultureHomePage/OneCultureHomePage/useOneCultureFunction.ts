@@ -1,8 +1,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useLocation, useNavigate } from "react-router-dom"
-import { CultureControllerService, EntryDTO, EntryFullDTO, OpenAPI } from "../../../../services/openapi"
-import useJWTManager from "../../../../services/jwt/JWTMenager"
+import { CultureControllerService, EntryDTO, EntryFullDTO, OpenAPI } from "../../../../../services/openapi"
+import useJWTManager from "../../../../../services/jwt/JWTMenager"
 
 interface IUpdateCultureData {
     id: number,
@@ -10,7 +10,8 @@ interface IUpdateCultureData {
 }
 
 interface IUseOneCultureFunction {
-    name: string
+    name: string,
+    worldName: string
 }
 
 export function UseOneCultureFunction(props: IUseOneCultureFunction) {
@@ -22,7 +23,7 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
         OpenAPI.TOKEN = useJWTManager.getToken();
         return CultureControllerService.deleteCulture(id)
             .then((_) => {
-                navigate("/cultures")
+                navigate("/worlds/home/" + props.worldName + "/cultures")
                 queryClient.removeQueries({ queryKey: ["culture", props.name] })
             })
             .catch((err) => {
@@ -43,9 +44,9 @@ export function UseOneCultureFunction(props: IUseOneCultureFunction) {
             shortDescription: shortDescription
         }
         return editCultureMutation.mutateAsync({ cultureDTO: entryDTO, id: id }).then(_ => {
-            if (location.pathname !== "/cultures/" + name) {
-                navigate('/cultures/' + name);
-                queryClient.removeQueries({ queryKey: ["culture", location.pathname] })
+            if (location.pathname !== "/worlds/home/" + props.worldName +"/cultures/" + name) {
+                navigate("/worlds/home/" + props.worldName +'/cultures/' + name);
+                queryClient.removeQueries({ queryKey: ["culture", props.name] })
             } else {
                 queryClient.setQueryData(["culture", props.name], (oldData: EntryFullDTO) => {
                     let newData = oldData
