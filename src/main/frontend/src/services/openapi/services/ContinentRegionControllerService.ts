@@ -113,10 +113,13 @@ export class ContinentRegionControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllRegionsWithoutContinent(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllRegionsWithoutContinent(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/continents/unset/region',
+            url: '/continents/unset/region/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

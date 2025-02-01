@@ -91,7 +91,7 @@ public class ContinentKingdomService implements IContinentKingdomService {
     }
 
     @Override
-    public List<EntryDTO> getAllKingdomsWithoutContinent() {
-        return kingdomRepository.findAllByContinents_IdIsNull();
+    public List<EntryDTO> getAllKingdomsWithoutContinent(Long worldId) {
+        return kingdomRepository.findAllByWorldIdAndContinents_IdIsNull(worldId);
     }
 }

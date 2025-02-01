@@ -11,6 +11,7 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 import {Page} from "../models/Page";
+import { EntryDTOnWorldData } from '../models/EntryDTOnWorldData';
 export class KingdomControllerService {
     /**
      * @param id
@@ -133,7 +134,7 @@ export class KingdomControllerService {
      */
     public static getKingdoms(
         pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+    ): CancelablePromise<Page<EntryDTOnWorldData>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/kingdoms',
@@ -163,10 +164,13 @@ export class KingdomControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllKingdoms(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllKingdoms(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/kingdoms/all',
+            url: '/kingdoms/all/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

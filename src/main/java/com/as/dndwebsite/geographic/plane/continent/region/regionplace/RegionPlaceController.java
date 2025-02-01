@@ -36,9 +36,9 @@ public class RegionPlaceController {
         return ResponseEntity.ok().body(regionPlaceService.getRegionRelatedToPlace(name));
     }
 
-    @GetMapping("/unset/place")
-    public ResponseEntity<List<EntryDTO>> getAllPlacesWithoutRegion() {
-        return ResponseEntity.ok().body(regionPlaceService.getAllPlacesWithoutRegion());
+    @GetMapping("/unset/place/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllPlacesWithoutRegion(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(regionPlaceService.getAllPlacesWithoutRegion(worldId));
     }
 
     @PostMapping(path = "/{regionId}/place")

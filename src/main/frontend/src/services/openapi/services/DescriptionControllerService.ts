@@ -16,15 +16,13 @@ export class DescriptionControllerService {
      */
     public static updateDescription(
         id: number,
-        worldId: number,
         requestBody: DescriptionDTO,
     ): CancelablePromise<DescriptionDTO> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/descriptions/{id}/world/{worldId}',
+            url: '/descriptions/{id}',
             path: {
-                'id': id,
-                'worldId': worldId,
+                'id': id
             },
             body: requestBody,
             mediaType: 'application/json',

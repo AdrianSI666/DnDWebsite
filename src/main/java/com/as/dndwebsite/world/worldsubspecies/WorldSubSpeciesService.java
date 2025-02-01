@@ -38,7 +38,7 @@ public class WorldSubSpeciesService implements IWorldSubSpeciesService {
     @Override
     public List<EntryDTO> getSubSpeciesRelatedToWorld(Long worldId) {
         log.debug("Getting subspecies related to world with id {}", worldId);
-        return subSpeciesRepository.findAllByWorldId(worldId);
+        return subSpeciesRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

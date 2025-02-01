@@ -1,13 +1,14 @@
 package com.as.dndwebsite.political.kingdom;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IKingdomService {
-    Page<EntryDTO> getKingdoms(PageInfo page);
+    Page<EntryDTOnWorldData> getKingdoms(PageInfo page);
 
     KingdomDTO getKingdom(String name);
 
@@ -17,5 +18,5 @@ public interface IKingdomService {
 
     void deleteKingdom(Long id);
 
-    List<EntryDTO> getAllKingdoms();
+    List<EntryDTO> getAllKingdoms(Long worldId);
 }

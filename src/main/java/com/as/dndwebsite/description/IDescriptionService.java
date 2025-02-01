@@ -6,7 +6,7 @@ import com.as.dndwebsite.world.World;
 
 public interface IDescriptionService {
     DescriptionDTO saveDescriptionToEntry(DescriptionDTO descriptionDTO, Entry entry);
-    DescriptionDTO updateDescription(DescriptionDTO descriptionDTO, Long descriptionId, Long worldId);
+    DescriptionDTO updateDescription(DescriptionDTO descriptionDTO, Long descriptionId);
     void deleteDescriptionFromEntry(Entry entry, Long descriptionId);
 
     DescriptionDTO saveDescriptionToWorld(DescriptionDTO descriptionDTO, World world);

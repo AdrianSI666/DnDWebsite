@@ -45,8 +45,8 @@ public class CreatureTypeSpeciesService implements ICreatureTypeSpeciesService {
     }
 
     @Override
-    public List<EntryDTO> getAllSpeciesWithoutCreatureType() {
-        return speciesRepository.findAllByCreatureTypeIdIsNull();
+    public List<EntryDTO> getAllSpeciesWithoutCreatureType(Long worldId) {
+        return speciesRepository.findAllByWorldIdAndCreatureTypeIdIsNull(worldId);
     }
 
     @Override

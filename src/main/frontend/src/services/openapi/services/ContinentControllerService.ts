@@ -11,6 +11,7 @@ import type { PageInfo } from '../models/PageInfo';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import { EntryDTOnWorldData } from '../models/EntryDTOnWorldData';
 export class ContinentControllerService {
     /**
      * @param id
@@ -133,7 +134,7 @@ export class ContinentControllerService {
      */
     public static getContinents(
         pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+    ): CancelablePromise<Page<EntryDTOnWorldData>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/continents',
@@ -163,10 +164,13 @@ export class ContinentControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllContinents(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllContinents(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/continents/all',
+            url: '/continents/all/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

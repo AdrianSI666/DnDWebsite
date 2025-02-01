@@ -3,6 +3,7 @@ package com.as.dndwebsite.geographic.plane;
 import com.as.dndwebsite.description.IDescriptionEntryService;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
@@ -36,13 +37,13 @@ public class PlaneController {
     private final IDescriptionEntryService planeDescriptionService;
 
     @GetMapping
-    public ResponseEntity<PageDTO<EntryDTO>> getPlanes(PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<EntryDTOnWorldData>> getPlanes(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(planeService.getPlanes(pageInfo)));
     }
 
-    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
-    public ResponseEntity<List<EntryDTO>> getAllPlanes() {
-        return ResponseEntity.ok().body(planeService.getAllPlanes());
+    @GetMapping("/all/worlds/{worldId}") //TODO subscribed to
+    public ResponseEntity<List<EntryDTO>> getAllPlanes(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(planeService.getAllPlanes(worldId));
     }
 
     @GetMapping("/{name}")

@@ -5,10 +5,10 @@ import useUserState from "../../../../../services/storage/UserStorage";
 import { FullEntryAccordionBody } from "../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../components/accordions/oneEntryHeaderLayout";
 import { SubCategoryBody } from "../../../../components/accordions/subCategoryBody";
-import { getAllRegions } from "../../../../globalFunctions/RegionHooks";
-import { CultureFunctionArray } from "../../../CulturePage/cultureFunctionArrays";
-import { CultureFunctionSubObjects } from "../../../CulturePage/cultureFunctionSubObjects";
-import { UseOneCultureFunction } from "./useOneCultureFunction";
+import { GetAllOfEntryFunctions } from "../../../../globalFunctions/getAll/getAllOfEntry";
+import { CultureFunctionArray } from "../Functions/cultureFunctionArrays";
+import { CultureFunctionSubObjects } from "../Functions/cultureFunctionSubObjects";
+import { UseOneCultureFunction } from "../Functions/useOneCultureFunction";
 
 
 export function OneCultureHomePage() {
@@ -24,7 +24,7 @@ export function OneCultureHomePage() {
     const { saveImageToCulture, deleteImageFromCulture,
         addNewDesctiptionToCulture, updateCultureDescription, deleteDescriptionFromCulture } = CultureFunctionArray({ name: cultureName! })
     const { saveNewRegionToCulture, saveExistingRegionToCulture, removeRegionFromCultureFunction } = CultureFunctionSubObjects({ name: cultureName! })
-
+    const { getAllRegions } = GetAllOfEntryFunctions({ worldId: world.world?.id! })
     if (status === "pending") return <div>Loading...</div>;
     if (error) return <div>
         <h1>Culture named {cultureName} doesn't exist.</h1>

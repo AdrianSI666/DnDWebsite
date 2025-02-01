@@ -1,6 +1,7 @@
 package com.as.dndwebsite.geographic.plane.continent.region.place;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IPlaceService {
-    Page<EntryDTO> getPlaces(PageInfo page);
+    Page<EntryDTOnWorldData> getPlaces(PageInfo page);
 
     EntryFullDTO getPlace(String name);
 
@@ -18,5 +19,5 @@ public interface IPlaceService {
 
     void deletePlace(Long id);
 
-    List<EntryDTO> getAllPlaces();
+    List<EntryDTO> getAllPlaces(Long worldId);
 }

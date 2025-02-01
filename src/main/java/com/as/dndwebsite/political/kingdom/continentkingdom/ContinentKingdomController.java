@@ -35,9 +35,9 @@ public class ContinentKingdomController {
         return ResponseEntity.ok().body(continentKingdomService.getContinentOfKingdom(name));
     }
 
-    @GetMapping("/unset/kingdom")
-    public ResponseEntity<List<EntryDTO>> getAllKingdomsWithoutContinent() {
-        return ResponseEntity.ok().body(continentKingdomService.getAllKingdomsWithoutContinent());
+    @GetMapping("/unset/kingdom/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllKingdomsWithoutContinent(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(continentKingdomService.getAllKingdomsWithoutContinent(worldId));
     }
 
     @PostMapping("/{continentId}/kingdom")

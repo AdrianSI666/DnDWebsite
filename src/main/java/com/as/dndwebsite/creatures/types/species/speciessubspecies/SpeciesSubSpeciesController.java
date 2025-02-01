@@ -36,9 +36,9 @@ public class SpeciesSubSpeciesController {
         return ResponseEntity.ok().body(speciesSubSpeciesService.getSpeciesOfSubSpecies(name));
     }
 
-    @GetMapping("/unset/subSpecies")
-    public ResponseEntity<List<EntryDTO>> getAllSubSpeciesWithoutSpecies() {
-        return ResponseEntity.ok().body(speciesSubSpeciesService.getAllSubSpeciesWithoutSpecies());
+    @GetMapping("/unset/subSpecies/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllSubSpeciesWithoutSpecies(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(speciesSubSpeciesService.getAllSubSpeciesWithoutSpecies(worldId));
     }
 
     @PostMapping("/{speciesId}/subSpecies")

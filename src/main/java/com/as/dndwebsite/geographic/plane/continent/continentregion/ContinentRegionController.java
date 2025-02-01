@@ -36,9 +36,9 @@ public class ContinentRegionController {
         return ResponseEntity.ok().body(continentRegionService.getContinentRelatedToRegion(name));
     }
 
-    @GetMapping("/unset/region")
-    public ResponseEntity<List<EntryDTO>> getAllRegionsWithoutContinent() {
-        return ResponseEntity.ok().body(continentRegionService.getAllRegionsWithoutContinent());
+    @GetMapping("/unset/region/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllRegionsWithoutContinent(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(continentRegionService.getAllRegionsWithoutContinent(worldId));
     }
 
     @PostMapping("/{continentId}/region")

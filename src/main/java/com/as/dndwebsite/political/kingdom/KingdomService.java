@@ -2,10 +2,12 @@ package com.as.dndwebsite.political.kingdom;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -36,13 +38,14 @@ public class KingdomService implements IKingdomService {
     public static final String KINGDOM_NOT_FOUND_MSG =
             "kingdom with name %s not found";
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
 
     @Override
-    public Page<EntryDTO> getKingdoms(PageInfo page) {
+    public Page<EntryDTOnWorldData> getKingdoms(PageInfo page) {
         log.info("Getting kingdoms");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<Kingdom> kingdomPage = kingdomRepository.findAll(paging);
-        return kingdomPage.map(mapper::map);
+        return kingdomPage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
@@ -86,7 +89,7 @@ public class KingdomService implements IKingdomService {
     }
 
     @Override
-    public List<EntryDTO> getAllKingdoms() {
-        return kingdomRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllKingdoms(Long worldId) {
+        return kingdomRepository.findAllByWorldIdOrderByName(worldId);
     }
 }

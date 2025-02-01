@@ -11,7 +11,7 @@ public interface ISpeciesSubSpeciesService {
     Page<EntryDTO> getSubSpeciesOfSpecies(String name, PageInfo page);
 
     List<EntryDTO> getSubSpeciesOfSpecies(Long id);
-    List<EntryDTO> getAllSubSpeciesWithoutSpecies();
+    List<EntryDTO> getAllSubSpeciesWithoutSpecies(Long worldId);
 
     Optional<EntryDTO> getSpeciesOfSubSpecies(long id);
 

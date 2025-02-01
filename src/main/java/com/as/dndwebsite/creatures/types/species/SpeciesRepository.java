@@ -20,9 +20,9 @@ public interface SpeciesRepository extends JpaRepository<Species, Long> {
 
     List<EntryDTO> findAllByCreatureTypeId(Long id);
 
-    List<EntryDTO> findAllByCreatureTypeIdIsNull();
+    List<EntryDTO> findAllByWorldIdAndCreatureTypeIdIsNull(Long worldId);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 }

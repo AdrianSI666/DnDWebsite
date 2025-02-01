@@ -11,6 +11,7 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 import {Page} from "../models/Page";
+import { WorldNAuthorDTO } from '../models/WorldNAuthorDTO';
 export class WorldControllerService {
     /**
      * @param id
@@ -55,7 +56,7 @@ export class WorldControllerService {
      */
     public static getWorlds(
         pageInfo?: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+    ): CancelablePromise<Page<WorldNAuthorDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/worlds',
@@ -190,10 +191,13 @@ export class WorldControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllWorlds(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllWorlds(userId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/worlds/all',
+            url: '/worlds/all/users/{userId}',
+            path: {
+                'userId': userId
+            }
         });
     }
     /**

@@ -12,13 +12,13 @@ public interface KingdomRepository extends JpaRepository<Kingdom, Long> {
     Optional<Kingdom> findByName(String name);
     Page<EntryDTO> findAllByContinents_Name(String name, Pageable pageable);
     List<EntryDTO> findAllByContinents_Id(Long id);
-    List<EntryDTO> findAllByContinents_IdIsNull();
+    List<EntryDTO> findAllByWorldIdAndContinents_IdIsNull(Long worldId);
 
     Optional<EntryDTO> findByCounties_Id(Long id);
 
     Optional<EntryDTO> findByCounties_Name(String name);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 }

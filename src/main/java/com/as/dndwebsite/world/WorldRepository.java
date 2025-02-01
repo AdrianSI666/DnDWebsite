@@ -49,5 +49,5 @@ public interface WorldRepository extends JpaRepository<World, Long> {
 
     Optional<EntryDTO> findBySubSpecies_Id(Long id);
 
-    List<EntryDTO> findAllByAuthor_IdOrderById(Long name);
+    List<EntryDTO> findAllByAuthor_IdOrderByName(Long name);
 }

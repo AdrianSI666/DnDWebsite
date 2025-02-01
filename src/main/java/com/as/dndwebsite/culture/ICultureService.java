@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ICultureService {
-    List<EntryDTO> getAllCultures();
+    List<EntryDTO> getAllCultures(Long worldId);
 
     Page<EntryDTOnWorldData> getCultures(PageInfo page);
 

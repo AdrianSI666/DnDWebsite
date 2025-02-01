@@ -1,13 +1,14 @@
 package com.as.dndwebsite.geographic.plane.continent.region;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IRegionService {
-    Page<EntryDTO> getRegions(PageInfo page);
+    Page<EntryDTOnWorldData> getRegions(PageInfo page);
 
     RegionDTO getRegion(String name);
 
@@ -17,5 +18,5 @@ public interface IRegionService {
 
     void deleteRegion(Long id);
 
-    List<EntryDTO> getAllRegions();
+    List<EntryDTO> getAllRegions(Long worldId);
 }

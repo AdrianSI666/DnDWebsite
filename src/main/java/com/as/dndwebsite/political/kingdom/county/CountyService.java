@@ -4,12 +4,14 @@ import com.as.dndwebsite.description.Description;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.image.Image;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
 import com.as.dndwebsite.world.WorldRepository;
@@ -40,12 +42,13 @@ public class CountyService implements ICountyService {
     public static final String COUNTY_NOT_FOUND_MSG =
             "County with name %s not found";
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
-    public Page<EntryDTO> getCounties(PageInfo page) {
+    public Page<EntryDTOnWorldData> getCounties(PageInfo page) {
         log.debug("Getting counties");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<County> countyPage = countyRepository.findAll(paging);
-        return countyPage.map(mapper::map);
+        return countyPage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
@@ -92,7 +95,7 @@ public class CountyService implements ICountyService {
     }
 
     @Override
-    public List<EntryDTO> getAllCounties() {
-        return countyRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllCounties(Long worldId) {
+        return countyRepository.findAllByWorldIdOrderByName(worldId);
     }
 }

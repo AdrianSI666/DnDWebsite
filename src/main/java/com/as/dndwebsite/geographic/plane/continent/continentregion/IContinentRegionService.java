@@ -24,5 +24,5 @@ public interface IContinentRegionService {
 
     Optional<EntryDTO> getContinentOfRegion(Long id);
 
-    List<EntryDTO> getAllRegionsWithoutContinent();
+    List<EntryDTO> getAllRegionsWithoutContinent(Long worldId);
 }

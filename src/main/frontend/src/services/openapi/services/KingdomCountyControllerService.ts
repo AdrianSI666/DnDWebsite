@@ -113,10 +113,13 @@ export class KingdomCountyControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllCountiesWithoutKingdom(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllCountiesWithoutKingdom(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/kingdoms/unset/county',
+            url: '/kingdoms/unset/county/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

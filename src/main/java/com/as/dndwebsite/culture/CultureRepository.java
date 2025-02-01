@@ -13,7 +13,7 @@ public interface CultureRepository extends JpaRepository<Culture, Long> {
     List<EntryDTO> findAllByRegions_Id(Long id);
     Page<EntryDTO> findAllByRegions_Name(String name, Pageable paging);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 }

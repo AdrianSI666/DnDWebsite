@@ -11,7 +11,7 @@ public interface ICreatureTypeSpeciesService {
     Page<EntryDTO> getSpeciesOfCreatureType(String name, PageInfo page);
 
     List<EntryDTO> getSpeciesOfCreatureType(Long id);
-    List<EntryDTO> getAllSpeciesWithoutCreatureType();
+    List<EntryDTO> getAllSpeciesWithoutCreatureType(Long worldId);
 
     Optional<EntryDTO> getCreatureTypeOfSpecies(long id);
 

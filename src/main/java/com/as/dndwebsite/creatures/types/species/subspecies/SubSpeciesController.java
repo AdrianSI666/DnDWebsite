@@ -3,6 +3,7 @@ package com.as.dndwebsite.creatures.types.species.subspecies;
 import com.as.dndwebsite.description.IDescriptionEntryService;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
@@ -36,13 +37,13 @@ public class SubSpeciesController {
     private final IDescriptionEntryService subSpeciesDescriptionService;
 
     @GetMapping
-    public ResponseEntity<PageDTO<EntryDTO>> getSubSpecies(PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<EntryDTOnWorldData>> getSubSpecies(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(subSpeciesService.getSubSpecies(pageInfo)));
     }
 
-    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
-    public ResponseEntity<List<EntryDTO>> getAllSubSpecies() {
-        return ResponseEntity.ok().body(subSpeciesService.getAllSubSpecies());
+    @GetMapping("/all/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllSubSpecies(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(subSpeciesService.getAllSubSpecies(worldId));
     }
 
     @GetMapping("/{name}")

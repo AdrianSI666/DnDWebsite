@@ -21,5 +21,5 @@ public interface CreatureTypeRepository extends JpaRepository<CreatureType, Long
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 }

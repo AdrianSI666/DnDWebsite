@@ -113,10 +113,13 @@ export class ContinentKingdomControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllKingdomsWithoutContinent(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllKingdomsWithoutContinent(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/continents/unset/kingdom',
+            url: '/continents/unset/kingdom/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

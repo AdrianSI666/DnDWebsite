@@ -38,7 +38,7 @@ public class WorldContinentService implements IWorldContinentService {
     @Override
     public List<EntryDTO> getContinentsRelatedToWorld(Long worldId) {
         log.debug("Getting continents related to world with id {}", worldId);
-        return continentRepository.findAllByWorldId(worldId);
+        return continentRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

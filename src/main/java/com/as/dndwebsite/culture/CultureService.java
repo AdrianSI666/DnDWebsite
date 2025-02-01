@@ -41,8 +41,8 @@ public class CultureService implements ICultureService {
     private final OwningSecurityFunctions owningSecurityFunctions;
     private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
-    public List<EntryDTO> getAllCultures() {
-        return cultureRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllCultures(Long worldId) {
+        return cultureRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

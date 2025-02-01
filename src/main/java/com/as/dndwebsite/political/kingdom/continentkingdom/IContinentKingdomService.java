@@ -24,5 +24,5 @@ public interface IContinentKingdomService {
 
     EntryDTO addNewContinentKingdomRelation(Long kingdomId, EntryDTO continent);
 
-    List<EntryDTO> getAllKingdomsWithoutContinent();
+    List<EntryDTO> getAllKingdomsWithoutContinent(Long worldId);
 }

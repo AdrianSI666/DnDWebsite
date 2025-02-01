@@ -24,5 +24,5 @@ public interface IKingdomCountyService {
 
     EntryDTO addNewKingdomCountyRelation(Long countyId, EntryDTO kingdom);
 
-    List<EntryDTO> getAllCountiesWithoutKingdom();
+    List<EntryDTO> getAllCountiesWithoutKingdom(Long worldId);
 }

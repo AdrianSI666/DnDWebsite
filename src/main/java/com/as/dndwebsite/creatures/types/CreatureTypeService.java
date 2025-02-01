@@ -2,10 +2,12 @@ package com.as.dndwebsite.creatures.types;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -35,12 +37,13 @@ public class CreatureTypeService implements ICreatureTypeService {
     private final DescriptionMapper descriptionMapper;
     private final ImageMapper imageMapper;
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
-    public Page<EntryDTO> getCreatureTypes(PageInfo page) {
+    public Page<EntryDTOnWorldData> getCreatureTypes(PageInfo page) {
         log.info("Getting creatureTypes");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<CreatureType> creatureTypePage = creatureTypeRepository.findAll(paging);
-        return creatureTypePage.map(mapper::map);
+        return creatureTypePage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
@@ -86,7 +89,7 @@ public class CreatureTypeService implements ICreatureTypeService {
 
 
     @Override
-    public List<EntryDTO> getAllCreatureTypes() {
-        return creatureTypeRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllCreatureTypes(Long worldId) {
+        return creatureTypeRepository.findAllByWorldIdOrderByName(worldId);
     }
 }

@@ -5,9 +5,10 @@ import useUserState from "../../../../../../services/storage/UserStorage";
 import { FullEntryAccordionBody } from "../../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../../components/accordions/oneEntryHeaderLayout";
 import { SubCategoryBody } from "../../../../../components/accordions/subCategoryBody";
-import { UseOneTypeFunction } from "./useOneTypeFunction";
-import { TypeFunctionArray } from "../../../../Creatures/TypePage/typeFunctionArrays";
-import { TypeFunctionSubObjects } from "../../../../Creatures/TypePage/typeFunctionSubObjects";
+import { UseOneTypeFunction } from "../Functions/useOneTypeFunction";
+import { TypeFunctionArray } from "../Functions/typeFunctionArrays";
+import { TypeFunctionSubObjects } from "../Functions/typeFunctionSubObjects";
+import { GetAllOfEntryFunctions } from "../../../../../globalFunctions/getAll/getAllOfEntry";
 
 
 export function OneTypeHomePage() {
@@ -19,11 +20,12 @@ export function OneTypeHomePage() {
         queryKey: ["creatureType", typeName],
         queryFn: async () => CreatureTypeControllerService.getFullCreatureTypeByName(typeName!)
     })
+    const {getAllPlanes, getAllSpeciesWithoutCreatureType} = GetAllOfEntryFunctions({worldId: world.world?.id!})
     const { removeType, editType } = UseOneTypeFunction({ name: typeName!, worldName: world.world?.name! })
     const { saveImageToType, deleteImageFromType,
         addNewDesctiptionToType, updateTypeDescription, deleteDescriptionFromType } = TypeFunctionArray({ name: typeName! })
-    const { getAllSpecies, saveNewSpeciesToType, saveExistingSpeciesToType, removeSpeciesFromTypeFunction,
-        getAllPlanes, saveNewPlaneToCreatureType, saveExistingPlaneToCreatureType, removePlaneFromCreatureTypeFunction
+    const { saveNewSpeciesToType, saveExistingSpeciesToType, removeSpeciesFromTypeFunction,
+        saveNewPlaneToCreatureType, saveExistingPlaneToCreatureType, removePlaneFromCreatureTypeFunction
      } = TypeFunctionSubObjects({ name: typeName! })
 
     if (status === "pending") return <div>Loading...</div>;
@@ -55,7 +57,7 @@ export function OneTypeHomePage() {
         <SubCategoryBody mainEntryId={type.creatureType?.id!}
             subObjects={type.species}
             subCategoryTitle={"Species"} subCategoryLink={"creatures/species"}
-            fillTheListWithAllSubObjects={getAllSpecies}
+            fillTheListWithAllSubObjects={getAllSpeciesWithoutCreatureType}
             addNewSubEntryToRelation={saveNewSpeciesToType}
             addExistingObjectToRelation={saveExistingSpeciesToType}
             deleteSubObject={removeSpeciesFromTypeFunction}

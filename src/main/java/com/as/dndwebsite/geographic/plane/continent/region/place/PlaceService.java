@@ -2,11 +2,13 @@ package com.as.dndwebsite.geographic.plane.continent.region.place;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -38,11 +40,12 @@ public class PlaceService implements IPlaceService {
     public static final String PLACE_NOT_FOUND_MSG =
             "Place with name %s not found";
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
-    public Page<EntryDTO> getPlaces(PageInfo page) {
+    public Page<EntryDTOnWorldData> getPlaces(PageInfo page) {
         log.info("Getting Places");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
-        return placeRepository.findAll(paging).map(mapper::map);
+        return placeRepository.findAll(paging).map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
@@ -88,8 +91,8 @@ public class PlaceService implements IPlaceService {
     }
 
     @Override
-    public List<EntryDTO> getAllPlaces() {
-        return placeRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllPlaces(Long worldId) {
+        return placeRepository.findAllByWorldId(worldId);
     }
 
 }

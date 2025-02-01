@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "notatki/countyAccordion.tsx", "notatki/kingdomAccordion.tsx", "notatki/RegionHooks.tsx"  ]
 }

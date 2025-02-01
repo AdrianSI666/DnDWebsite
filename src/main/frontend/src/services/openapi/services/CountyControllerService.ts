@@ -11,6 +11,7 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 import { Page } from '../models/Page';
+import { EntryDTOnWorldData } from '../models/EntryDTOnWorldData';
 export class CountyControllerService {
     /**
      * @param id
@@ -133,7 +134,7 @@ export class CountyControllerService {
      */
     public static getCounties(
         pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+    ): CancelablePromise<Page<EntryDTOnWorldData>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/counties',
@@ -163,10 +164,13 @@ export class CountyControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllCounties(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllCounties(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/counties/all',
+            url: '/counties/all/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

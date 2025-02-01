@@ -18,9 +18,9 @@ public interface SubSpeciesRepository extends JpaRepository<SubSpecies, Long> {
     Page<EntryDTO> findAllByRegions_Name(String name, Pageable paging);
 
     List<EntryDTO> findAllBySpeciesId(Long id);
-    List<EntryDTO> findAllBySpeciesIdIsNull();
+    List<EntryDTO> findAllByWorldIdAndSpeciesIdIsNull(Long worldId);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 }

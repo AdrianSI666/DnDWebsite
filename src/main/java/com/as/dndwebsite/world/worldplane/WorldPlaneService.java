@@ -38,7 +38,7 @@ public class WorldPlaneService implements IWorldPlaneService {
     @Override
     public List<EntryDTO> getPlanesRelatedToWorld(Long worldId) {
         log.debug("Getting planes related to world with id {}", worldId);
-        return planeRepository.findAllByWorldId(worldId);
+        return planeRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

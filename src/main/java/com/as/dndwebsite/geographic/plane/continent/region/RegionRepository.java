@@ -24,7 +24,7 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 
     Optional<EntryDTO> findAllByPlaces_Name(String name);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 
@@ -32,13 +32,13 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 
     Page<EntryDTO> findAllByContinentName(String name, Pageable paging);
 
-    List<EntryDTO> findAllByContinentIdIsNull();
+    List<EntryDTO> findAllByWorldIdAndContinentIdIsNull(Long worldId);
 
     List<EntryDTO> findAllByCounties_Id(Long countyId);
 
     Page<EntryDTO> findAllByCounties_Name(String name, Pageable paging);
 
-    List<EntryDTO> findAllByCounties_IdIsNull();
+    List<EntryDTO> findAllByWorldIdAndCounties_IdIsNullOrderByName(Long worldId);
 
     Page<EntryDTO> findAllBySubSpecies_Name(String name, Pageable paging);
 }

@@ -38,7 +38,7 @@ public class WorldKingdomService implements IWorldKingdomService {
     @Override
     public List<EntryDTO> getKingdomsRelatedToWorld(Long worldId) {
         log.debug("Getting kingdoms related to world with id {}", worldId);
-        return kingdomRepository.findAllByWorldId(worldId);
+        return kingdomRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

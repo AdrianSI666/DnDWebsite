@@ -15,7 +15,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
 
     List<EntryDTO> findAllByRegionId(Long id);
 
-    List<EntryDTO> findAllByRegionIdIsNull();
+    List<EntryDTO> findAllByWorldIdAndRegionIdIsNull(Long worldId);
 
     List<EntryDTO> findAllByWorldId(Long worldId);
 

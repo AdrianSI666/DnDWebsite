@@ -4,11 +4,13 @@ import com.as.dndwebsite.description.Description;
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.image.Image;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.WorldMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -23,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.as.dndwebsite.world.WorldService.WORLD_NOT_FOUND_MSG;
 
@@ -41,16 +42,17 @@ public class PlaneService implements IPlaneService {
             "Plane with name %s not found";
     private final WorldMapper worldMapper;
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
-    public Page<EntryDTO> getPlanes(PageInfo page) {
+    public Page<EntryDTOnWorldData> getPlanes(PageInfo page) {
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<Plane> planePage = planeRepository.findAll(paging);
-        return planePage.map(mapper::map);
+        return planePage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
-    public List<EntryDTO> getAllPlanes() {
-        return planeRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllPlanes(Long worldId) {
+        return planeRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

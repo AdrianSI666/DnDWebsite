@@ -8,7 +8,7 @@ import { AddNewEntryModal } from "../../../components/modals/addNewEntryModal";
 import { DeleteConfirmationModal } from "../../../components/modals/deleteConfirmModal";
 import { EditEntryModal } from "../../../components/modals/editEntryModal";
 import { CustomPagination } from "../../../components/pagination/pagination";
-import { CultureFunction } from "../../CulturePage/cultureFunction";
+import { CultureFunction } from "./Functions/cultureFunction";
 import { HeaderLink } from "../../Header/HeaderLink";
 
 
@@ -47,11 +47,11 @@ export function CultureHomePage() {
     const changeCulturePage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
         if (size && size !== pageSize) {
             setPageSize(size);
-            queryClient.invalidateQueries({ queryKey: ["culturePage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["culturePageByWorldName", pageNumber, size, name] })
         }
         if (value && value !== pageNumber) {
             setPageNumber(value!);
-            queryClient.invalidateQueries({ queryKey: ["culturePage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["culturePageByWorldName", value, pageSize, name] })
         }
     }
 

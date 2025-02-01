@@ -9,7 +9,7 @@ import { DeleteConfirmationModal } from "../../../../components/modals/deleteCon
 import { EditEntryModal } from "../../../../components/modals/editEntryModal";
 import { CustomPagination } from "../../../../components/pagination/pagination";
 import { HeaderLink } from "../../../Header/HeaderLink";
-import { SpeciesFunction } from "../../../Creatures/SpeciesPage/speciesFunction";
+import { SpeciesFunction } from "./Functions/speciesFunction";
 
 
 export function SpeciesHomePage() {
@@ -48,11 +48,11 @@ export function SpeciesHomePage() {
     const changeSpeciesPage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
         if (size && size !== pageSize) {
             setPageSize(size);
-            queryClient.invalidateQueries({ queryKey: ["speciesPage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["speciesPageByWorldName", pageNumber, size, name] })
         }
         if (value && value !== pageNumber) {
             setPageNumber(value!);
-            queryClient.invalidateQueries({ queryKey: ["speciesPage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["speciesPageByWorldName", value, pageSize, name] })
         }
     }
 

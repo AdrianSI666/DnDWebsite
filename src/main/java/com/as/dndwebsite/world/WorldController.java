@@ -37,13 +37,13 @@ public class WorldController {
     private final IDescriptionEntryService worldDescriptionService;
 
     @GetMapping
-    public ResponseEntity<PageDTO<EntryDTO>> getWorlds(PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<WorldNAuthorDTO>> getWorlds(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(worldService.getWorlds(pageInfo)));
     }
 
-    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
-    public ResponseEntity<List<EntryDTO>> getAllWorlds() {
-        return ResponseEntity.ok().body(worldService.getAllWorlds());
+    @GetMapping("/all/users/{userId}") //TODO subscribed to
+    public ResponseEntity<List<EntryDTO>> getAllWorlds(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok().body(worldService.getAllWorlds(userId));
     }
 
     @GetMapping("/{name}")
@@ -52,7 +52,7 @@ public class WorldController {
     }
 
     @GetMapping("/author/{id}")
-    @Secured({"USER","ADMIN"})
+    @Secured({"USER", "ADMIN"})
     public ResponseEntity<List<EntryDTO>> getWorldsByAuthor(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(worldService.getWorldsByAuthor(id));
     }

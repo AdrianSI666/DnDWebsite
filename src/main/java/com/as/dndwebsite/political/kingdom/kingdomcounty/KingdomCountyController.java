@@ -47,9 +47,9 @@ public class KingdomCountyController {
         return ResponseEntity.ok().body(kingdomCountyService.addNewKingdomCountyRelation(countyId, kingdom));
     }
 
-    @GetMapping("/unset/county")
-    public ResponseEntity<List<EntryDTO>> getAllCountiesWithoutKingdom() {
-        return ResponseEntity.ok().body(kingdomCountyService.getAllCountiesWithoutKingdom());
+    @GetMapping("/unset/county/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllCountiesWithoutKingdom(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(kingdomCountyService.getAllCountiesWithoutKingdom(worldId));
     }
 
     @PostMapping("/{kingdomId}/county/{countyId}")

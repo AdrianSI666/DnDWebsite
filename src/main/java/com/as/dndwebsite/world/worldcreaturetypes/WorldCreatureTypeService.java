@@ -38,7 +38,7 @@ public class WorldCreatureTypeService implements IWorldCreatureTypeService {
     @Override
     public List<EntryDTO> getCreatureTypesRelatedToWorld(Long worldId) {
         log.debug("Getting creatureTypes related to world with id {}", worldId);
-        return creatureTypeRepository.findAllByWorldId(worldId);
+        return creatureTypeRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

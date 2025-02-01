@@ -3,6 +3,7 @@ package com.as.dndwebsite.geographic.plane.continent.region;
 import com.as.dndwebsite.description.IDescriptionEntryService;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
 import com.as.dndwebsite.dto.PageInfo;
@@ -36,13 +37,13 @@ public class RegionController {
     private final IDescriptionEntryService regionDescriptionService;
 
     @GetMapping
-    public ResponseEntity<PageDTO<EntryDTO>> getRegions(PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<EntryDTOnWorldData>> getRegions(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(regionService.getRegions(pageInfo)));
     }
 
-    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
-    public ResponseEntity<List<EntryDTO>> getAllRegions() {
-        return ResponseEntity.ok().body(regionService.getAllRegions());
+    @GetMapping("/all/worlds/{worldId}") //TODO with security this won't be all but created by account and/or subscribed to
+    public ResponseEntity<List<EntryDTO>> getAllRegions(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(regionService.getAllRegions(worldId));
     }
 
     @GetMapping("/{name}")

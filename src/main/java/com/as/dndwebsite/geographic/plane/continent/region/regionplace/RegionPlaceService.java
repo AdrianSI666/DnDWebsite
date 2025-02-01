@@ -56,8 +56,8 @@ public class RegionPlaceService implements IRegionPlaceService {
     }
 
     @Override
-    public List<EntryDTO> getAllPlacesWithoutRegion() {
-        return placeRepository.findAllByRegionIdIsNull();
+    public List<EntryDTO> getAllPlacesWithoutRegion(Long worldId) {
+        return placeRepository.findAllByWorldIdAndRegionIdIsNull(worldId);
     }
 
     @Override

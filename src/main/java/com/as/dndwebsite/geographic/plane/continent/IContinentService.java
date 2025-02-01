@@ -1,13 +1,14 @@
 package com.as.dndwebsite.geographic.plane.continent;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IContinentService {
-    Page<EntryDTO> getContinents(PageInfo page);
+    Page<EntryDTOnWorldData> getContinents(PageInfo page);
 
     ContinentDTO getContinent(String name);
 
@@ -17,5 +18,5 @@ public interface IContinentService {
 
     void deleteContinent(Long id);
 
-    List<EntryDTO> getAllContinents();
+    List<EntryDTO> getAllContinents(Long worldId);
 }

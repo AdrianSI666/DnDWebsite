@@ -23,5 +23,5 @@ public interface ICountyRegionService {
 
     List<EntryDTO> getCountiesOfRegion(Long id);
 
-    List<EntryDTO> getAllRegionsWithoutCounty();
+    List<EntryDTO> getAllRegionsWithoutCounty(Long worldId);
 }

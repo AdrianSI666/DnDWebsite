@@ -94,7 +94,7 @@ public class KingdomCountyService implements IKingdomCountyService {
     }
 
     @Override
-    public List<EntryDTO> getAllCountiesWithoutKingdom() {
-        return countyRepository.findAllByKingdomIdIsNull();
+    public List<EntryDTO> getAllCountiesWithoutKingdom(Long worldId) {
+        return countyRepository.findAllByWorldIdAndKingdomIdIsNull(worldId);
     }
 }

@@ -2,10 +2,12 @@ package com.as.dndwebsite.creatures.types.species.subspecies;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -38,17 +40,19 @@ public class SubSpeciesService implements ISubSpeciesService {
     private final DescriptionMapper descriptionMapper;
     private final ImageMapper imageMapper;
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
+
     @Override
-    public Page<EntryDTO> getSubSpecies(PageInfo page) {
+    public Page<EntryDTOnWorldData> getSubSpecies(PageInfo page) {
         log.debug("Getting Sub Species");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<SubSpecies> subSpeciesPage = subspeciesRepository.findAll(paging);
-        return subSpeciesPage.map(mapper::map);
+        return subSpeciesPage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
-    public List<EntryDTO> getAllSubSpecies() {
-        return subspeciesRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllSubSpecies(Long worldId) {
+        return subspeciesRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override
@@ -57,7 +61,7 @@ public class SubSpeciesService implements ISubSpeciesService {
         SubSpecies subSpecies = subspeciesRepository.findByName(name).orElseThrow(
                 () -> new NotFoundException(String.format(SUB_SPECIES_NOT_FOUND_MSG, name)));
         Optional<EntryDTO> species = Optional.empty();
-        if(subSpecies.getSpecies() != null) species = Optional.of(mapper.map(subSpecies.getSpecies()));
+        if (subSpecies.getSpecies() != null) species = Optional.of(mapper.map(subSpecies.getSpecies()));
         return new SubSpeciesDTO(mapper.map(subSpecies),
                 species,
                 subSpecies.getDescriptions().stream().map(descriptionMapper::map).toList(),

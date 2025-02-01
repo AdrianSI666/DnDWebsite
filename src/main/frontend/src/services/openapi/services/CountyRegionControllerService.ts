@@ -113,10 +113,13 @@ export class CountyRegionControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllRegionsWithoutCounty(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllRegionsWithoutCounty(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/counties/unset/region',
+            url: '/counties/unset/region/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

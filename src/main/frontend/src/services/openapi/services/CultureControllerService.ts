@@ -180,10 +180,13 @@ export class CultureControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllCultures(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllCultures(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/cultures/all',
+            url: '/cultures/all/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

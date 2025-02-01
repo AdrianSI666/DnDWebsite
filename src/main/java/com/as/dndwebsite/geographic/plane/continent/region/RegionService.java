@@ -2,10 +2,12 @@ package com.as.dndwebsite.geographic.plane.continent.region;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -37,12 +39,13 @@ public class RegionService implements IRegionService {
     public static final String REGION_NOT_FOUND_MSG =
             "Region with name %s not found";
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
-    public Page<EntryDTO> getRegions(PageInfo page) {
+    public Page<EntryDTOnWorldData> getRegions(PageInfo page) {
         log.debug("Getting Regions");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<Region> regionPage = regionRepository.findAll(paging);
-        return regionPage.map(mapper::map);
+        return regionPage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
@@ -90,8 +93,8 @@ public class RegionService implements IRegionService {
     }
 
     @Override
-    public List<EntryDTO> getAllRegions() {
-        return regionRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllRegions(Long worldId) {
+        return regionRepository.findAllByWorldIdOrderByName(worldId);
     }
 
 }

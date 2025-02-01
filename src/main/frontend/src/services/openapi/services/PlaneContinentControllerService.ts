@@ -113,10 +113,13 @@ export class PlaneContinentControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllContinentsWithoutPlane(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllContinentsWithoutPlane(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/planes/unset/continent',
+            url: '/planes/unset/continent/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

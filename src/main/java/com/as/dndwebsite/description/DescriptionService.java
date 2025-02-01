@@ -6,13 +6,10 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DomainMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
-import com.as.dndwebsite.world.WorldRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.as.dndwebsite.world.WorldService.WORLD_NOT_FOUND_MSG;
 
 @Service
 @Slf4j
@@ -24,7 +21,6 @@ public class DescriptionService implements IDescriptionService {
     public static final String DESCRIPTION_NOT_FOUND_MSG =
             "Description with id %s not found";
     private final OwningSecurityFunctions owningSecurityFunctions;
-    private final WorldRepository worldRepository;
 
     @Override
     public DescriptionDTO saveDescriptionToEntry(DescriptionDTO descriptionDTO, Entry entry) {
@@ -35,11 +31,11 @@ public class DescriptionService implements IDescriptionService {
     }
 
     @Override
-    public DescriptionDTO updateDescription(DescriptionDTO descriptionDTO, Long descriptionId, Long worldId) {
-        World world = worldRepository.findById(worldId).orElseThrow(
-                () -> new NotFoundException(String.format(WORLD_NOT_FOUND_MSG, worldId)));
-        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(world.getAuthor(), "Save new culture", world.getId());
+    public DescriptionDTO updateDescription(DescriptionDTO descriptionDTO, Long descriptionId) {
         Description oldDescription = descriptionRepository.findById(descriptionId).orElseThrow(() -> new NotFoundException(DESCRIPTION_NOT_FOUND_MSG.formatted(descriptionId)));
+        World world = oldDescription.getWorlds().stream().findFirst().orElseThrow(() -> new NotFoundException("Description doesn't have world linked to it. Desc id: %d".formatted(oldDescription.getId())));
+        owningSecurityFunctions.checkIfLoggedInUserIsTheSameAsAuthor(world.getAuthor(),
+                "Update description", world.getId());
         oldDescription.setTitle(descriptionDTO.title());
         oldDescription.setText(descriptionDTO.text());
         return domainMapper.map(oldDescription);

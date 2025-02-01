@@ -113,10 +113,13 @@ export class CreatureTypeSpeciesControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllSpeciessWithoutCreatureType(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllSpeciesWithoutCreatureType(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/creatureTypes/unset/species',
+            url: '/creatureTypes/unset/species/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

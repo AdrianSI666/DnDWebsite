@@ -38,7 +38,7 @@ public class WorldRegionService implements IWorldRegionService {
     @Override
     public List<EntryDTO> getRegionsRelatedToWorld(Long worldId) {
         log.debug("Getting regions related to world with id {}", worldId);
-        return regionRepository.findAllByWorldId(worldId);
+        return regionRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

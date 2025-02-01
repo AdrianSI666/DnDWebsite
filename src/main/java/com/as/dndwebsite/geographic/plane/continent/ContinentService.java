@@ -2,10 +2,12 @@ package com.as.dndwebsite.geographic.plane.continent;
 
 import com.as.dndwebsite.domain.Entry;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
+import com.as.dndwebsite.mappers.EntryDTOwWorldDataMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.world.World;
@@ -37,17 +39,18 @@ public class ContinentService implements IContinentService {
     public static final String CONTINENT_NOT_FOUND_MSG =
             "Continent with name %s not found";
     private final OwningSecurityFunctions owningSecurityFunctions;
+    private final EntryDTOwWorldDataMapper entryDTOwWorldDataMapper;
     @Override
-    public Page<EntryDTO> getContinents(PageInfo page) {
+    public Page<EntryDTOnWorldData> getContinents(PageInfo page) {
         log.info("Getting Continents");
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<Continent> continentPage = continentRepository.findAll(paging);
-        return continentPage.map(mapper::map);
+        return continentPage.map(entryDTOwWorldDataMapper::map);
     }
 
     @Override
-    public List<EntryDTO> getAllContinents() {
-        return continentRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllContinents(Long worldId) {
+        return continentRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

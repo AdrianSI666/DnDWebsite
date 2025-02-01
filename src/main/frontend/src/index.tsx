@@ -6,45 +6,48 @@ import {
   BrowserRouter as Router,
   Routes
 } from "react-router-dom";
-import { SpeciesPage } from './app/containers/Creatures/SpeciesPage';
-import { OneSpecies } from './app/containers/Creatures/SpeciesPage/OneSpecies';
-import { SubSpeciesPage } from './app/containers/Creatures/SubSpeciesPage';
-import { CulturePage } from './app/containers/CulturePage';
-import { ContinentPage } from './app/containers/Geography/ContinentPage';
-import { OneContinent } from './app/containers/Geography/ContinentPage/OneContinent';
-import { PlacePage } from './app/containers/Geography/PlacePage';
-import { OnePlace } from './app/containers/Geography/PlacePage/OnePlace';
-import { PlanePage } from './app/containers/Geography/PlanePage';
-import { OnePlane } from './app/containers/Geography/PlanePage/OnePlane';
-import { RegionPage } from './app/containers/Geography/RegionPage';
-import { OneRegion } from './app/containers/Geography/RegionPage/OneRegion';
+import { SpeciesPage } from './app/containers/AnonymousViews/Creatures/SpeciesPage';
+import { SubSpeciesPage } from './app/containers/AnonymousViews/Creatures/SubSpeciesPage';
+import { CulturePage } from './app/containers/AnonymousViews/CulturePage';
+import { ContinentPage } from './app/containers/AnonymousViews/Geography/ContinentPage';
+import { PlacePage } from './app/containers/AnonymousViews/Geography/PlacePage';
+import { PlanePage } from './app/containers/AnonymousViews/Geography/PlanePage';
+import { RegionPage } from './app/containers/AnonymousViews/Geography/RegionPage';
+import { KingdomPage } from './app/containers/AnonymousViews/Politics/KingdomPage';
 import { Home } from './app/containers/HomePage';
-import { KingdomPage } from './app/containers/Politics/KingdomPage';
-import { OneKingdom } from './app/containers/Politics/KingdomPage/OneKingdom';
 import { Root } from './app/containers/RootPage';
+import { OneRegionHomePage } from './app/containers/WorldExtensions/GeographyHomePage/RegionHomePage/OneRegion';
+import { OneKingdomHomePage } from './app/containers/WorldExtensions/PoliticsHomePage/KingdomHomePage/OneKingdom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { TypePage } from './app/containers/AnonymousViews/Creatures/TypePage';
+import { CountyPage } from './app/containers/AnonymousViews/Politics/CountyPage';
 import { LoginPage } from './app/containers/Authorization/login';
 import SignupPage from './app/containers/Authorization/signup';
-import { OneSubSpecies } from './app/containers/Creatures/SubSpeciesPage/OneSubSpecies';
-import { TypePage } from './app/containers/Creatures/TypePage';
-import { OneType } from './app/containers/Creatures/TypePage/OneType';
-import { CountyPage } from './app/containers/Politics/CountyPage';
-import { OneCounty } from './app/containers/Politics/CountyPage/OneCounty';
 import { UserHomePage } from './app/containers/UserHomePage';
 import { WorldHomePage } from './app/containers/WorldExtensions';
 import { SpeciesHomePage } from './app/containers/WorldExtensions/CreatureHomePage/SpeciesHomePage';
+import { OneSpeciesHomePage } from './app/containers/WorldExtensions/CreatureHomePage/SpeciesHomePage/OneSpeciesHomePage';
+import { SubspeciesHomePage } from './app/containers/WorldExtensions/CreatureHomePage/SubSpeciesHomePage';
 import { OneSubSpeciesHomePage } from './app/containers/WorldExtensions/CreatureHomePage/SubSpeciesHomePage/OneSubSpeciesHomePage';
 import { TypeHomePage } from './app/containers/WorldExtensions/CreatureHomePage/TypeHomePage';
 import { OneTypeHomePage } from './app/containers/WorldExtensions/CreatureHomePage/TypeHomePage/OneTypeHomePage';
 import { CultureHomePage } from './app/containers/WorldExtensions/CultureHomePage';
 import { OneCultureHomePage } from './app/containers/WorldExtensions/CultureHomePage/OneCultureHomePage';
+import { ContinentHomePage } from './app/containers/WorldExtensions/GeographyHomePage/ContinentHomePage';
+import { PlaceHomePage } from './app/containers/WorldExtensions/GeographyHomePage/PlaceHomePage';
+import { PlaneHomePage } from './app/containers/WorldExtensions/GeographyHomePage/PlaneHomePage';
+import { RegionHomePage } from './app/containers/WorldExtensions/GeographyHomePage/RegionHomePage';
 import { OneWorldHomePage } from './app/containers/WorldExtensions/OneWorldHomePage';
-import { WorldPage } from './app/containers/WorldPage';
-import { OneSpeciesHomePage } from './app/containers/WorldExtensions/CreatureHomePage/SpeciesHomePage/OneSpeciesHomePage';
-import { SubspeciesHomePage } from './app/containers/WorldExtensions/CreatureHomePage/SubSpeciesHomePage';
+import { CountyHomePage } from './app/containers/WorldExtensions/PoliticsHomePage/CountyHomePage';
+import { OneCountyHomePage } from './app/containers/WorldExtensions/PoliticsHomePage/CountyHomePage/OneCounty';
+import { KingdomHomePage } from './app/containers/WorldExtensions/PoliticsHomePage/KingdomHomePage';
+import { WorldPage } from './app/containers/AnonymousViews/WorldPage';
+import { OneContinent } from './app/containers/WorldExtensions/GeographyHomePage/ContinentHomePage/OneContinent';
+import { OnePlaceHomePage } from './app/containers/WorldExtensions/GeographyHomePage/PlaceHomePage/OnePlace';
+import { OnePlaneHomePage } from './app/containers/WorldExtensions/GeographyHomePage/PlaneHomePage/OnePlane';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -72,17 +75,12 @@ root.render(
             <Route path={"cultures"} element={<CulturePage />} />
             <Route path={"creatures/"}>
               <Route path={"types"} element={<TypePage />} />
-              <Route path={"types/:name"} element={<OneType />} />
               <Route path={"species"} element={<SpeciesPage />} />
-              <Route path={"species/:name"} element={<OneSpecies />} />
               <Route path={"subspecies"} element={<SubSpeciesPage />} />
-              <Route path={"subspecies/:name"} element={<OneSubSpecies />} />
             </Route>
             <Route path={"politics/"}>
               <Route path={"kingdoms"} element={<KingdomPage />} />
-              <Route path={"kingdoms/:name"} element={<OneKingdom />} />
               <Route path={"counties"} element={<CountyPage />} />
-              <Route path={"counties/:name"} element={<OneCounty />} />
             </Route>
             <Route path={"worlds"} element={<WorldPage />} />
             <Route path={"worlds/home/"} element={<WorldHomePage />}>
@@ -97,16 +95,28 @@ root.render(
                 <Route path={"subspecies"} element={<SubspeciesHomePage />} />
                 <Route path={"subspecies/:subspeciesName"} element={<OneSubSpeciesHomePage />} />
               </Route>
+              <Route path={":name/politics/"}>
+                <Route path={"kingdoms"} element={<KingdomHomePage />} />
+                <Route path={"kingdoms/:name"} element={<OneKingdomHomePage />} />
+                <Route path={"counties"} element={<CountyHomePage />} />
+                <Route path={"counties/:name"} element={<OneCountyHomePage />} />
+              </Route>
+              <Route path={":name/geography/"}>
+                <Route path={"planes"} element={<PlaneHomePage />} />
+                <Route path={"planes/:name"} element={<OnePlaneHomePage />} />
+                <Route path={"continents"} element={<ContinentHomePage />} />
+                <Route path={"continents/:name"} element={<OneContinent />} />
+                <Route path={"regions"} element={<RegionHomePage />} />
+                <Route path={"regions/:name"} element={<OneRegionHomePage />} />
+                <Route path={"places"} element={<PlaceHomePage />} />
+                <Route path={"places/:name"} element={<OnePlaceHomePage />} />
+              </Route>
             </Route>
             <Route path={"geography/"}>
               <Route path={"planes"} element={<PlanePage />} />
-              <Route path={"planes/:name"} element={<OnePlane />} />
               <Route path={"continents"} element={<ContinentPage />} />
-              <Route path={"continents/:name"} element={<OneContinent />} />
               <Route path={"regions"} element={<RegionPage />} />
-              <Route path={"regions/:name"} element={<OneRegion />} />
               <Route path={"places"} element={<PlacePage />} />
-              <Route path={"places/:name"} element={<OnePlace />} />
             </Route>
             <Route path={"user/home"} element={<UserHomePage />} />
             <Route path={"login"} element={<LoginPage />} />

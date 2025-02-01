@@ -24,5 +24,5 @@ public interface IRegionPlaceService {
 
     Optional<EntryDTO> getRegionRelatedToPlace(Long id);
 
-    List<EntryDTO> getAllPlacesWithoutRegion();
+    List<EntryDTO> getAllPlacesWithoutRegion(Long worldId);
 }

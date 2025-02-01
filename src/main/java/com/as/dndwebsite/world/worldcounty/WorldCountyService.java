@@ -38,7 +38,7 @@ public class WorldCountyService implements IWorldCountyService {
     @Override
     public List<EntryDTO> getCountiesRelatedToWorld(Long worldId) {
         log.debug("Getting countys related to world with id {}", worldId);
-        return countyRepository.findAllByWorldId(worldId);
+        return countyRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

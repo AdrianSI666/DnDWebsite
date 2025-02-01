@@ -113,10 +113,13 @@ export class RegionPlaceControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllPlacesWithoutRegion(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllPlacesWithoutRegion(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/regions/unset/place',
+            url: '/regions/unset/place/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

@@ -42,9 +42,9 @@ public class CultureController {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(cultureService.getCultures(pageInfo)));
     }
 
-    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
-    public ResponseEntity<List<EntryDTO>> getAllCultures() {
-        return ResponseEntity.ok().body(cultureService.getAllCultures());
+    @GetMapping("/all/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllCultures(@PathVariable("worldId")Long worldId) {
+        return ResponseEntity.ok().body(cultureService.getAllCultures(worldId));
     }
 
     @GetMapping("/{id}/images")

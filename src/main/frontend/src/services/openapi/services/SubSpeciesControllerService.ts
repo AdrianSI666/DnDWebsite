@@ -11,6 +11,7 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 import { Page } from '../models/Page';
+import { EntryDTOnWorldData } from '../models/EntryDTOnWorldData';
 export class SubSpeciesControllerService {
     /**
      * @param id
@@ -133,7 +134,7 @@ export class SubSpeciesControllerService {
      */
     public static getSubSpecies(
         pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+    ): CancelablePromise<Page<EntryDTOnWorldData>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/subSpecies',
@@ -179,10 +180,13 @@ export class SubSpeciesControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllSubSpecies(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllSubSpecies(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/subSpecies/all',
+            url: '/subSpecies/all/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

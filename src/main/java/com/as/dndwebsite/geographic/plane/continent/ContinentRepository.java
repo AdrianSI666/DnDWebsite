@@ -14,11 +14,11 @@ public interface ContinentRepository extends JpaRepository<Continent, Long> {
     Optional<EntryDTO> findByKingdoms_Name(String name);
     Page<EntryDTO> findAllByPlaneName(String name, Pageable pageable);
     List<EntryDTO> findAllByPlaneId(Long planeId);
-    List<EntryDTO> findAllByPlaneIdIsNull();
+    List<EntryDTO> findAllByWorldIdAndPlaneIdIsNull(Long worldId);
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     Optional<EntryDTO> findByRegions_Name(String name);
 

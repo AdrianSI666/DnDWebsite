@@ -3,6 +3,7 @@ package com.as.dndwebsite.geographic.plane.continent.region.place;
 import com.as.dndwebsite.description.IDescriptionEntryService;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
@@ -37,13 +38,13 @@ public class PlaceController {
     private final IDescriptionEntryService placeDescriptionService;
 
     @GetMapping
-    public ResponseEntity<PageDTO<EntryDTO>> getPlaces(PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<EntryDTOnWorldData>> getPlaces(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(placeService.getPlaces(pageInfo)));
     }
 
-    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
-    public ResponseEntity<List<EntryDTO>> getAllPlaces() {
-        return ResponseEntity.ok().body(placeService.getAllPlaces());
+    @GetMapping("/all/worlds/{worldId}") //TODO with security this won't be all but created by account and/or subscribed to
+    public ResponseEntity<List<EntryDTO>> getAllPlaces(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(placeService.getAllPlaces(worldId));
     }
 
     @GetMapping("/{name}")

@@ -3,6 +3,7 @@ package com.as.dndwebsite.political.kingdom.county;
 import com.as.dndwebsite.description.IDescriptionEntryService;
 import com.as.dndwebsite.dto.DescriptionDTO;
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.ImageDTO;
 import com.as.dndwebsite.dto.PageDTO;
@@ -37,13 +38,13 @@ public class CountyController {
     private final IDescriptionEntryService countyDescriptionService;
 
     @GetMapping
-    public ResponseEntity<PageDTO<EntryDTO>> getCounties(PageInfo pageInfo) {
+    public ResponseEntity<PageDTO<EntryDTOnWorldData>> getCounties(PageInfo pageInfo) {
         return ResponseEntity.ok().body(pageMapper.mapPageDataToPageDTO(countyService.getCounties(pageInfo)));
     }
 
-    @GetMapping("/all") //TODO with security this won't be all but created by account and/or subscribed to
-    public ResponseEntity<List<EntryDTO>> getAllCounties() {
-        return ResponseEntity.ok().body(countyService.getAllCounties());
+    @GetMapping("/all/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllCounties(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(countyService.getAllCounties(worldId));
     }
 
     @GetMapping("/{name}")

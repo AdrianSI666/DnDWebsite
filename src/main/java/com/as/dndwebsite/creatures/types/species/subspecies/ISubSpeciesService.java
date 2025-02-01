@@ -1,15 +1,16 @@
 package com.as.dndwebsite.creatures.types.species.subspecies;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ISubSpeciesService {
-    Page<EntryDTO> getSubSpecies(PageInfo page);
+    Page<EntryDTOnWorldData> getSubSpecies(PageInfo page);
 
-    List<EntryDTO> getAllSubSpecies();
+    List<EntryDTO> getAllSubSpecies(Long worldId);
 
     SubSpeciesDTO getSubSpeciesByName(String name);
 

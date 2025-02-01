@@ -17,7 +17,7 @@ public interface PlaneRepository extends JpaRepository<Plane, Long> {
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable pageable);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     List<EntryDTO> findAllByCreatureTypes_Id(Long planeId);
 

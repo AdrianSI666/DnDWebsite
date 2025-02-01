@@ -14,11 +14,11 @@ public interface CountyRepository extends JpaRepository<County, Long> {
     List<EntryDTO> findAllByRegions_Name(String name, Pageable pageable);
     Page<EntryDTO> findAllByKingdomName(String name, Pageable pageable);
     List<EntryDTO> findAllByKingdomId(Long id);
-    List<EntryDTO> findAllByKingdomIdIsNull();
+    List<EntryDTO> findAllByWorldIdAndKingdomIdIsNull(Long worldId);
 
     List<EntryDTO> findAllByRegions_Name(String name);
 
-    List<EntryDTO> findAllByWorldId(Long worldId);
+    List<EntryDTO> findAllByWorldIdOrderByName(Long worldId);
 
     Page<EntryDTO> findAllByWorldName(String name, Pageable paging);
 }

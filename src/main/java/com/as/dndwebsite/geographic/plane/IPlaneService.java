@@ -1,13 +1,14 @@
 package com.as.dndwebsite.geographic.plane;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IPlaneService {
-    Page<EntryDTO> getPlanes(PageInfo page);
+    Page<EntryDTOnWorldData> getPlanes(PageInfo page);
 
     PlaneFullDTO getPlane(String name);
 
@@ -17,5 +18,5 @@ public interface IPlaneService {
 
     void deletePlane(Long id);
 
-    List<EntryDTO> getAllPlanes();
+    List<EntryDTO> getAllPlanes(Long worldId);
 }

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IWorldService {
-    Page<EntryDTO> getWorlds(PageInfo page);
+    Page<WorldNAuthorDTO> getWorlds(PageInfo page);
 
     WorldDTO getWorld(String name);
 
@@ -19,5 +19,5 @@ public interface IWorldService {
 
     void deleteWorld(Long id);
 
-    List<EntryDTO> getAllWorlds();
+    List<EntryDTO> getAllWorlds(Long userId);
 }

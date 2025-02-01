@@ -38,7 +38,7 @@ public class WorldCultureService implements IWorldCultureService {
     @Override
     public List<EntryDTO> getCulturesRelatedToWorld(Long worldId) {
         log.debug("Getting cultures related to world with id {}", worldId);
-        return cultureRepository.findAllByWorldId(worldId);
+        return cultureRepository.findAllByWorldIdOrderByName(worldId);
     }
 
     @Override

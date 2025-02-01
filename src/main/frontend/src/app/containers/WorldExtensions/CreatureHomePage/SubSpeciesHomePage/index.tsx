@@ -9,7 +9,7 @@ import { DeleteConfirmationModal } from "../../../../components/modals/deleteCon
 import { EditEntryModal } from "../../../../components/modals/editEntryModal";
 import { CustomPagination } from "../../../../components/pagination/pagination";
 import { HeaderLink } from "../../../Header/HeaderLink";
-import { SubSpeciesFunction } from "../../../Creatures/SubSpeciesPage/subSpeciesFunction";
+import { SubSpeciesFunction } from "./Functions/subSpeciesFunction";
 
 
 export function SubspeciesHomePage() {
@@ -48,11 +48,11 @@ export function SubspeciesHomePage() {
     const changeSubspeciesPage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
         if (size && size !== pageSize) {
             setPageSize(size);
-            queryClient.invalidateQueries({ queryKey: ["subspeciesPage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["subSpeciesPageByWorldName", pageNumber, size, name] })
         }
         if (value && value !== pageNumber) {
             setPageNumber(value!);
-            queryClient.invalidateQueries({ queryKey: ["subspeciesPage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["subSpeciesPageByWorldName", value, pageSize, name] })
         }
     }
 

@@ -1,15 +1,13 @@
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Accordion, Col, Container, Row } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import { useOutletContext, useParams } from "react-router-dom";
 import { ApiError, WorldCreatureTypeControllerService, WorldDTO } from "../../../../../services/openapi";
 import useUserState from "../../../../../services/storage/UserStorage";
+import { ShortEntryEditList } from "../../../../components/accordions/shortEntryEditList";
 import { AddNewEntryModal } from "../../../../components/modals/addNewEntryModal";
-import { DeleteConfirmationModal } from "../../../../components/modals/deleteConfirmModal";
-import { EditEntryModal } from "../../../../components/modals/editEntryModal";
 import { CustomPagination } from "../../../../components/pagination/pagination";
-import { HeaderLink } from "../../../Header/HeaderLink";
-import { TypeFunction } from "../../../Creatures/TypePage/typeFunction";
+import { TypeFunction } from "./Functions/typeFunction";
 
 
 export function TypeHomePage() {
@@ -48,11 +46,11 @@ export function TypeHomePage() {
     const changeTypePage = async (_event?: React.ChangeEvent<unknown>, value?: number, size?: number) => {
         if (size && size !== pageSize) {
             setPageSize(size);
-            queryClient.invalidateQueries({ queryKey: ["typePage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["typePageByWorldName", pageNumber, size, name] })
         }
         if (value && value !== pageNumber) {
             setPageNumber(value!);
-            queryClient.invalidateQueries({ queryKey: ["typePage", value, size] })
+            queryClient.invalidateQueries({ queryKey: ["typePageByWorldName", value, pageSize, name] })
         }
     }
 
@@ -72,24 +70,30 @@ export function TypeHomePage() {
         <CustomPagination pageSize={pageSize} changePage={changeTypePage} page={typePage!} />
         <Accordion>
             {typePage.data && typePage.data.map((type) =>
-            (<Container key={type?.object.id}>
-                <h1>Type {type?.object.name}</h1>
-                <Row className="accordion-header accordion-button oneEntryButton">
-                    <Col>
-                        <span>#Tags #to #implement</span>
-                        <p>
-                            {type?.object.shortDescription}
-                        </p>
-                        {isAuthor ? <>
-                            <EditEntryModal updateFunction={editType} categoryName={"Type"} id={type.object?.id!} name={type.object?.name!} shortDescription={type.object?.shortDescription!} />
-                            <DeleteConfirmationModal deleteButtonActionText={"Delete this type"} deleteObject={deleteType} title={type.object?.name!} id={type.object?.id!} />
-                        </> : null}
-                        <HeaderLink name={type.object.name!} link={"/worlds/home/" + world.world?.name + "/creatures/types/" + type.object.name} />
-                    </Col>
-                </Row>
-            </Container>)
+            (<ShortEntryEditList wordName={world.world?.name!} 
+                linkToHomePage={"/creatures/types/"} 
+                isAuthor={isAuthor} 
+                deleteEntry={deleteType} 
+                updateEntry={editType} categoryName={"type"}
+                entryDTO={type.object} 
+                />)
+            // (<Container key={type?.object.id}>
+            //     <h1>Type {type?.object.name}</h1>
+            //     <Row className="accordion-header accordion-button oneEntryButton">
+            //         <Col>
+            //             <span>#Tags #to #implement</span>
+            //             <p>
+            //                 {type?.object.shortDescription}
+            //             </p>
+            //             {isAuthor ? <>
+            //                 <EditEntryModal updateFunction={editType} categoryName={"Type"} id={type.object?.id!} name={type.object?.name!} shortDescription={type.object?.shortDescription!} />
+            //                 <DeleteConfirmationModal deleteButtonActionText={"Delete this type"} deleteObject={deleteType} title={type.object?.name!} id={type.object?.id!} />
+            //             </> : null}
+            //             <HeaderLink name={type.object.name!} link={"/worlds/home/" + world.world?.name + "/creatures/types/" + type.object.name} />
+            //         </Col>
+            //     </Row>
+            // </Container>)
             )}
         </Accordion>
-
     </div >
 }

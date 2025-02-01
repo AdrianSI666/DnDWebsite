@@ -47,9 +47,9 @@ public class PlaneContinentController {
         return ResponseEntity.ok().body(planeContinentService.addNewPlaneContinentRelation(continentId, plane));
     }
 
-    @GetMapping("/unset/continent")
-    public ResponseEntity<List<EntryDTO>> getAllContinentsWithoutPlane() {
-        return ResponseEntity.ok().body(planeContinentService.getAllContinentsWithoutPlane());
+    @GetMapping("/unset/continent/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllContinentsWithoutPlane(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(planeContinentService.getAllContinentsWithoutPlane(worldId));
     }
 
     @PostMapping("/{planeId}/continent/{continentId}")

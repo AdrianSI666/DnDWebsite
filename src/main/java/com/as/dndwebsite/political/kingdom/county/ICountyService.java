@@ -1,6 +1,7 @@
 package com.as.dndwebsite.political.kingdom.county;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.EntryFullDTO;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ICountyService {
-    Page<EntryDTO> getCounties(PageInfo page);
+    Page<EntryDTOnWorldData> getCounties(PageInfo page);
 
     EntryFullDTO getCounty(String name);
 
@@ -18,5 +19,5 @@ public interface ICountyService {
 
     void deleteCounty(Long id);
 
-    List<EntryDTO> getAllCounties();
+    List<EntryDTO> getAllCounties(Long worldId);
 }

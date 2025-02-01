@@ -56,8 +56,8 @@ public class CountyRegionService implements ICountyRegionService {
     }
 
     @Override
-    public List<EntryDTO> getAllRegionsWithoutCounty() {
-        return regionRepository.findAllByCounties_IdIsNull();
+    public List<EntryDTO> getAllRegionsWithoutCounty(Long worldId) {
+        return regionRepository.findAllByWorldIdAndCounties_IdIsNullOrderByName(worldId);
     }
 
     @Override

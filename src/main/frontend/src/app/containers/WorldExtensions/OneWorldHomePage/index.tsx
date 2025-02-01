@@ -6,8 +6,8 @@ import useUserState from "../../../../services/storage/UserStorage";
 import { FullEntryAccordionBody } from "../../../components/accordions/fullEntryAccordionBody";
 import { DeleteConfirmationModal } from "../../../components/modals/deleteConfirmModal";
 import { EditEntryModal } from "../../../components/modals/editEntryModal";
-import { UseOneWorldFunction } from "./useOneWorldFunction";
-import { WorldFunctionArray } from "../../WorldPage/worldFunctionArrays";
+import { UseOneWorldFunction } from "./Functions/useOneWorldFunction";
+import { WorldFunctionArray } from "./Functions/worldFunctionArrays";
 
 export function OneWorldHomePage() {
     let isAuthor = false;

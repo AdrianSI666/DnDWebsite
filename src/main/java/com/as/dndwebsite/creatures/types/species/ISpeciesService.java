@@ -1,13 +1,14 @@
 package com.as.dndwebsite.creatures.types.species;
 
 import com.as.dndwebsite.dto.EntryDTO;
+import com.as.dndwebsite.dto.EntryDTOnWorldData;
 import com.as.dndwebsite.dto.PageInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ISpeciesService {
-    Page<EntryDTO> getSpecies(PageInfo page);
+    Page<EntryDTOnWorldData> getSpecies(PageInfo page);
 
     SpeciesDTO getSpecies(String name);
 
@@ -17,5 +18,5 @@ public interface ISpeciesService {
 
     void deleteSpecies(Long id);
 
-    List<EntryDTO> getAllSpecies();
+    List<EntryDTO> getAllSpecies(Long worldId);
 }

@@ -2,15 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useOutletContext, useParams } from "react-router-dom";
 import { SubSpeciesControllerService, WorldDTO } from "../../../../../../services/openapi";
 import useUserState from "../../../../../../services/storage/UserStorage";
+import { DomCategoryBody } from "../../../../../components/accordions/domCategoryBody";
 import { FullEntryAccordionBody } from "../../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../../components/accordions/oneEntryHeaderLayout";
 import { SubCategoryBody } from "../../../../../components/accordions/subCategoryBody";
-import { getAllRegions } from "../../../../../globalFunctions/RegionHooks";
-import { DomCategoryBody } from "../../../../../components/accordions/domCategoryBody";
-import { SubSpeciesFunctionDomObjects } from "../../../../Creatures/SubSpeciesPage/subSpeciesFunctionDomObjects";
-import { SubSpeciesFunctionSubObjects } from "../../../../Creatures/SubSpeciesPage/subSpeciesFunctionSubObjects";
-import { UseOneSubSpeciesFunction } from "./useOneSubSpeciesFunction";
-import { SubSpeciesFunctionArray } from "../../../../Creatures/SubSpeciesPage/subSpeciesFunctionArrays";
+import { GetAllOfEntryFunctions } from "../../../../../globalFunctions/getAll/getAllOfEntry";
+import { SubSpeciesFunctionArray } from "../Functions/subSpeciesFunctionArrays";
+import { SubSpeciesFunctionDomObjects } from "../Functions/subSpeciesFunctionDomObjects";
+import { SubSpeciesFunctionSubObjects } from "../Functions/subSpeciesFunctionSubObjects";
+import { UseOneSubSpeciesFunction } from "../Functions/useOneSubSpeciesFunction";
 
 
 export function OneSubSpeciesHomePage() {
@@ -22,12 +22,13 @@ export function OneSubSpeciesHomePage() {
         queryKey: ["subspecies", subSpeciesName],
         queryFn: async () => SubSpeciesControllerService.getSubSpeciesByName(subSpeciesName!)
     })
+    const {getAllRegions, getAllSpecies} = GetAllOfEntryFunctions({worldId: world.world?.id!})
     const { removeSubSpecies, editSubSpecies } = UseOneSubSpeciesFunction({ name: subSpeciesName!, worldName: world.world?.name! })
     const { saveImageToSubSpecies, deleteImageFromSubSpecies,
         addNewDesctiptionToSubSpecies, updateSubSpeciesDescription, deleteDescriptionFromSubSpecies } = SubSpeciesFunctionArray({ name: subSpeciesName! })
     const { saveNewRegionToSubSpecies, saveExistingRegionToSubSpecies, removeRegionFromSubSpeciesFunction
     } = SubSpeciesFunctionSubObjects({ name: subSpeciesName! })
-    const { setNewSpeciesToSubSpecies, setExistingSpeciesToSubSpecies, removeSpeciesFromSubSpeciesFunction, getAllSpecies } = SubSpeciesFunctionDomObjects({ name: subSpeciesName! });
+    const { setNewSpeciesToSubSpecies, setExistingSpeciesToSubSpecies, removeSpeciesFromSubSpeciesFunction } = SubSpeciesFunctionDomObjects({ name: subSpeciesName! });
     if (status === "pending") return <div>Loading...</div>;
     if (error) return <div>
         <h1>Subspecies named {subSpeciesName} doesn't exist.</h1>

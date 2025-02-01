@@ -36,9 +36,9 @@ public class CountyRegionController {
         return ResponseEntity.ok().body(countyRegionService.getCountiesRelatedToRegion(name));
     }
 
-    @GetMapping("/unset/region")
-    public ResponseEntity<List<EntryDTO>> getAllRegionsWithoutCounty() {
-        return ResponseEntity.ok().body(countyRegionService.getAllRegionsWithoutCounty());
+    @GetMapping("/unset/region/worlds/{worldId}")
+    public ResponseEntity<List<EntryDTO>> getAllRegionsWithoutCounty(@PathVariable("worldId") Long worldId) {
+        return ResponseEntity.ok().body(countyRegionService.getAllRegionsWithoutCounty(worldId));
     }
 
     @PostMapping("/{countyId}/region")

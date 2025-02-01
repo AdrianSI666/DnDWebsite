@@ -6,11 +6,11 @@ import { DomCategoryBody } from "../../../../../components/accordions/domCategor
 import { FullEntryAccordionBody } from "../../../../../components/accordions/fullEntryAccordionBody";
 import { OneEntryHeaderLayout } from "../../../../../components/accordions/oneEntryHeaderLayout";
 import { SubCategoryBody } from "../../../../../components/accordions/subCategoryBody";
-import { getAllRegions } from "../../../../../globalFunctions/RegionHooks";
-import { UseOneSpeciesFunction } from "./useOneSpeciesFunction";
-import { SpeciesFunctionArray } from "../../../../Creatures/SpeciesPage/speciesFunctionArrays";
-import { SpeciesFunctionDomObjects } from "../../../../Creatures/SpeciesPage/speciesFunctionDomObjects";
-import { SpeciesFunctionSubObjects } from "../../../../Creatures/SpeciesPage/speciesFunctionSubObjects";
+import { GetAllOfEntryFunctions } from "../../../../../globalFunctions/getAll/getAllOfEntry";
+import { SpeciesFunctionArray } from "../Functions/speciesFunctionArrays";
+import { SpeciesFunctionDomObjects } from "../Functions/speciesFunctionDomObjects";
+import { SpeciesFunctionSubObjects } from "../Functions/speciesFunctionSubObjects";
+import { UseOneSpeciesFunction } from "../Functions/useOneSpeciesFunction";
 
 
 export function OneSpeciesHomePage() {
@@ -22,13 +22,14 @@ export function OneSpeciesHomePage() {
         queryKey: ["species", speciesName],
         queryFn: async () => SpeciesControllerService.getSpeciesByName(speciesName!)
     })
+    const { getAllRegions, getAllCreatureTypes, getAllSubSpeciesWithoutSpecies } = GetAllOfEntryFunctions({ worldId: world.world?.id! })
     const { removeSpecies, editSpecies } = UseOneSpeciesFunction({ name: speciesName!, worldName: world.world?.name! })
     const { saveImageToSpecies, deleteImageFromSpecies,
         addNewDesctiptionToSpecies, updateSpeciesDescription, deleteDescriptionFromSpecies } = SpeciesFunctionArray({ name: speciesName! })
-    const { getAllSubSpecies, saveNewSubSpeciesToSpecies, saveExistingSubSpeciesToSpecies, removeSubSpeciesFromSpeciesFunction,
+    const { saveNewSubSpeciesToSpecies, saveExistingSubSpeciesToSpecies, removeSubSpeciesFromSpeciesFunction,
         saveNewRegionToSpecies, saveExistingRegionToSpecies, removeRegionFromSpeciesFunction
     } = SpeciesFunctionSubObjects({ name: speciesName! })
-    const { setNewCreatureTypeToSpecies, setExistingCreatureTypeToSpecies, removeCreatureTypeFromSpeciesFunction, getAllCreatureType } = SpeciesFunctionDomObjects({ name: speciesName! });
+    const { setNewCreatureTypeToSpecies, setExistingCreatureTypeToSpecies, removeCreatureTypeFromSpeciesFunction } = SpeciesFunctionDomObjects({ name: speciesName! });
 
     if (status === "pending") return <div>Loading...</div>;
     if (error) return <div>
@@ -59,19 +60,19 @@ export function OneSpeciesHomePage() {
         <DomCategoryBody categoryName={"Creature type"} mainEntryId={species.species?.id!}
             descriptionOfConnectionString={"Creature type of"} descriptionOfNullConnectionString={"This species doesn't have a type."}
             domObject={species.creatureType}
-            domCategoryName={"Creature type"} 
+            domCategoryName={"Creature type"}
             domCategoryLink={"worlds/home/" + world.world?.name + "/creatures/types"}
-            fillTheListWithAllSubObjects={getAllCreatureType}
+            fillTheListWithAllSubObjects={getAllCreatureTypes}
             setNewDomEntryToRelation={setNewCreatureTypeToSpecies}
             addExistingObjectToRelation={setExistingCreatureTypeToSpecies}
             deleteSubObject={removeCreatureTypeFromSpeciesFunction}
             addButtonActionText={`Set new creature type of ${species.species?.name}`}
             deleteButtonActionText={`Unset creature type of ${species.species?.name}`}
-            addExistingButtonActionText={`Set creature type for ${species.species?.name} from list`} isAuthor={isAuthor}/>
+            addExistingButtonActionText={`Set creature type for ${species.species?.name} from list`} isAuthor={isAuthor} />
         <SubCategoryBody mainEntryId={species.species?.id!}
             subObjects={species.subSpecies}
             subCategoryTitle={"Subspecies"} subCategoryLink={"creatures/subspeciess"}
-            fillTheListWithAllSubObjects={getAllSubSpecies}
+            fillTheListWithAllSubObjects={getAllSubSpeciesWithoutSpecies}
             addNewSubEntryToRelation={saveNewSubSpeciesToSpecies}
             addExistingObjectToRelation={saveExistingSubSpeciesToSpecies}
             deleteSubObject={removeSubSpeciesFromSpeciesFunction}

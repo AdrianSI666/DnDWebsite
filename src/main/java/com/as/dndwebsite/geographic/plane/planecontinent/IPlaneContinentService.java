@@ -24,5 +24,5 @@ public interface IPlaneContinentService {
 
     EntryDTO addNewPlaneContinentRelation(Long continentId, EntryDTO plane);
 
-    List<EntryDTO> getAllContinentsWithoutPlane();
+    List<EntryDTO> getAllContinentsWithoutPlane(Long worldId);
 }

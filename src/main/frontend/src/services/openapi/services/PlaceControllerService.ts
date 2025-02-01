@@ -11,6 +11,7 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 import {Page} from "../models/Page";
+import { EntryDTOnWorldData } from '../models/EntryDTOnWorldData';
 export class PlaceControllerService {
     /**
      * @param id
@@ -133,7 +134,7 @@ export class PlaceControllerService {
      */
     public static getPlaces(
         pageInfo: PageInfo,
-    ): CancelablePromise<Page<EntryDTO>> {
+    ): CancelablePromise<Page<EntryDTOnWorldData>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/places',
@@ -163,10 +164,13 @@ export class PlaceControllerService {
      * @returns EntryDTO OK
      * @throws ApiError
      */
-    public static getAllPlaces(): CancelablePromise<Array<EntryDTO>> {
+    public static getAllPlaces(worldId: number): CancelablePromise<Array<EntryDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/places/all',
+            url: '/places/all/worlds/{worldId}',
+            path: {
+                'worldId': worldId
+            }
         });
     }
     /**

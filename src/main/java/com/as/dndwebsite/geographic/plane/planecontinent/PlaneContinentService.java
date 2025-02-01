@@ -94,7 +94,7 @@ public class PlaneContinentService implements IPlaneContinentService {
     }
 
     @Override
-    public List<EntryDTO> getAllContinentsWithoutPlane() {
-        return continentRepository.findAllByPlaneIdIsNull();
+    public List<EntryDTO> getAllContinentsWithoutPlane(Long worldId) {
+        return continentRepository.findAllByWorldIdAndPlaneIdIsNull(worldId);
     }
 }

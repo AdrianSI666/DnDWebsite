@@ -56,8 +56,8 @@ public class ContinentRegionService implements IContinentRegionService {
     }
 
     @Override
-    public List<EntryDTO> getAllRegionsWithoutContinent() {
-        return regionRepository.findAllByContinentIdIsNull();
+    public List<EntryDTO> getAllRegionsWithoutContinent(Long worldId) {
+        return regionRepository.findAllByWorldIdAndContinentIdIsNull(worldId);
     }
 
     @Override

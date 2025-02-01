@@ -44,8 +44,8 @@ public class SpeciesSubSpeciesService implements ISpeciesSubSpeciesService {
     }
 
     @Override
-    public List<EntryDTO> getAllSubSpeciesWithoutSpecies() {
-        return subspeciesRepository.findAllBySpeciesIdIsNull();
+    public List<EntryDTO> getAllSubSpeciesWithoutSpecies(Long worldId) {
+        return subspeciesRepository.findAllByWorldIdAndSpeciesIdIsNull(worldId);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SpeciesSubSpeciesService implements ISpeciesSubSpeciesService {
 
     @Override
     public EntryDTO addNewSubSpeciesSpeciesRelation(Long speciesId, EntryDTO subSpecies) {
-        log.info("Adding subSpecies {} to species {}", subSpecies.name(), speciesId);
+        log.debug("Adding subSpecies {} to species {}", subSpecies.name(), speciesId);
         Species species = speciesRepository.findById(speciesId).orElseThrow(() -> new NotFoundException(String.format(SpeciesService.SPECIES_NOT_FOUND_MSG, speciesId)));
         SubSpecies newSubspecies = subspeciesRepository.save(new SubSpecies(subSpecies.name(), subSpecies.shortDescription(), species));
         species.getSubSpecies().add(newSubspecies);
@@ -77,7 +77,7 @@ public class SpeciesSubSpeciesService implements ISpeciesSubSpeciesService {
 
     @Override
     public void addSubSpeciesSpeciesRelation(Long speciesId, Long subSpeciesId) {
-        log.info("Adding subSpecies {} to species {}", subSpeciesId, speciesId);
+        log.debug("Adding subSpecies {} to species {}", subSpeciesId, speciesId);
         Species species = speciesRepository.findById(speciesId).orElseThrow(() -> new NotFoundException(String.format(SpeciesService.SPECIES_NOT_FOUND_MSG, speciesId)));
         SubSpecies subspecies = subspeciesRepository.findById(subSpeciesId).orElseThrow(() -> new NotFoundException(String.format(SubSpeciesService.SUB_SPECIES_NOT_FOUND_MSG, subSpeciesId)));
         if(!species.getSubSpecies().add(subspecies)) throw new BadRequestException("Species %s and Sub Species %s are already linked".formatted(species.getName(), subspecies.getName()));
@@ -86,7 +86,7 @@ public class SpeciesSubSpeciesService implements ISpeciesSubSpeciesService {
 
     @Override
     public void removeSubSpeciesSpeciesRelation(Long speciesId, Long subSpeciesId) {
-        log.info("Deleting subSpecies {} from species {}", subSpeciesId, speciesId);
+        log.debug("Deleting subSpecies {} from species {}", subSpeciesId, speciesId);
         Species species = speciesRepository.findById(speciesId).orElseThrow(() -> new NotFoundException(String.format(SpeciesService.SPECIES_NOT_FOUND_MSG, speciesId)));
         SubSpecies subspecies = subspeciesRepository.findById(subSpeciesId).orElseThrow(() -> new NotFoundException(String.format(SubSpeciesService.SUB_SPECIES_NOT_FOUND_MSG, subSpeciesId)));
         species.getSubSpecies().remove(subspecies);

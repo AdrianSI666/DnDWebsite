@@ -6,6 +6,7 @@ import com.as.dndwebsite.exception.NotFoundException;
 import com.as.dndwebsite.mappers.DescriptionMapper;
 import com.as.dndwebsite.mappers.DomainMapper;
 import com.as.dndwebsite.mappers.ImageMapper;
+import com.as.dndwebsite.mappers.WorldMapperV2;
 import com.as.dndwebsite.security.OwningSecurityFunctions;
 import com.as.dndwebsite.user.AppUser;
 import lombok.RequiredArgsConstructor;
@@ -33,17 +34,18 @@ public class WorldService implements IWorldService {
     private final OwningSecurityFunctions owningSecurityFunctions;
     public static final String WORLD_NOT_FOUND_MSG =
             "World with name %s not found";
+    private final WorldMapperV2 worldMapper;
 
     @Override
-    public Page<EntryDTO> getWorlds(PageInfo page) {
+    public Page<WorldNAuthorDTO> getWorlds(PageInfo page) {
         Pageable paging = PageRequest.of(page.number() - 1, page.size(), Sort.by(Sort.Direction.DESC, "id"));
         Page<World> worldPage = worldRepository.findAll(paging);
-        return worldPage.map(mapper::map);
+        return worldPage.map(worldMapper::map);
     }
 
     @Override
-    public List<EntryDTO> getAllWorlds() {
-        return worldRepository.findAll().stream().map(mapper::map).toList();
+    public List<EntryDTO> getAllWorlds(Long userId) {
+        return worldRepository.findAllByAuthor_IdOrderByName(userId);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class WorldService implements IWorldService {
     @Override
     public List<EntryDTO> getWorldsByAuthor(Long id) {
         owningSecurityFunctions.checkIfLoggedInUserAndGivenIdIsTheSame("Get worlds as owner", id);
-        return worldRepository.findAllByAuthor_IdOrderById(id);
+        return worldRepository.findAllByAuthor_IdOrderByName(id);
     }
 
     @Override
